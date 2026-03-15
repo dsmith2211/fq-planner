@@ -1157,9 +1157,12 @@
             race: '',
             class: '',
             deity: '',
+            charName: '',
+            playerName: '',
             spTotal: 90,
-            skills: {},
-            spells: {}
+            skills: {},      // {skillName: count}
+            spells: {},      // {school: {level: count}}
+            customCosts: {}  // {skillName: costPer} for imported skills not in SKILLS database
         };
 
         function loadState() {
@@ -1407,8 +1410,12 @@
             let total = 0;
             for (const skillName in state.skills) {
                 const qty = state.skills[skillName] || 0;
-                const cost = getSkillCost(skillName, state.class, state.race, state.deity);
-                if (cost !== null) total += cost * qty;
+                // Prefer imported card cost (customCosts) over DB cost
+                // Card costs reflect what was actually paid; DB costs are for new purchases
+                let cost = (state.customCosts && state.customCosts[skillName] !== undefined)
+                    ? state.customCosts[skillName]
+                    : getSkillCost(skillName, state.class, state.race, state.deity);
+                if (cost !== null && cost !== undefined) total += cost * qty;
             }
             for (const school in state.spells) {
                 for (const level in state.spells[school]) {
@@ -1447,11 +1454,15 @@
             for (const skillName in state.skills) {
                 if (state.skills[skillName] > 0) {
                     hasItems = true;
-                    const cost = getSkillCost(skillName, state.class, state.race, state.deity);
-                    const totalCost = cost * state.skills[skillName];
+                    // Prefer imported card cost over DB cost
+                    let cost = (state.customCosts && state.customCosts[skillName] !== undefined)
+                        ? state.customCosts[skillName]
+                        : getSkillCost(skillName, state.class, state.race, state.deity);
+                    const totalCost = (cost || 0) * state.skills[skillName];
+                    const isCustom = !SKILLS.find(s => s.name === skillName);
                     cart.innerHTML += `
                         <div class="cart-item">
-                            <div class="cart-item-name">${skillName}</div>
+                            <div class="cart-item-name">${skillName}${isCustom ? ' *' : ''}</div>
                             <div class="cart-item-cost">${totalCost} SP</div>
                             <div class="cart-item-qty">${state.skills[skillName]}x</div>
                             <div class="cart-controls">
@@ -1468,7 +1479,7 @@
                     if (qty > 0) {
                         hasItems = true;
                         const costPerSpell = getSpellCost(school, parseInt(level));
-                        const totalCost = costPerSpell * qty;
+                        const totalCost = (costPerSpell || 0) * qty;
                         cart.innerHTML += `
                             <div class="cart-item">
                                 <div class="cart-item-name">${school} L${level}</div>
@@ -1775,6 +1786,7 @@
         function clearCart() {
             state.skills = {};
             state.spells = {};
+            state.customCosts = {};
             updateAll();
             renderSkills();
             renderSpells();
@@ -1830,139 +1842,222 @@
         }
 
         function parseCharacterCard(csvData) {
-            const lines = csvData.split('\n').map(line => line.trim()).filter(line => line);
+            const lines = csvData.split('\n').filter(line => line.trim());
             const summary = { matched: 0, unmatched: 0, spells: 0, skills: [], unmatched_items: [] };
 
             // Reset purchases
-            state.purchasedSkills = {};
-            state.purchasedSpells = {};
+            state.skills = {};
+            state.spells = {};
+            state.customCosts = {};
 
-            // Parse ALL lines for header data and skills
-            // FQ character cards have header rows mixed with skill data
-            // Header patterns: "Player,,Name", "Character,,Name", "Race,Elf,Class,Cleric"
-            // Skill patterns: 3-column groups of (SkillName, Date, Cost) repeated across columns
-            // Spell patterns: "Div SpLv 3 x2" meaning 2 Divine spells at level 3
-
-            const SPELL_PATTERN = /^(Div|Elem|Sorc|Dark|Ench)\s*SpLv\s*(\d+)\s*x(\d+)$/i;
+            // Spell pattern: "Div SpLv 3 (x2)" or "Div SpLv 3 x2"
+            const SPELL_PATTERN = /^(Div|Elem|Sorc|Dark|Ench)\s*SpLv\s*(\d+)\s*\(?x(\d+)\)?$/i;
             const SPELL_SCHOOL_MAP = {
                 'div': 'Divine', 'elem': 'Elementalism', 'sorc': 'Sorcery',
                 'dark': 'Dark Arts', 'ench': 'Enchantment'
             };
+
+            // Alias map: card name → database skill name (null = skip entirely)
             const SKILL_ALIASES = {
-                'shield (normal)': 'Shield Use', 'shield': 'Shield Use',
+                'shield (normal': 'Shield Use', 'shield (normal)': 'Shield Use', 'shield': 'Shield Use',
+                '1 handed edge': '1 Handed Edge', 'one handed edge': '1 Handed Edge',
+                'one-handed edge': '1 Handed Edge', '1-handed edge': '1 Handed Edge',
                 '2 handed weapon': 'Two-Handed Weapon', '2h weapon': 'Two-Handed Weapon',
-                'two handed weapon': 'Two-Handed Weapon',
+                'two handed weapon': 'Two-Handed Weapon', 'two-handed weapon': 'Two-Handed Weapon',
+                'divine intervention': 'Divine Intervention',
+                'read magic': 'Read Magic', 'scroll craft': 'Scroll Craft',
+                'spell craft': 'Spell Craft', 'potion craft': 'Potion Craft',
+                'brew potion': 'Brew Potion', 'battle rage': 'Battle Rage',
+                'nature lore': 'Nature Lore', 'crit attack': 'Critical Attack',
+                'critical': 'Critical Attack', 'critical attack': 'Critical Attack',
+                'banish undead': 'Banish Undead',
+                'shadow attn t1': 'Shadow Attunement T1', 'shadow attn t2': 'Shadow Attunement T2',
+                'shadow attunement t1': 'Shadow Attunement T1', 'shadow attunement t2': 'Shadow Attunement T2',
                 'resist fear': 'Resist Fear', 'resist poison': 'Resist Poison',
                 'resist dark arts': 'Resist Dark Arts', 'resist charm': 'Resist Charm',
-                'crit attack': 'Critical Attack', 'critical': 'Critical Attack',
                 'lock pick i': 'Lock Picking I', 'lock pick ii': 'Lock Picking II',
                 'lockpick i': 'Lock Picking I', 'lockpick ii': 'Lock Picking II',
                 'escape bonds 1': 'Escape Bonds I', 'escape bonds 2': 'Escape Bonds II',
-                'info gather': 'Info Gathering', 'armorsmith (leather)': 'Armorsmith Leather',
-                'armorsmith (chain)': 'Armorsmith Chain', 'armorsmith (plate)': 'Armorsmith Plate',
-                'armorsmith (metal)': 'Armorsmith Metal', 'scroll craft': 'Scroll Craft',
-                'spell craft': 'Spell Craft', 'brew potion': 'Brew Potion',
-                'battle rage': 'Battle Rage', 'nature lore': 'Nature Lore',
-                'read magic': 'Read Magic', 'divine intervention': null // spell, not skill
+                'escape bonds i': 'Escape Bonds I', 'escape bonds ii': 'Escape Bonds II',
+                'info gather': 'Info Gathering', 'info gathering': 'Info Gathering',
+                'armorsmith (leather)': 'Armorsmith Leather', 'armorsmith leather': 'Armorsmith Leather',
+                'armorsmith (chain)': 'Armorsmith Chain', 'armorsmith chain': 'Armorsmith Chain',
+                'armorsmith (plate)': 'Armorsmith Plate', 'armorsmith plate': 'Armorsmith Plate',
+                'armorsmith (metal)': 'Armorsmith Metal', 'armorsmith metal': 'Armorsmith Metal',
+                'shield use': 'Shield Use', 'parry': 'Parry', 'florentine': 'Florentine',
+                'strength': 'Strength', 'bow': 'Bow', 'backstab': 'Backstab',
+                'assassinate': 'Assassinate', 'create poison': 'Create Poison',
+                'lock picking i': 'Lock Picking I', 'lock picking ii': 'Lock Picking II',
+                'appraise': 'Appraise', 'disguise': 'Disguise', 'forgery': 'Forgery',
+                'astrology': 'Astrology', 'familiar': 'Familiar',
+                'tracking': 'Tracking', 'healing': 'Healing', 'regenerate': 'Regenerate',
+                'health': 'Health', 'luck': 'Luck', 'weaponsmith': 'Weaponsmith',
+                'craftsman': 'Craftsman', 'theology': 'Theology',
+                'literacy': 'Literacy', 'meditate': 'Meditate', 'instruct': 'Instruct'
             };
 
-            for (let i = 0; i < lines.length; i++) {
+            // Header labels that are NOT skills — skip these
+            const SKIP_LABELS = new Set([
+                'player:', 'character:', 'race:', 'class:', 'level:', 'school:', 'deity:', 'diety:',
+                'deaths:', 'date:', 'awarded:', 'reason:', 'cause:', 'result:', 'skill',
+                'last purch', 'cost', 'total points:', 'points avail:', 'life points:',
+                'skill points earned', 'skill points (cont)', 'spell checklist',
+                'deaths', 'date', 'awarded', 'reason', 'cause', 'result', 'smith',
+                'david', 'elf', 'cleric', 'divine', 'caymlyn', 'mir onyx', 'life'
+            ]);
+
+            // ========== PHASE 1: Parse header fields ==========
+            for (let i = 0; i < Math.min(lines.length, 10); i++) {
                 const cols = lines[i].split(',').map(c => c.trim().replace(/^"|"$/g, ''));
-
-                // Parse header fields from anywhere in the data
                 for (let j = 0; j < cols.length; j++) {
-                    const cell = cols[j].toLowerCase();
-                    const next = cols[j + 1]?.trim() || '';
+                    const cell = cols[j].replace(/:$/, '').trim().toLowerCase();
+                    const next1 = (cols[j + 1] || '').trim();
+                    const next2 = (cols[j + 2] || '').trim();
 
-                    if (cell === 'race' && next) { state.race = next; }
-                    if (cell === 'class' && next) { state.class = next; }
-                    if (cell === 'deity' && next) { state.deity = next; }
-                    if (cell === 'character' && !next && cols[j + 2]) { state.charName = cols[j + 2]; }
-                    if (cell === 'player' && !next && cols[j + 2]) { state.playerName = cols[j + 2]; }
-                    if (cell === 'total points' && next) { state.spTotal = parseInt(next) || state.spTotal; }
-                    if (cell.includes('total') && cell.includes('point') && next) { state.spTotal = parseInt(next) || state.spTotal; }
-                }
-
-                // Parse skill/spell entries in 3-column groups: (Name, Date, Cost) x 3
-                // Each group: cols[0+n*3]=name, cols[1+n*3]=date, cols[2+n*3]=cost
-                for (let g = 0; g < 3; g++) {
-                    const nameIdx = g * 3;
-                    const costIdx = g * 3 + 2;
-                    // Also try 2-col format: (Name, Cost) x 3
-                    const name = (cols[nameIdx] || '').trim();
-                    const costStr = (cols[costIdx] || '').trim();
-                    const cost = parseInt(costStr);
-
-                    if (!name || name.toLowerCase() === 'skill' || name.toLowerCase() === 'player' ||
-                        name.toLowerCase() === 'character' || name.toLowerCase() === 'race' ||
-                        name.toLowerCase() === 'class' || name.toLowerCase() === 'level' ||
-                        name.toLowerCase() === 'school' || name.toLowerCase() === 'deity' ||
-                        name.toLowerCase() === 'deaths' || name.toLowerCase() === 'date' ||
-                        name.toLowerCase() === 'awarded' || name.toLowerCase() === 'reason' ||
-                        name.toLowerCase() === 'cause' || name.toLowerCase() === 'result') continue;
-
-                    // Check if it's a spell entry (e.g., "Div SpLv 3 x2")
-                    const spellMatch = name.match(SPELL_PATTERN);
-                    if (spellMatch) {
-                        const schoolKey = spellMatch[1].toLowerCase();
-                        const level = parseInt(spellMatch[2]);
-                        const count = parseInt(spellMatch[3]);
-                        const school = SPELL_SCHOOL_MAP[schoolKey];
-                        if (school && level >= 1 && level <= 9) {
-                            if (!state.purchasedSpells[school]) state.purchasedSpells[school] = {};
-                            state.purchasedSpells[school][level] = (state.purchasedSpells[school][level] || 0) + count;
-                            summary.spells += count;
-                        }
-                        continue;
+                    if (cell === 'race' && next1 && !next1.includes(':')) state.race = next1;
+                    if (cell === 'class' && next1 && !next1.includes(':')) state.class = next1;
+                    if ((cell === 'deity' || cell === 'diety') && next1) state.deity = next1;
+                    if (cell === 'school' && next1) state.school = next1;
+                    // Character/Player: value may be 1 or 2 cells over (empty cell in between)
+                    if (cell === 'character') {
+                        if (next1 && next1 !== '' && !next1.includes(':')) state.charName = next1;
+                        else if (next2 && !next2.includes(':')) state.charName = next2;
                     }
-
-                    // Skip entries that are clearly not skills (dates, numbers only, etc.)
-                    if (/^\d+\/\d+\/\d+$/.test(name)) continue; // date
-                    if (/^\d+$/.test(name)) continue; // bare number
-                    if (name.length < 2) continue;
-
-                    // Check alias map first
-                    const aliasKey = name.toLowerCase();
-                    if (SKILL_ALIASES.hasOwnProperty(aliasKey)) {
-                        if (SKILL_ALIASES[aliasKey] === null) continue; // explicitly skip (e.g. Divine Intervention)
-                        const skillName = SKILL_ALIASES[aliasKey];
-                        const finalCost = !isNaN(cost) && cost > 0 ? cost : getSkillCost(skillName, state.class, state.race, state.deity) || 0;
-                        if (state.purchasedSkills[skillName]) {
-                            state.purchasedSkills[skillName].qty++;
-                            state.purchasedSkills[skillName].total += finalCost;
-                        } else {
-                            state.purchasedSkills[skillName] = { qty: 1, costPer: finalCost, total: finalCost };
-                        }
-                        summary.matched++;
-                        summary.skills.push(skillName);
-                        continue;
+                    if (cell === 'player') {
+                        if (next1 && next1 !== '' && !next1.includes(':')) state.playerName = next1;
+                        else if (next2 && !next2.includes(':')) state.playerName = next2;
                     }
-
-                    // Fuzzy match
-                    const matched = fuzzyMatchSkill(name);
-                    if (matched) {
-                        const finalCost = !isNaN(cost) && cost > 0 ? cost : getSkillCost(matched, state.class, state.race, state.deity) || 0;
-                        if (state.purchasedSkills[matched]) {
-                            state.purchasedSkills[matched].qty++;
-                            state.purchasedSkills[matched].total += finalCost;
-                        } else {
-                            state.purchasedSkills[matched] = { qty: 1, costPer: finalCost, total: finalCost };
-                        }
-                        summary.matched++;
-                        summary.skills.push(matched);
-                    } else if (name.length > 2 && !name.match(/^\d/) && !name.match(/^(NPC|Char|Sheet)/i)) {
-                        summary.unmatched++;
-                        summary.unmatched_items.push(name + (cost ? ` (${cost})` : ''));
+                    // Total Points: value may be 1 or 2 cells over
+                    if (cell === 'total points') {
+                        const v = parseInt(next1) || parseInt(next2);
+                        if (v > 0) state.spTotal = v;
                     }
                 }
             }
 
-            // Update UI dropdowns
-            if (state.race) document.getElementById('raceSelect').value = state.race;
-            if (state.class) document.getElementById('classSelect').value = state.class;
-            if (state.deity) document.getElementById('deitySelect').value = state.deity;
-            if (state.charName) { const el = document.getElementById('charName'); if (el) el.value = state.charName; }
-            if (state.playerName) { const el = document.getElementById('playerName'); if (el) el.value = state.playerName; }
+            // ========== PHASE 2: Find skill section and parse skills ==========
+            // FQ card layout: 3 skill groups per row, each group is 5 CSV columns:
+            //   Name, (empty), Last Purch Date, (empty), Cost
+            // Skill section starts after header row: "Skill,,Last Purch,,Cost,..."
+            // Ends at "Spell Checklist" or notes section
+            let skillSectionStart = -1;
+            for (let i = 0; i < lines.length; i++) {
+                const lower = lines[i].toLowerCase();
+                if (lower.includes('skill') && lower.includes('last purch') && lower.includes('cost')) {
+                    skillSectionStart = i + 1;
+                    break;
+                }
+            }
+
+            if (skillSectionStart >= 0) {
+                for (let i = skillSectionStart; i < lines.length; i++) {
+                    const rawLine = lines[i];
+                    // Stop at spell checklist, turn-in notes, or other non-skill sections
+                    const lower = rawLine.toLowerCase();
+                    if (lower.includes('spell checklist') || lower.startsWith('"turn in') ||
+                        lower.startsWith('turn in') || lower.startsWith('owed ')) break;
+
+                    const cols = rawLine.split(',').map(c => c.trim().replace(/^"|"$/g, ''));
+
+                    // Parse 3 skill groups, each 5 columns wide
+                    for (let g = 0; g < 3; g++) {
+                        const nameIdx = g * 5;
+                        const costIdx = g * 5 + 4;
+                        let rawName = (cols[nameIdx] || '').trim();
+                        const costStr = (cols[costIdx] || '').trim();
+                        const cost = parseInt(costStr);
+
+                        if (!rawName || rawName.length < 2) continue;
+                        // Skip dates, bare numbers, header labels, checkbox squares
+                        if (/^\d+\/\d+\/\d+$/.test(rawName)) continue;
+                        if (/^\d+$/.test(rawName)) continue;
+                        if (/^[\u25A1\u25A0\u2610\u2611\u2612\u2718\u2714□■☐☑☒✘✔]+$/.test(rawName)) continue;
+                        const rawLower = rawName.toLowerCase();
+                        if (SKIP_LABELS.has(rawLower) || SKIP_LABELS.has(rawLower.replace(/:$/, ''))) continue;
+                        if (/^(WC |Turn In|Owed|NPC|Char Sheet)/i.test(rawName)) continue;
+
+                        // Check for spell entries: "Div SpLv 3 (x2)"
+                        const spellMatch = rawName.match(SPELL_PATTERN);
+                        if (spellMatch) {
+                            const schoolKey = spellMatch[1].toLowerCase();
+                            const level = parseInt(spellMatch[2]);
+                            const count = parseInt(spellMatch[3]);
+                            const school = SPELL_SCHOOL_MAP[schoolKey];
+                            if (school && level >= 1 && level <= 9) {
+                                if (!state.spells[school]) state.spells[school] = {};
+                                state.spells[school][level] = (state.spells[school][level] || 0) + count;
+                                summary.spells += count;
+                            }
+                            continue;
+                        }
+
+                        // Handle quantity notation: "Alchemy 1 (x10)"
+                        let qty = 1;
+                        const qtyMatch = rawName.match(/^(.+?)\s*\(x(\d+)\)$/i);
+                        if (qtyMatch) {
+                            rawName = qtyMatch[1].trim();
+                            qty = parseInt(qtyMatch[2]);
+                        }
+
+                        // Handle "Faith (Caymlyn)" → "Faith"
+                        const faithMatch = rawName.match(/^Faith\s*\(.+\)$/i);
+                        if (faithMatch) rawName = 'Faith';
+
+                        // Resolve skill name: alias → fuzzy match → use raw name
+                        let resolvedName = null;
+                        const aliasKey = rawName.toLowerCase();
+
+                        if (SKILL_ALIASES.hasOwnProperty(aliasKey)) {
+                            resolvedName = SKILL_ALIASES[aliasKey];
+                        } else {
+                            resolvedName = fuzzyMatchSkill(rawName);
+                        }
+
+                        // If no database match, import as custom skill using raw name
+                        if (!resolvedName) {
+                            resolvedName = rawName;
+                        }
+
+                        // Calculate cost per unit
+                        let costPer = 0;
+                        if (!isNaN(cost) && cost > 0) {
+                            costPer = qty > 1 ? Math.round(cost / qty) : cost;
+                        } else {
+                            const dbCost = getSkillCost(resolvedName, state.class, state.race, state.deity);
+                            if (dbCost !== null) costPer = dbCost;
+                        }
+
+                        // Store imported cost — card costs may differ from DB costs
+                        // (historical purchases, rule changes, etc.)
+                        if (costPer > 0) {
+                            state.customCosts[resolvedName] = costPer;
+                        }
+
+                        // Add to state.skills (the property the rest of the app uses)
+                        state.skills[resolvedName] = (state.skills[resolvedName] || 0) + qty;
+                        summary.matched++;
+                        summary.skills.push(resolvedName + (qty > 1 ? ` x${qty}` : ''));
+                    }
+                }
+            }
+
+            // ========== PHASE 3: Update UI ==========
+            if (state.race) {
+                const sel = document.getElementById('raceSelect');
+                if (sel) sel.value = state.race;
+            }
+            if (state.class) {
+                const sel = document.getElementById('classSelect');
+                if (sel) sel.value = state.class;
+            }
+            if (state.deity) {
+                const sel = document.getElementById('deitySelect');
+                if (sel) sel.value = state.deity;
+            }
+            const charEl = document.getElementById('charName');
+            if (charEl && state.charName) charEl.value = state.charName;
+            const playerEl = document.getElementById('playerName');
+            if (playerEl && state.playerName) playerEl.value = state.playerName;
             document.getElementById('spTotalInput').value = state.spTotal;
 
             updateAll();
@@ -1979,7 +2074,11 @@
                 if (skill.name.toLowerCase() === query) return skill.name;
             }
 
-            // Fuzzy match
+            // Don't fuzzy match numbered progressive skills (e.g. "Scroll Craft 2" → not "Scroll Craft")
+            // These are separate skill levels, not typos of the base skill
+            if (/\s+\d+$/.test(query)) return null;
+
+            // Fuzzy match (only for names without trailing numbers)
             let best = null;
             let bestDist = 3;
 
@@ -2016,16 +2115,21 @@
         function showImportSummary(summary) {
             const summaryDiv = document.getElementById('importSummary');
             summaryDiv.classList.remove('hidden');
+            const spSpent = getTotalSPSpent();
+            const customSkills = Object.keys(state.customCosts);
             summaryDiv.innerHTML = `
                 <h4>Import Summary</h4>
                 <ul>
-                    <li><strong>Matched Skills:</strong> ${summary.matched} (${summary.skills.join(', ') || 'none'})</li>
-                    <li><strong>Spells Imported:</strong> ${summary.spells || 0}</li>
-                    <li><strong>Unmatched Items:</strong> ${summary.unmatched}</li>
-                    <li><strong>SP Total:</strong> ${state.spTotal} | <strong>Race:</strong> ${state.race || '—'} | <strong>Class:</strong> ${state.class || '—'} | <strong>Deity:</strong> ${state.deity || '—'}</li>
+                    <li><strong>Character:</strong> ${state.charName || '—'} (${state.playerName || '—'})</li>
+                    <li><strong>Race:</strong> ${state.race || '—'} | <strong>Class:</strong> ${state.class || '—'} | <strong>Deity:</strong> ${state.deity || '—'}</li>
+                    <li><strong>Skills Imported:</strong> ${summary.matched} | <strong>Spells Imported:</strong> ${summary.spells}</li>
+                    <li><strong>SP Budget:</strong> ${state.spTotal} | <strong>SP Spent:</strong> ${spSpent} | <strong>SP Remaining:</strong> ${state.spTotal - spSpent}</li>
                 </ul>
+                ${customSkills.length > 0 ? `
+                    <p style="font-size:0.85em; color: var(--fq-warning);"><strong>* Skills not in planner database (imported with card costs):</strong> ${customSkills.join(', ')}</p>
+                ` : ''}
                 ${summary.unmatched_items.length > 0 ? `
-                    <p><strong>Unmatched (may be FQ skills not yet in database):</strong></p>
+                    <p><strong>Unmatched items:</strong></p>
                     <ul>${summary.unmatched_items.map(item => `<li>${item}</li>`).join('')}</ul>
                 ` : ''}
             `;
