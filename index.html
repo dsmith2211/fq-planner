@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fantasy Quest LARP Character Planner v4</title>
+    <title>Fantasy Quest LARP Character Planner v5</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Calistoga&family=Libre+Baskerville:ital@0;1&display=swap" rel="stylesheet">
@@ -216,42 +216,6 @@
             font-weight: bold;
         }
 
-        .autocomplete-container {
-            position: relative;
-        }
-
-        .autocomplete-dropdown {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: white;
-            border: 1px solid var(--fq-olive);
-            border-top: none;
-            max-height: 200px;
-            overflow-y: auto;
-            display: none;
-            z-index: 1000;
-        }
-
-        .autocomplete-dropdown.active {
-            display: block;
-        }
-
-        .autocomplete-item {
-            padding: 10px;
-            cursor: pointer;
-            border-bottom: 1px solid #eee;
-        }
-
-        .autocomplete-item:hover {
-            background: var(--fq-parchment-light);
-        }
-
-        .autocomplete-item.selected {
-            background: var(--fq-lime);
-        }
-
         table {
             width: 100%;
             border-collapse: collapse;
@@ -368,49 +332,6 @@
             color: var(--fq-lime);
         }
 
-        .template-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .template-button {
-            padding: 15px;
-            border: 2px solid var(--fq-olive);
-            background: var(--fq-parchment-light);
-            cursor: pointer;
-            border-radius: 3px;
-            transition: all 0.3s ease;
-        }
-
-        .template-button:hover {
-            border-color: var(--fq-rust);
-            transform: scale(1.02);
-        }
-
-        .template-button strong {
-            display: block;
-            color: var(--fq-rust);
-            margin-bottom: 5px;
-        }
-
-        .template-button small {
-            color: var(--fq-olive);
-        }
-
-        .build-summary {
-            background: var(--fq-parchment-light);
-            padding: 20px;
-            border-radius: 3px;
-            margin-bottom: 20px;
-        }
-
-        .build-summary h3 {
-            color: var(--fq-rust);
-            margin-bottom: 15px;
-        }
-
         .section {
             margin-bottom: 30px;
         }
@@ -420,21 +341,6 @@
             margin-bottom: 15px;
             border-bottom: 2px solid var(--fq-olive);
             padding-bottom: 10px;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 20px;
-            background: #ddd;
-            border-radius: 3px;
-            overflow: hidden;
-            margin-bottom: 10px;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: var(--fq-lime);
-            transition: width 0.3s ease;
         }
 
         .deity-card {
@@ -486,75 +392,191 @@
             color: var(--fq-lime);
         }
 
-        .capability-matrix {
-            overflow-x: auto;
+        .skill-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
         }
 
-        .capability-matrix table {
+        .skill-card {
+            background: var(--fq-parchment-light);
+            padding: 15px;
+            border-radius: 3px;
+            border-left: 4px solid var(--fq-green);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .skill-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .skill-card-title {
+            font-weight: bold;
+            color: var(--fq-rust);
+            margin-bottom: 5px;
+        }
+
+        .skill-card-cost {
+            font-size: 0.9em;
+            color: var(--fq-olive);
+            margin-bottom: 5px;
+        }
+
+        .skill-card-code {
+            font-size: 0.8em;
+            color: var(--fq-olive);
+        }
+
+        .up-down-buttons {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+
+        .up-down-buttons button {
+            padding: 5px 10px;
+            font-size: 0.9em;
+            margin: 0;
+        }
+
+        .spinner-input {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+
+        .spinner-input button {
+            padding: 5px 10px;
+            margin: 0;
             font-size: 0.9em;
         }
 
-        .capability-matrix td {
-            text-align: center;
+        .spinner-input input {
+            width: 100px;
         }
 
-        .text-center {
-            text-align: center;
-        }
-
-        .mt-20 {
-            margin-top: 20px;
-        }
-
-        .mb-20 {
-            margin-bottom: 20px;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        .success-message {
-            background: #E8F5E9;
-            color: var(--fq-text-dark);
-            padding: 15px;
-            border-left: 4px solid var(--fq-green);
+        .purchased-items {
+            background: var(--fq-parchment-light);
+            padding: 20px;
             border-radius: 3px;
             margin-bottom: 20px;
         }
 
-        .error-message {
-            background: #FFEBEE;
+        .purchased-items h3 {
+            color: var(--fq-rust);
+            margin-bottom: 15px;
+        }
+
+        .purchased-item {
+            background: white;
+            padding: 10px 15px;
+            border-radius: 3px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 3px solid var(--fq-green);
+        }
+
+        .purchased-item-name {
+            font-weight: bold;
             color: var(--fq-text-dark);
-            padding: 15px;
-            border-left: 4px solid var(--fq-rust);
+        }
+
+        .purchased-item-cost {
+            color: var(--fq-olive);
+            font-weight: bold;
+        }
+
+        .purchased-item-remove {
+            background: var(--fq-rust);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+
+        .purchased-item-remove:hover {
+            background: var(--fq-rust-dark);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #ddd;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--fq-lime);
+            transition: width 0.3s ease;
+        }
+
+        .build-summary {
+            background: var(--fq-parchment-light);
+            padding: 20px;
             border-radius: 3px;
             margin-bottom: 20px;
         }
 
-        .disclaimer {
+        .build-summary h3 {
+            color: var(--fq-rust);
+            margin-bottom: 15px;
+        }
+
+        .build-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .build-info-item {
+            background: white;
+            padding: 10px;
+            border-radius: 3px;
+            border-left: 3px solid var(--fq-rust);
+        }
+
+        .build-info-label {
             font-size: 0.85em;
-            color: var(--fq-tan);
-            margin-top: 10px;
-            font-style: italic;
+            color: var(--fq-olive);
+            font-weight: bold;
+        }
+
+        .build-info-value {
+            font-size: 1.2em;
+            color: var(--fq-rust);
+            font-weight: bold;
         }
 
         @media (max-width: 768px) {
-            .stat-bar {
-                grid-template-columns: repeat(2, 1fr);
+            header h1 {
+                font-size: 1.8em;
             }
 
-            .analysis-grid {
+            .stat-bar {
                 grid-template-columns: 1fr;
             }
 
             .tabs {
-                flex-wrap: wrap;
+                flex-direction: column;
             }
 
             .tab-button {
-                padding: 10px 15px;
-                font-size: 0.9em;
+                width: 100%;
+            }
+
+            .skill-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -562,380 +584,293 @@
 <body>
     <div class="container">
         <header>
-            <h1>Fantasy Quest Character Planner</h1>
-            <p>Edition 6.1 | With Level Advancement through Level 13</p>
+            <h1>⚔ Fantasy Quest LARP Character Planner v5 ⚔</h1>
+            <p>Build your character, purchase skills and spells, and plan your journey</p>
         </header>
 
         <div class="privacy-notice">
-            <strong>Your Privacy Matters:</strong> All data stored locally in your browser. No server, no accounts, no data leaves your device. Your builds are completely private.
+            <strong>Privacy:</strong> All character data is stored locally in your browser. Nothing is sent to a server. Your character sheet is yours alone.
         </div>
 
         <div class="tabs">
-            <button class="tab-button active" onclick="switchTab('build')">Build</button>
-            <button class="tab-button" onclick="switchTab('skills')">Skills</button>
-            <button class="tab-button" onclick="switchTab('spells')">Spells</button>
-            <button class="tab-button" onclick="switchTab('deities')">Deities</button>
-            <button class="tab-button" onclick="switchTab('import')">Import</button>
-            <button class="tab-button" onclick="switchTab('analysis')">Analysis</button>
-            <button class="tab-button" onclick="switchTab('rules')">Rules</button>
-            <button class="tab-button" onclick="switchTab('qa')">Q&A</button>
-            <button class="tab-button" onclick="switchTab('plot-writer')">Plot Writer</button>
-            <button class="tab-button" onclick="switchTab('feedback')" style="margin-left: auto;">Feedback</button>
+            <button class="tab-button active" onclick="switchTab(0)">1. Build</button>
+            <button class="tab-button" onclick="switchTab(1)">2. Skills</button>
+            <button class="tab-button" onclick="switchTab(2)">3. Spells</button>
+            <button class="tab-button" onclick="switchTab(3)">4. Deities</button>
+            <button class="tab-button" onclick="switchTab(4)">5. Import</button>
+            <button class="tab-button" onclick="switchTab(5)">6. Analysis</button>
+            <button class="tab-button" onclick="switchTab(6)">7. Rules</button>
+            <button class="tab-button" onclick="switchTab(7)">8. Q&A</button>
+            <button class="tab-button" onclick="switchTab(8)">9. Plot Writer</button>
+            <button class="tab-button" onclick="switchTab(9)">10. Feedback</button>
         </div>
 
-        <!-- TAB 1: BUILD -->
-        <div id="build" class="tab-content active">
-            <div class="section">
-                <h2>Character Builder</h2>
+        <!-- TAB 0: BUILD -->
+        <div id="tab0" class="tab-content active">
+            <div class="stat-bar">
+                <div class="stat-item">
+                    <div class="stat-label">SP Spent</div>
+                    <div class="stat-value" id="spSpent">0</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">SP Remaining</div>
+                    <div class="stat-value" id="spRemaining">90</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Level</div>
+                    <div class="stat-value" id="level">1</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">LP</div>
+                    <div class="stat-value" id="lp">0</div>
+                </div>
+            </div>
 
-                <div class="stat-bar">
-                    <div class="stat-item">
-                        <div class="stat-label">SP Spent</div>
-                        <div class="stat-value" id="spSpent">0</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-label">SP Available</div>
-                        <div class="stat-value" id="spAvailable">90</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-label">Level</div>
-                        <div class="stat-value" id="currentLevel">1</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-label">Life Points</div>
-                        <div class="stat-value" id="currentLP">0</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-label">Skills Purchased</div>
-                        <div class="stat-value" id="skillCount">0</div>
-                    </div>
+            <div class="build-summary">
+                <h3>Create Your Character</h3>
+                <div class="form-group">
+                    <label>Character Name</label>
+                    <input type="text" id="characterName" placeholder="e.g., Aldric Goldensword" onchange="saveCharacterData()">
+                </div>
+                <div class="form-group">
+                    <label>Player Name</label>
+                    <input type="text" id="playerName" placeholder="Your name" onchange="saveCharacterData()">
+                </div>
+                <div class="form-group">
+                    <label>Race</label>
+                    <select id="raceSelect" onchange="selectRace()">
+                        <option value="">-- Select Race --</option>
+                        <option value="Human">Human</option>
+                        <option value="Elf">Elf</option>
+                        <option value="Dwarf">Dwarf</option>
+                        <option value="Hobbet">Hobbet</option>
+                        <option value="Orgreth">Orgreth</option>
+                        <option value="Half-Ogre">Half-Ogre</option>
+                        <option value="Wolven">Wolven</option>
+                    </select>
+                    <div id="raceInfo" style="margin-top: 10px;"></div>
                 </div>
 
                 <div class="form-group">
-                    <label for="characterName">Character Name</label>
-                    <input type="text" id="characterName" placeholder="Enter character name" onchange="saveCharacter()">
+                    <label>Class</label>
+                    <select id="classSelect" onchange="selectClass()">
+                        <option value="">-- Select Class --</option>
+                        <option value="Warrior">Warrior (Fighter, Plate)</option>
+                        <option value="Ranger">Ranger (Fighter, Chain)</option>
+                        <option value="Cavalier">Cavalier (Fighter, Plate)</option>
+                        <option value="Bounty Hunter">Bounty Hunter (Rogue, Studded)</option>
+                        <option value="Assassin">Assassin (Rogue, Leather)</option>
+                        <option value="Bard">Bard (Hybrid, Chain)</option>
+                        <option value="Cleric">Cleric (Caster, Chain)</option>
+                        <option value="Holy Warrior">Holy Warrior (Hybrid, Plate)</option>
+                        <option value="Healer">Healer (Caster, Leather)</option>
+                        <option value="Druid">Druid (Caster, Leather)</option>
+                        <option value="Monk">Monk (Hybrid, None)</option>
+                        <option value="Sorcerer">Sorcerer (Caster, None)</option>
+                        <option value="Dark Mage">Dark Mage (Caster, Leather)</option>
+                        <option value="Witch">Witch (Caster, None)</option>
+                        <option value="Paladin">Paladin (Hybrid, Plate)</option>
+                    </select>
+                    <div id="classInfo" style="margin-top: 10px;"></div>
+                </div>
+
+                <div class="form-group" id="deityGroup" style="display: none;">
+                    <label>Deity</label>
+                    <select id="deitySelect" onchange="selectDeity()">
+                        <option value="">-- None --</option>
+                        <option value="Avagon">Avagon - The Paladin</option>
+                        <option value="Brodinn">Brodinn - The Tempest</option>
+                        <option value="Caymlyn">Caymlyn - The Enchantress</option>
+                        <option value="Danubu">Danubu - Lord of Night</option>
+                        <option value="Etyana">Etyana - The Nymph</option>
+                        <option value="Gheldann">Gheldann - Keeper of Souls</option>
+                        <option value="Kandrell">Kandrell - Mistress of the Moon</option>
+                        <option value="Kyrriden">Kyrriden - The World-Forger</option>
+                        <option value="Nivlac">Nivlac - The Trickster</option>
+                        <option value="Peryn">Peryn - The Hunter</option>
+                        <option value="Undathos">Undathos - The Un-Living</option>
+                        <option value="Voe">Voe - He Who Watches</option>
+                        <option value="Volgen">Volgen - The Judge</option>
+                        <option value="Pan-Deific">Pan-Deific - Through the aid of the gods I...</option>
+                    </select>
+                    <div id="deityInfo" style="margin-top: 10px;"></div>
                 </div>
 
                 <div class="form-group">
-                    <label for="playerName">Player Name</label>
-                    <input type="text" id="playerName" placeholder="Enter player name" onchange="saveCharacter()">
-                </div>
-
-                <div class="form-group">
-                    <label for="raceSelect">Race</label>
-                    <div class="autocomplete-container">
-                        <input type="text" id="raceSelect" placeholder="Start typing (Human, Elf, Dwarf...)" onkeyup="autocomplete('race')" onblur="setTimeout(() => closeAutocomplete('race'), 200)">
-                        <div class="autocomplete-dropdown" id="race-dropdown"></div>
+                    <label>SP Total (starting pool)</label>
+                    <div class="spinner-input">
+                        <button onclick="adjustSPTotal(-10)">-10</button>
+                        <button onclick="adjustSPTotal(-1)">-</button>
+                        <input type="number" id="spTotal" value="90" onchange="saveCharacterData(); updateAll();">
+                        <button onclick="adjustSPTotal(1)">+</button>
+                        <button onclick="adjustSPTotal(10)">+10</button>
                     </div>
                 </div>
+            </div>
 
-                <div class="form-group">
-                    <label for="classSelect">Class</label>
-                    <div class="autocomplete-container">
-                        <input type="text" id="classSelect" placeholder="Start typing (Warrior, Cleric...)" onkeyup="autocomplete('class')" onblur="setTimeout(() => closeAutocomplete('class'), 200)">
-                        <div class="autocomplete-dropdown" id="class-dropdown"></div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="deitySelect">Deity</label>
-                    <div class="autocomplete-container">
-                        <input type="text" id="deitySelect" placeholder="Start typing (Avagon, Etyana...)" onkeyup="autocomplete('deity')" onblur="setTimeout(() => closeAutocomplete('deity'), 200)">
-                        <div class="autocomplete-dropdown" id="deity-dropdown"></div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="spTotal">Total SP Pool</label>
-                    <input type="number" id="spTotal" value="90" onchange="updateSpTotal()" min="0" max="5000">
-                </div>
-
-                <div class="form-group">
-                    <label for="characterSheetUrl">Character Sheet URL (Optional)</label>
-                    <input type="text" id="characterSheetUrl" placeholder="https://docs.google.com/..." onchange="saveCharacter()">
-                </div>
-
-                <button onclick="exportJSON()">Export Build to JSON</button>
-                <button class="secondary" onclick="downloadJSON()">Download JSON File</button>
-
-                <div class="mt-20">
-                    <h3>5-Point Templates (90 SP)</h3>
-                    <p style="margin-bottom: 15px; color: var(--fq-olive);">Click a template to load a pre-built character:</p>
-                    <div class="template-grid">
-                        <div class="template-button" onclick="loadTemplate('warrior')">
-                            <strong>Warrior</strong>
-                            <small>Classic melee fighter with damage and defense</small>
-                        </div>
-                        <div class="template-button" onclick="loadTemplate('cleric')">
-                            <strong>Divine Healer</strong>
-                            <small>Support caster with healing and buffs</small>
-                        </div>
-                        <div class="template-button" onclick="loadTemplate('rogue')">
-                            <strong>Assassin</strong>
-                            <small>Stealth damage with high mobility</small>
-                        </div>
-                        <div class="template-button" onclick="loadTemplate('mage')">
-                            <strong>Sorcerer</strong>
-                            <small>Pure damage caster with versatile magic</small>
-                        </div>
-                        <div class="template-button" onclick="loadTemplate('ranger')">
-                            <strong>Ranger</strong>
-                            <small>Ranged combat with survival skills</small>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="build-summary mt-20">
-                    <h3>Build Summary</h3>
-                    <p><strong>Character:</strong> <span id="summaryName">Not set</span></p>
-                    <p><strong>Player:</strong> <span id="summaryPlayer">Not set</span></p>
-                    <p><strong>Race:</strong> <span id="summaryRace">Not selected</span></p>
-                    <p><strong>Class:</strong> <span id="summaryClass">Not selected</span></p>
-                    <p><strong>Deity:</strong> <span id="summaryDeity">Not selected</span></p>
-                    <div id="summarySkills" style="margin-top: 15px;"></div>
-                </div>
+            <div class="purchased-items">
+                <h3>Purchased Skills ({{ count }})</h3>
+                <div id="purchasedSkillsList"></div>
             </div>
         </div>
 
-        <!-- TAB 2: SKILLS -->
-        <div id="skills" class="tab-content">
-            <div class="info-banner">
-                <strong>⚔ Known Skills Disclaimer:</strong> This planner includes only skills published in the Fantasy Quest Rulebook Edition 6.1, Rules Clarifications, and Beta Test Rules. Additional skills, secret skills, and skills learned through in-game means are not included. Unrecognized skills imported from character cards will be labeled as Hidden Skills.
-            </div>
-
-            <div class="section">
-                <h2>Skills</h2>
-                <label>Filter by Category:</label>
-                <div style="margin-bottom: 15px;">
-                    <button class="secondary" onclick="filterSkills('All')">All</button>
+        <!-- TAB 1: SKILLS -->
+        <div id="tab1" class="tab-content">
+            <div class="form-group">
+                <label>Filter by Category</label>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button class="secondary" onclick="filterSkills('All')">All Skills</button>
                     <button class="secondary" onclick="filterSkills('Fighting')">Fighting</button>
                     <button class="secondary" onclick="filterSkills('Stealth')">Stealth</button>
                     <button class="secondary" onclick="filterSkills('Magic')">Magic</button>
                     <button class="secondary" onclick="filterSkills('Survival')">Survival</button>
                     <button class="secondary" onclick="filterSkills('Craft')">Craft</button>
                 </div>
-
-                <table id="skillsTable">
-                    <thead>
-                        <tr>
-                            <th>Skill Name</th>
-                            <th>Category</th>
-                            <th>Code</th>
-                            <th>Cost</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="skillsBody"></tbody>
-                </table>
             </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Skill Name</th>
+                        <th>Category</th>
+                        <th>Code</th>
+                        <th>Cost</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="skillsTableBody">
+                </tbody>
+            </table>
         </div>
 
-        <!-- TAB 3: SPELLS -->
-        <div id="spells" class="tab-content">
-            <div class="section">
-                <h2>Spells & Magic</h2>
-                <p style="margin-bottom: 20px; color: var(--fq-olive);">Click to add spells to your build. Tower Rule is automatically enforced.</p>
-
-                <div id="spellsContainer"></div>
-            </div>
-        </div>
-
-        <!-- TAB 4: DEITIES -->
-        <div id="deities" class="tab-content">
-            <div class="section">
-                <h2>Deities Reference</h2>
-                <div id="deitiesContainer"></div>
-            </div>
-        </div>
-
-        <!-- TAB 5: IMPORT -->
-        <div id="import" class="tab-content">
-            <div class="section">
-                <h2>Import Character Card</h2>
-                <p style="margin-bottom: 15px; color: var(--fq-olive);">Paste your character card here. Supports Google Sheets (tab-separated) and CSV format.</p>
-
-                <div class="form-group">
-                    <label for="importTextarea">Character Card Data</label>
-                    <textarea id="importTextarea" placeholder="Paste your character card data here..."></textarea>
+        <!-- TAB 2: SPELLS -->
+        <div id="tab2" class="tab-content">
+            <div class="form-group">
+                <label>Spell Schools</label>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button class="secondary" onclick="filterSpells('Divine')">Divine</button>
+                    <button class="secondary" onclick="filterSpells('Elementalism')">Elementalism</button>
+                    <button class="secondary" onclick="filterSpells('Sorcery')">Sorcery</button>
+                    <button class="secondary" onclick="filterSpells('Dark Arts')">Dark Arts</button>
+                    <button class="secondary" onclick="filterSpells('Enchantment')">Enchantment</button>
                 </div>
+            </div>
 
+            <div id="spellsContainer"></div>
+        </div>
+
+        <!-- TAB 3: DEITIES -->
+        <div id="tab3" class="tab-content">
+            <h2>Deities of Fantasy Quest</h2>
+            <div id="deitiesContainer"></div>
+        </div>
+
+        <!-- TAB 4: IMPORT -->
+        <div id="tab4" class="tab-content">
+            <h2>Import Character Card</h2>
+            <div class="form-group">
+                <label>Paste Character Card (3-column format)</label>
+                <textarea id="importText" placeholder="Character Name | Player Name | Race | Class | Deity | Skill Name | Cost..."></textarea>
                 <button onclick="importCharacter()">Import Character</button>
-                <button class="secondary" onclick="document.getElementById('importTextarea').value = ''">Clear</button>
-
-                <div id="importResults" style="margin-top: 20px;"></div>
             </div>
+            <div id="importStatus"></div>
         </div>
 
-        <!-- TAB 6: ANALYSIS -->
-        <div id="analysis" class="tab-content">
-            <div class="section">
-                <h2>Character Analysis</h2>
-
-                <div class="analysis-grid">
-                    <div class="analysis-card">
-                        <h3>Build Profile</h3>
-                        <div id="buildProfile"></div>
-                    </div>
+        <!-- TAB 5: ANALYSIS -->
+        <div id="tab5" class="tab-content">
+            <h2>Character Analysis</h2>
+            <div class="analysis-grid">
+                <div class="analysis-card">
+                    <h3>SP Allocation</h3>
+                    <div id="spAllocationChart"></div>
                 </div>
-
-                <div class="section">
-                    <h3>Cost Efficiency Report</h3>
-                    <div id="costEfficiencyReport"></div>
+                <div class="analysis-card">
+                    <h3>Efficiency Report</h3>
+                    <div id="efficiencyReport"></div>
                 </div>
-
-                <div class="section">
-                    <h3>Deity Synergy</h3>
-                    <div id="deitySynergy"></div>
-                </div>
-
-                <div class="section">
-                    <h3>Progression Advisor</h3>
-                    <div id="progressionAdvisor"></div>
+                <div class="analysis-card">
+                    <h3>Progression Paths</h3>
+                    <div id="progressionPaths"></div>
                 </div>
             </div>
         </div>
 
-        <!-- TAB 7: RULES -->
-        <div id="rules" class="tab-content">
-            <div class="section">
-                <h2>Rules Reference</h2>
-                <input type="text" id="rulesSearch" placeholder="Search rules..." onkeyup="searchRules()" style="margin-bottom: 20px;">
-                <div id="rulesContainer"></div>
+        <!-- TAB 6: RULES -->
+        <div id="tab6" class="tab-content">
+            <h2>Rules Reference</h2>
+            <div class="form-group">
+                <input type="text" id="rulesSearch" placeholder="Search rules..." onkeyup="searchRules()">
             </div>
+            <div id="rulesContainer"></div>
         </div>
 
-        <!-- TAB 8: Q&A -->
-        <div id="qa" class="tab-content">
-            <div class="section">
-                <h2>Rules Q&A Search</h2>
-                <div class="info-banner">
-                    This search tool references only published Fantasy Quest rules (Edition 6.1 + Clarifications + Beta Rules). The rulebook at fantasyquestlarp.com is always the authoritative source.
-                </div>
+        <!-- TAB 7: Q&A -->
+        <div id="tab7" class="tab-content">
+            <h2>Rules Q&A</h2>
+            <div class="form-group">
+                <input type="text" id="qaSearch" placeholder="Search questions or skills..." onkeyup="searchQA()">
+            </div>
+            <div id="qaContainer"></div>
+        </div>
 
+        <!-- TAB 8: PLOT WRITER -->
+        <div id="tab8" class="tab-content dark-bg">
+            <h2 style="color: var(--fq-lime);">⚔ GM Plot Writer Tools ⚔</h2>
+
+            <div class="plot-writer-mode">
+                <h3>Define Plots</h3>
                 <div class="form-group">
-                    <label for="qaSearch">Ask a Rules Question</label>
-                    <input type="text" id="qaSearch" placeholder="e.g., 'How does tower rule work?' or 'Deity spell cost modifiers'" onkeyup="searchQA()">
+                    <label>Paste Plot Definitions</label>
+                    <textarea id="plotsInput" placeholder="Plot Name: The Cursed Forest
+Setting: Wilderness, Forest
+Tags: nature, ranger, druid, tracking
+Description: ...
+---
+Plot Name: Undead Rising
+..."></textarea>
+                    <button onclick="parseAndStorePlots()">Load Plots</button>
                 </div>
+            </div>
 
-                <div id="qaResults" style="margin-top: 20px;"></div>
+            <div class="plot-writer-mode">
+                <h3>Import Attendees</h3>
+                <div class="form-group">
+                    <label>Paste Character Cards</label>
+                    <textarea id="attendeesInput" placeholder="Character Name | Player | Race | Class | Deity | Skills...
+---
+Next character..."></textarea>
+                    <button onclick="parseAndStoreAttendees()">Load Attendees</button>
+                </div>
+            </div>
+
+            <div class="plot-writer-mode">
+                <h3>Plot Matching Matrix</h3>
+                <div id="plotMatchingMatrix"></div>
+                <button onclick="generatePlotMatrix()">Generate Matrix</button>
             </div>
         </div>
 
-        <!-- TAB 9: PLOT WRITER -->
-        <div id="plot-writer" class="tab-content dark-bg">
-            <div class="section">
-                <h2 style="color: var(--fq-lime);">Plot Writer Tools</h2>
-
-                <button onclick="enterPlotWriterMode()">Enter Plot Writer Mode</button>
-
-                <div id="plotWriterContainer" class="hidden">
-                    <div class="plot-writer-mode">
-                        <h2>GM Party Roster & Analysis</h2>
-
-                        <div class="form-group">
-                            <label for="bulkImport">Bulk Character Import</label>
-                            <p style="font-size: 0.9em; color: var(--fq-tan); margin-bottom: 10px;">Paste character cards for all attending players, separated by --- between each character:</p>
-                            <textarea id="bulkImport" placeholder="Paste character cards separated by ---"></textarea>
-                        </div>
-
-                        <button onclick="importRoster()">Import Roster</button>
-
-                        <div id="rosterAnalysis" style="margin-top: 20px;"></div>
-                    </div>
-
-                    <div class="privacy-notice" style="background: rgba(255,255,255,0.1); border-left-color: var(--fq-lime); color: var(--fq-text);">
-                        <strong>Privacy Notice:</strong> Character data imported here is stored ONLY in your browser. It is never transmitted, shared, or stored centrally.
-                    </div>
-                </div>
+        <!-- TAB 9: FEEDBACK -->
+        <div id="tab9" class="tab-content">
+            <h2>Submit Feedback</h2>
+            <div class="info-banner">
+                <strong>GitHub Issues:</strong> Found a bug or have a feature request? Submit it directly to GitHub!
             </div>
-        </div>
-
-        <!-- TAB 10: FEEDBACK & COMMUNITY BOARD -->
-        <div id="feedback" class="tab-content">
-            <div class="section">
-                <h2>Community Feedback & Issue Tracker</h2>
-                <p style="color: var(--fq-tan); margin-bottom: 20px;">Help improve the FQ Character Planner! Submit feedback, report bugs, or request features. Safe changes are reviewed and implemented automatically overnight. Changes that affect game mechanics require manual review against the rulebook.</p>
-
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px;">
-                    <div class="card" style="background: var(--fq-parchment); color: var(--fq-text-dark); padding: 20px;">
-                        <h3 style="color: var(--fq-green); margin-bottom: 15px;">Submit Feedback</h3>
-                        <div class="form-group">
-                            <label style="color: var(--fq-text-dark);">Category</label>
-                            <select id="feedbackCategory" style="width:100%;padding:8px;border-radius:4px;border:1px solid var(--fq-olive);background:#fff;color:var(--fq-text-dark);">
-                                <option value="bug">Bug Report — Something isn't working right</option>
-                                <option value="data">Data Correction — Wrong cost, missing skill, typo</option>
-                                <option value="feature">Feature Request — New functionality</option>
-                                <option value="ui">UI/UX — Layout, colors, usability</option>
-                                <option value="rules">Rules Question — Unclear or missing rule</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label style="color: var(--fq-text-dark);">Summary (short title)</label>
-                            <input type="text" id="feedbackTitle" placeholder="e.g., Assassin Backstab cost seems wrong" style="width:100%;padding:8px;border-radius:4px;border:1px solid var(--fq-olive);">
-                        </div>
-                        <div class="form-group">
-                            <label style="color: var(--fq-text-dark);">Details</label>
-                            <textarea id="feedbackBody" rows="5" placeholder="Describe the issue, what you expected, and what happened instead. Include your race/class/deity if relevant." style="width:100%;padding:8px;border-radius:4px;border:1px solid var(--fq-olive);resize:vertical;"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label style="color: var(--fq-text-dark);">Your Name (optional, for credit)</label>
-                            <input type="text" id="feedbackName" placeholder="Character name or player name" style="width:100%;padding:8px;border-radius:4px;border:1px solid var(--fq-olive);">
-                        </div>
-                        <div style="display: flex; gap: 10px; margin-top: 10px;">
-                            <button onclick="submitFeedbackGitHub()" style="flex:1;">Submit via GitHub</button>
-                            <button onclick="copyFeedbackToClipboard()" style="flex:1; background: var(--fq-olive);">Copy for Discord/FB</button>
-                        </div>
-                        <p style="font-size: 0.8em; color: var(--fq-olive); margin-top: 8px;">"Submit via GitHub" opens a pre-filled issue on our tracker (requires a GitHub account). "Copy" formats your feedback for pasting anywhere.</p>
-                    </div>
-
-                    <div class="card" style="background: var(--fq-parchment); color: var(--fq-text-dark); padding: 20px;">
-                        <h3 style="color: var(--fq-green); margin-bottom: 15px;">How Feedback Works</h3>
-                        <div style="line-height: 1.8;">
-                            <p><span style="color: var(--fq-green); font-weight: bold;">1.</span> You submit feedback here or on our GitHub tracker</p>
-                            <p><span style="color: var(--fq-green); font-weight: bold;">2.</span> Every night, an automated system reviews new submissions</p>
-                            <p><span style="color: var(--fq-green); font-weight: bold;">3.</span> <strong>Safe changes</strong> (typos, UI fixes, missing data, cost corrections per rulebook) are implemented automatically</p>
-                            <p><span style="color: var(--fq-rust); font-weight: bold;">4.</span> <strong>Mechanics changes</strong> (anything that changes how rules work) are flagged for manual review against the FQ rulebook</p>
-                            <p><span style="color: var(--fq-green); font-weight: bold;">5.</span> Fixed issues appear in the tracker below with the date resolved</p>
-                        </div>
-                        <div style="margin-top: 15px; padding: 10px; background: rgba(0,0,0,0.05); border-radius: 4px;">
-                            <strong>Auto-implementable:</strong> Typos, wrong costs, missing skills, UI improvements, display bugs, missing spell names, wrong class restrictions<br>
-                            <strong style="color: var(--fq-rust);">Requires review:</strong> New rules interpretations, homebrew additions, mechanic changes, balance adjustments
-                        </div>
-                    </div>
-                </div>
-
-                <h3 style="margin-bottom: 15px;">Issue Tracker</h3>
-                <p style="color: var(--fq-tan); margin-bottom: 10px;">Live status of reported issues. Updated nightly.</p>
-                <div style="margin-bottom: 10px;">
-                    <button onclick="loadIssueTracker()" style="background: var(--fq-green);">Refresh Issue Tracker</button>
-                    <span id="issueTrackerStatus" style="margin-left: 10px; color: var(--fq-tan); font-size: 0.9em;"></span>
-                </div>
-                <div id="issueTrackerBoard" style="margin-top: 10px;">
-                    <table style="width: 100%; border-collapse: collapse;">
-                        <thead>
-                            <tr style="background: var(--fq-green-dark); color: var(--fq-parchment);">
-                                <th style="padding: 10px; text-align: left;">Status</th>
-                                <th style="padding: 10px; text-align: left;">Category</th>
-                                <th style="padding: 10px; text-align: left;">Issue</th>
-                                <th style="padding: 10px; text-align: left;">Reported</th>
-                                <th style="padding: 10px; text-align: left;">Resolved</th>
-                            </tr>
-                        </thead>
-                        <tbody id="issueTrackerBody">
-                            <tr><td colspan="5" style="padding: 20px; text-align: center; color: var(--fq-tan);">Click "Refresh Issue Tracker" to load current issues from GitHub.</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="privacy-notice" style="margin-top: 20px;">
-                    <strong>Privacy:</strong> Feedback submitted via GitHub is public on our issue tracker. No personal game data (builds, SP totals) is included in submissions. The "Copy" option lets you share feedback privately via any channel you prefer.
-                </div>
+            <div class="form-group">
+                <label>Title</label>
+                <input type="text" id="feedbackTitle" placeholder="e.g., Bug: Spell costs incorrect for Cleric/Caymlyn">
             </div>
+            <div class="form-group">
+                <label>Description</label>
+                <textarea id="feedbackBody" placeholder="Describe the issue or feature request..."></textarea>
+            </div>
+            <button onclick="submitFeedback()">Submit to GitHub Issues</button>
+            <div id="feedbackStatus"></div>
         </div>
     </div>
 
     <script>
-        // ========== PRESERVED ENGINE (VERBATIM FROM v2_preserved_engine.js) ==========
+        // ========== VERBATIM ENGINE CODE (v2_preserved_engine.js) ==========
 
         const RACES = {
             Human: {
@@ -1094,7 +1029,7 @@
             }
         };
 
-        const LEVEL_THRESHOLDS = [0, 90, 210, 335, 465, 600, 740, 885, 1035, 1190, 1350, 1515, 1685];
+        const LEVEL_THRESHOLDS = [0, 90, 210, 335, 465, 600, 740, 885, 1035, 1190, 1350, 1515];
 
         const SKILLS = [
             {name: 'Critical Attack', category: 'Fighting', code: 'M', costs: {Warrior: 25, Ranger: 30, Cavalier: 30, 'Bounty Hunter': 40, Assassin: 45, Bard: 40, Cleric: 40, 'Holy Warrior': 30, Healer: null, Druid: null, Monk: 35, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: 30}},
@@ -1105,6 +1040,7 @@
             {name: 'Two-Handed Weapon', category: 'Fighting', code: '1', costs: {Warrior: 'I', Ranger: 15, Cavalier: 'I', 'Bounty Hunter': 20, Assassin: null, Bard: 20, Cleric: 15, 'Holy Warrior': 'I', Healer: null, Druid: null, Monk: null, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: 'I'}},
             {name: 'Bow', category: 'Fighting', code: '1', costs: {Warrior: 30, Ranger: 15, Cavalier: 35, 'Bounty Hunter': 25, Assassin: 30, Bard: 35, Cleric: null, 'Holy Warrior': 35, Healer: null, Druid: 25, Monk: null, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: 35}},
             {name: 'Strength', category: 'Fighting', code: 'M', costs: {Warrior: 20, Ranger: 25, Cavalier: 25, 'Bounty Hunter': 30, Assassin: 35, Bard: 30, Cleric: 35, 'Holy Warrior': 25, Healer: null, Druid: null, Monk: 30, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: 25}},
+
             {name: 'Backstab', category: 'Stealth', code: '1', costs: {Warrior: null, Ranger: null, Cavalier: null, 'Bounty Hunter': 15, Assassin: 10, Bard: 20, Cleric: null, 'Holy Warrior': null, Healer: null, Druid: null, Monk: null, Sorcerer: null, 'Dark Mage': 15, Witch: null, Paladin: null}},
             {name: 'Assassinate', category: 'Stealth', code: '1', costs: {Warrior: null, Ranger: null, Cavalier: null, 'Bounty Hunter': 30, Assassin: 20, Bard: null, Cleric: null, 'Holy Warrior': null, Healer: null, Druid: null, Monk: null, Sorcerer: null, 'Dark Mage': 30, Witch: null, Paladin: null}},
             {name: 'Create Poison', category: 'Stealth', code: 'M', costs: {Warrior: null, Ranger: null, Cavalier: null, 'Bounty Hunter': 15, Assassin: 10, Bard: null, Cleric: null, 'Holy Warrior': null, Healer: null, Druid: null, Monk: null, Sorcerer: null, 'Dark Mage': 15, Witch: null, Paladin: null}},
@@ -1116,12 +1052,14 @@
             {name: 'Appraise', category: 'Stealth', code: '1', costs: {Warrior: null, Ranger: null, Cavalier: null, 'Bounty Hunter': 10, Assassin: 15, Bard: 10, Cleric: null, 'Holy Warrior': null, Healer: null, Druid: null, Monk: null, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: null}},
             {name: 'Disguise', category: 'Stealth', code: '1', costs: {Warrior: null, Ranger: null, Cavalier: null, 'Bounty Hunter': 15, Assassin: 20, Bard: 15, Cleric: null, 'Holy Warrior': null, Healer: null, Druid: null, Monk: null, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: null}},
             {name: 'Forgery', category: 'Stealth', code: '1', costs: {Warrior: null, Ranger: null, Cavalier: null, 'Bounty Hunter': 20, Assassin: 25, Bard: 20, Cleric: null, 'Holy Warrior': null, Healer: null, Druid: null, Monk: null, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: null}},
+
             {name: 'Read Magic', category: 'Magic', code: '1', costs: {Warrior: null, Ranger: null, Cavalier: null, 'Bounty Hunter': null, Assassin: null, Bard: 30, Cleric: 20, 'Holy Warrior': 30, Healer: 20, Druid: 20, Monk: 30, Sorcerer: 15, 'Dark Mage': 15, Witch: 15, Paladin: 30}},
             {name: 'Scroll Craft', category: 'Magic', code: '1', costs: {Warrior: null, Ranger: null, Cavalier: null, 'Bounty Hunter': null, Assassin: null, Bard: 35, Cleric: 25, 'Holy Warrior': null, Healer: 25, Druid: 25, Monk: null, Sorcerer: 20, 'Dark Mage': 20, Witch: 20, Paladin: null}},
             {name: 'Spell Craft', category: 'Magic', code: '1', costs: {Warrior: null, Ranger: null, Cavalier: null, 'Bounty Hunter': null, Assassin: null, Bard: 40, Cleric: 30, 'Holy Warrior': null, Healer: 30, Druid: 30, Monk: null, Sorcerer: 25, 'Dark Mage': 25, Witch: 25, Paladin: null}},
             {name: 'Brew Potion', category: 'Magic', code: '1', costs: {Warrior: null, Ranger: null, Cavalier: null, 'Bounty Hunter': null, Assassin: null, Bard: null, Cleric: 30, 'Holy Warrior': null, Healer: 25, Druid: 30, Monk: null, Sorcerer: null, 'Dark Mage': 30, Witch: 25, Paladin: null}},
             {name: 'Astrology', category: 'Magic', code: '1', costs: {Warrior: null, Ranger: null, Cavalier: null, 'Bounty Hunter': null, Assassin: null, Bard: 25, Cleric: 25, 'Holy Warrior': null, Healer: 25, Druid: 25, Monk: null, Sorcerer: 20, 'Dark Mage': 20, Witch: 20, Paladin: null}},
             {name: 'Familiar', category: 'Magic', code: '1', costs: {Warrior: null, Ranger: null, Cavalier: null, 'Bounty Hunter': null, Assassin: null, Bard: null, Cleric: null, 'Holy Warrior': null, Healer: null, Druid: 25, Monk: null, Sorcerer: 20, 'Dark Mage': 20, Witch: 15, Paladin: null}},
+
             {name: 'Nature Lore', category: 'Survival', code: '1', costs: {Warrior: 25, Ranger: 15, Cavalier: 25, 'Bounty Hunter': 20, Assassin: 25, Bard: 20, Cleric: 20, 'Holy Warrior': 25, Healer: 20, Druid: 15, Monk: 20, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: 25}},
             {name: 'Tracking', category: 'Survival', code: '1', costs: {Warrior: 20, Ranger: 10, Cavalier: 20, 'Bounty Hunter': 15, Assassin: 20, Bard: 20, Cleric: 20, 'Holy Warrior': 20, Healer: null, Druid: 15, Monk: 20, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: 20}},
             {name: 'Healing', category: 'Survival', code: 'M', costs: {Warrior: 20, Ranger: 20, Cavalier: 20, 'Bounty Hunter': 25, Assassin: null, Bard: 20, Cleric: 15, 'Holy Warrior': 20, Healer: 10, Druid: 15, Monk: 20, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: 20}},
@@ -1133,6 +1071,7 @@
             {name: 'Resist Poison', category: 'Survival', code: 'M', costs: {Warrior: 20, Ranger: 20, Cavalier: 20, 'Bounty Hunter': 15, Assassin: 15, Bard: 20, Cleric: 20, 'Holy Warrior': 20, Healer: 20, Druid: 15, Monk: 20, Sorcerer: 25, 'Dark Mage': 20, Witch: 25, Paladin: 20}},
             {name: 'Resist Dark Arts', category: 'Survival', code: 'M', costs: {Warrior: 25, Ranger: 25, Cavalier: 25, 'Bounty Hunter': 30, Assassin: 35, Bard: 25, Cleric: 20, 'Holy Warrior': 20, Healer: 20, Druid: 25, Monk: 25, Sorcerer: 30, 'Dark Mage': null, Witch: 30, Paladin: 20}},
             {name: 'Resist Charm', category: 'Survival', code: 'M', costs: {Warrior: 20, Ranger: 20, Cavalier: 20, 'Bounty Hunter': 20, Assassin: 25, Bard: 15, Cleric: 15, 'Holy Warrior': 15, Healer: 15, Druid: 20, Monk: 15, Sorcerer: 25, 'Dark Mage': 25, Witch: 15, Paladin: 15}},
+
             {name: 'Armorsmith Leather', category: 'Craft', code: 'M', costs: {Warrior: 20, Ranger: 25, Cavalier: 25, 'Bounty Hunter': 20, Assassin: 20, Bard: 25, Cleric: 25, 'Holy Warrior': 25, Healer: 25, Druid: 25, Monk: 25, Sorcerer: null, 'Dark Mage': 25, Witch: null, Paladin: 25}},
             {name: 'Armorsmith Chain', category: 'Craft', code: 'M', costs: {Warrior: 20, Ranger: 25, Cavalier: 25, 'Bounty Hunter': null, Assassin: null, Bard: 25, Cleric: 25, 'Holy Warrior': 25, Healer: null, Druid: null, Monk: null, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: 25}},
             {name: 'Armorsmith Plate', category: 'Craft', code: 'M', costs: {Warrior: 25, Ranger: null, Cavalier: 30, 'Bounty Hunter': null, Assassin: null, Bard: null, Cleric: null, 'Holy Warrior': 30, Healer: null, Druid: null, Monk: null, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: 30}},
@@ -1209,69 +1148,27 @@
         };
 
         const RULES = [
-            {title: 'Level Advancement', text: 'Levels are calculated based on SP spent. Level 1 is 0-89 SP, Level 2 is 90-209 SP, Level 3 is 210-334 SP, and so on. See the level thresholds in the stat bar.'},
+            {title: 'Level Advancement', text: 'Levels are calculated based on SP spent. Level 1 is 0-89 SP, Level 2 is 90-209 SP, and so on. See the level thresholds in the stat bar.'},
             {title: 'Life Points (LP)', text: 'Each class grants a base LP per level. Race modifiers can increase or decrease this. Total LP = Class LP/Level × Character Level + Racial Modifiers.'},
             {title: 'Skill Points (SP)', text: 'You start with a pool of SP to purchase skills and spells. Each skill has a cost based on your class and race. Once spent, SP cannot be recovered—plan carefully!'},
-            {title: 'Skill Codes', text: 'I = Innate/Free (included with class), O = Once per event (can be used only once per event), M = Multiple purchase allowed (can buy multiple times), # = Specific number of purchases allowed.'},
+            {title: 'Skill Codes', text: 'I = Innate/Free (included with class), O = Once per event (can be used only once per event), M = Multiple purchase allowed (can buy multiple times), # = Specific number of purchases allowed (e.g., 1 = can buy once, 2 = can buy twice).'},
             {title: 'Racial Modifiers', text: 'Races apply cost modifiers to specific skills. For example, Elves get Bow at ½ cost. These modifiers are applied automatically when calculating your final skill costs.'},
-            {title: 'Deity Cost Modifiers', text: 'When your class is Cleric or Holy Warrior, and you have selected a deity, special cost overrides apply to certain skills. These are applied automatically in the skill list. Check the Deities tab for full details.'},
-            {title: 'Tower Rule (Spells)', text: 'For each spell school, you must have at least 2 spells at level N before you can purchase any spell at level N+1. Level 1 has no prerequisite.'},
+            {title: 'Deity Cost Modifiers', text: 'When your class is Cleric or Holy Warrior, and you have selected a deity, special cost overrides apply to certain skills. These are applied automatically in the skill list. Check the Deities tab for full details on each deity\'s bonuses and limitations.'},
+            {title: 'Tower Rule (Spells)', text: 'For each spell school, you must have at least 2 spells at level N before you can purchase any spell at level N+1. Level 1 has no prerequisite. The Spells tab enforces this rule and grays out unavailable levels.'},
             {title: 'Spell Schools', text: 'There are 5 spell schools: Divine, Elementalism, Sorcery, Dark Arts, and Enchantment. Each school has 9 levels of spells. Schools have adjacent and opposing relationships that affect casting costs.'},
             {title: 'Spell Costs (Straight Casters)', text: 'Straight casters (Cleric, Healer, Druid, Sorcerer, Dark Mage, Witch) pay: 10 SP per level in their primary school, 25 SP per level in adjacent schools, 50 SP per level in opposing schools.'},
             {title: 'Spell Costs (Hybrid Casters)', text: 'Hybrid casters (Bard, Holy Warrior, Monk, Paladin) pay: 15 SP per level in their primary school, 35 SP per level in adjacent schools. Hybrid casters CANNOT learn opposing school spells.'},
             {title: 'Non-Casters', text: 'Non-casters (Warrior, Ranger, Cavalier, Bounty Hunter, Assassin) cannot learn spells unless granted through a deity or racial ability.'},
-            {title: 'Armor Restrictions', text: 'Each class has a permitted armor type (None, Leather, Studded, Chain, Plate). Races may further restrict this.'},
+            {title: 'Armor Restrictions', text: 'Each class has a permitted armor type (None, Leather, Studded, Chain, Plate). Races may further restrict this (e.g., Elves cannot use iron/steel, Wolven cannot wear metal).'},
             {title: 'Resistance Levels', text: 'Resistances to Fear, Poison, Charm, Dark Arts, etc. can be purchased as skills and advanced through multiple purchases. Higher levels provide greater protection.'},
-            {title: 'Level 13 Threshold', text: 'Level 13 requires 1685 SP. This is the highest level in the current edition.'}
+            {title: 'Wild Card Points', text: 'Earned at 20 WC per hour of NPC duty. Can be used to purchase: spells (at normal cost), skills (at normal cost), goods (varies), or attunement (50 WC).'},
+            {title: 'Class Change Rules', text: 'Changing classes during play is possible but costly. Consult your local event organizers for specific rules on class change transitions.'},
+            {title: 'Combat Basics', text: 'Combat uses a live-action ruleset with calls. Critical hits, parries, and shields are all player-purchased abilities that affect combat mechanics.'},
+            {title: 'Clarifications', text: 'If a skill or spell name appears in multiple categories or with deity overrides, the most specific rule applies. Always prioritize Cleric/Holy Warrior deity overrides over base class costs.'},
+            {title: 'Beta Rules (Danubu)', text: 'Danubu worshippers gain Divine +1 level at night and Divine -1 during daylight. This is a beta rule and may change based on event feedback.'}
         ];
 
-        const SKILL_DESCRIPTIONS = {
-            'Critical Attack': 'Adds +1 damage to a single melee strike per purchase. Multiple purchases stack. Call "Critical [damage]" when swinging.',
-            'Disarm': 'Force opponent to drop their weapon. Call "Disarm!" Once per event.',
-            'Florentine': 'Fight with two one-handed weapons simultaneously.',
-            'Parry': 'Negate one melee attack per purchase per event. Call "Parry!"',
-            'Shield Use': 'Ability to use a shield in combat. Required to carry a shield.',
-            'Two-Handed Weapon': 'Use two-handed melee weapons (greatswords, polearms, etc.).',
-            'Bow': 'Use a bow in combat. Elf racial: half cost.',
-            'Strength': 'Adds +1 to base melee damage permanently per purchase. Stacks.',
-            'Backstab': 'Strike an unaware opponent from behind for double damage. Must approach from rear.',
-            'Assassinate': 'Instant kill from behind on unaware opponent. Requires Backstab skill. Call "Assassinate!"',
-            'Create Poison': 'Create poison compounds. Each purchase allows more potent poisons.',
-            'Escape Bonds I': 'Escape from rope bindings after 60 seconds of roleplay.',
-            'Escape Bonds II': 'Escape from magical or enhanced bindings.',
-            'Lock Picking I': 'Pick basic locks. Requires lock picking tools (phys rep).',
-            'Lock Picking II': 'Pick advanced or magical locks.',
-            'Info Gathering': 'Gather information and rumors at events. Provides plot hooks from staff.',
-            'Appraise': 'Determine the value and properties of items.',
-            'Disguise': 'Alter appearance to avoid recognition.',
-            'Forgery': 'Create forged documents.',
-            'Read Magic': 'Read magical writings, scrolls, and runes.',
-            'Scroll Craft': 'Create magical scrolls from known spells.',
-            'Spell Craft': 'Create magical items (wands, staves, etc.).',
-            'Brew Potion': 'Create magical potions from known spells.',
-            'Astrology': 'Read the stars for divination and prophecy.',
-            'Familiar': 'Bond with a magical animal companion.',
-            'Nature Lore': 'Knowledge of plants, animals, and the natural world. Identify herbs, track weather.',
-            'Tracking': 'Follow tracks and trail creatures or people.',
-            'Healing': 'Restore hit points through mundane medical treatment. Each purchase allows additional healing per event.',
-            'Regenerate': 'Slowly regenerate lost hit points over time (1 LP per 5 minutes of rest).',
-            'Health': 'Adds +1 to maximum Life Points permanently per purchase.',
-            'Battle Rage': 'Enter a berserk fury. Gain bonus damage but cannot retreat or use concentration skills.',
-            'Luck': 'Once per event per purchase, re-roll or negate one effect. Call "Luck!"',
-            'Resist Fear': 'Each purchase grants +1 level of resistance to Fear effects.',
-            'Resist Poison': 'Each purchase grants +1 level of resistance to Poison effects.',
-            'Resist Dark Arts': 'Each purchase grants +1 level of resistance to Dark Arts magic.',
-            'Resist Charm': 'Each purchase grants +1 level of resistance to Charm/Enchantment magic.',
-            'Armorsmith Leather': 'Repair and create leather armor. Multiple purchases increase quality.',
-            'Armorsmith Chain': 'Repair and create chain mail armor.',
-            'Armorsmith Plate': 'Repair and create plate armor.',
-            'Armorsmith Metal': 'Repair and create all types of metal armor.',
-            'Weaponsmith': 'Repair and create weapons. Multiple purchases increase quality.',
-            'Craftsman': 'General crafting ability for non-weapon, non-armor items.',
-            'Theology': 'Knowledge of the gods, their domains, and religious practices.'
-        };
-
-        // ========== STATE & INITIALIZATION ==========
+        // ========== STATE MANAGEMENT ==========
 
         let state = {
             characterName: '',
@@ -1282,12 +1179,16 @@
             spTotal: 90,
             purchasedSkills: {},
             purchasedSpells: {},
-            characterSheetUrl: '',
             hiddenSkills: {}
         };
 
+        let gmData = {
+            plots: [],
+            attendees: []
+        };
+
         function loadState() {
-            const saved = localStorage.getItem('fq_planner_v4');
+            const saved = localStorage.getItem('fq_planner_v5');
             if (saved) {
                 try {
                     state = JSON.parse(saved);
@@ -1295,134 +1196,33 @@
                     console.error('Failed to load state:', e);
                 }
             }
+
+            const gmSaved = localStorage.getItem('fq_planner_v5_gm');
+            if (gmSaved) {
+                try {
+                    gmData = JSON.parse(gmSaved);
+                } catch (e) {
+                    console.error('Failed to load GM data:', e);
+                }
+            }
         }
 
         function saveState() {
-            localStorage.setItem('fq_planner_v4', JSON.stringify(state));
-            updateAll();
+            localStorage.setItem('fq_planner_v5', JSON.stringify(state));
         }
 
-        function saveCharacter() {
+        function saveGMData() {
+            localStorage.setItem('fq_planner_v5_gm', JSON.stringify(gmData));
+        }
+
+        function saveCharacterData() {
             state.characterName = document.getElementById('characterName').value;
             state.playerName = document.getElementById('playerName').value;
-            state.characterSheetUrl = document.getElementById('characterSheetUrl').value;
+            state.spTotal = parseInt(document.getElementById('spTotal').value) || 90;
             saveState();
         }
 
-        // ========== TAB SWITCHING ==========
-
-        function switchTab(tabName) {
-            const contents = document.querySelectorAll('.tab-content');
-            const buttons = document.querySelectorAll('.tab-button');
-
-            contents.forEach(c => c.classList.remove('active'));
-            buttons.forEach(b => b.classList.remove('active'));
-
-            document.getElementById(tabName).classList.add('active');
-            event.target.classList.add('active');
-
-            if (tabName === 'skills') renderSkills();
-            if (tabName === 'spells') renderSpells();
-            if (tabName === 'deities') renderDeities();
-            if (tabName === 'rules') renderRules();
-            if (tabName === 'analysis') renderAnalysis();
-        }
-
-        // ========== AUTOCOMPLETE ==========
-
-        function autocomplete(type) {
-            const input = document.getElementById(type + 'Select').value.toLowerCase();
-            const dropdown = document.getElementById(type + '-dropdown');
-            let options = [];
-
-            if (type === 'race') options = Object.keys(RACES);
-            else if (type === 'class') options = Object.keys(CLASSES);
-            else if (type === 'deity') options = Object.keys(DEITIES);
-
-            const matches = options.filter(o =>
-                o.toLowerCase().includes(input) || fuzzymatch(input, o.toLowerCase())
-            );
-
-            dropdown.innerHTML = '';
-            if (matches.length && input.length > 0) {
-                dropdown.classList.add('active');
-                matches.slice(0, 10).forEach(match => {
-                    const div = document.createElement('div');
-                    div.className = 'autocomplete-item';
-                    div.textContent = match;
-                    div.onclick = () => selectAutocomplete(type, match);
-                    dropdown.appendChild(div);
-                });
-            } else {
-                dropdown.classList.remove('active');
-            }
-        }
-
-        function selectAutocomplete(type, value) {
-            document.getElementById(type + 'Select').value = value;
-            closeAutocomplete(type);
-            if (type === 'race') state.race = value;
-            else if (type === 'class') state.class = value;
-            else if (type === 'deity') state.deity = value;
-            saveState();
-        }
-
-        function closeAutocomplete(type) {
-            document.getElementById(type + '-dropdown').classList.remove('active');
-        }
-
-        function fuzzymatch(search, text) {
-            let searchIndex = 0;
-            for (let i = 0; i < text.length; i++) {
-                if (text[i] === search[searchIndex]) searchIndex++;
-                if (searchIndex === search.length) return true;
-            }
-            return false;
-        }
-
-        // ========== SP & LEVEL CALCULATIONS ==========
-
-        function getLevel(spSpent) {
-            for (let i = LEVEL_THRESHOLDS.length - 1; i >= 0; i--) {
-                if (spSpent >= LEVEL_THRESHOLDS[i]) return i + 1;
-            }
-            return 1;
-        }
-
-        function getLP() {
-            if (!state.class) return 0;
-            const classData = CLASSES[state.class];
-            const level = getCurrentLevel();
-            let lpPerLevel = classData.lpPerLevel;
-
-            if (state.race === 'Hobbet') lpPerLevel -= 1;
-            if (state.race === 'Orgreth') lpPerLevel += 2;
-            if (state.race === 'Half-Ogre') lpPerLevel += 3;
-
-            return Math.max(1, lpPerLevel) * level;
-        }
-
-        function applyRacialMod(cost, skillName, raceName) {
-            if (raceName === 'Elf') {
-                if (skillName === 'Bow') return Math.ceil(cost / 2);
-                if (skillName === 'Health') return cost * 2;
-            } else if (raceName === 'Dwarf') {
-                if (['Armorsmith Leather','Armorsmith Chain','Armorsmith Plate','Armorsmith Metal','Weaponsmith'].some(s => skillName.includes(s))) return Math.ceil(cost / 2);
-                if (skillName === 'Regenerate') return Math.ceil(cost / 2);
-            } else if (raceName === 'Hobbet') {
-                if (['Appraise', 'Escape Bonds I', 'Lock Picking I', 'Lock Picking II', 'Info Gathering', 'Disguise', 'Forgery'].includes(skillName)) {
-                    return Math.ceil(cost / 2);
-                }
-            } else if (raceName === 'Orgreth') {
-                if (skillName === 'Strength') return Math.ceil(cost / 2);
-            } else if (raceName === 'Half-Ogre') {
-                if (skillName === 'Battle Rage') return Math.ceil(cost / 2);
-            } else if (raceName === 'Wolven') {
-                if (skillName === 'Nature Lore') return 0;
-                if (skillName === 'Tracking') return Math.ceil(cost / 2);
-            }
-            return cost;
-        }
+        // ========== COST CALCULATIONS (VERBATIM from engine) ==========
 
         function getSkillCost(skillName, className, raceName, deityName) {
             const baseSkill = SKILLS.find(s => s.name === skillName);
@@ -1430,6 +1230,8 @@
 
             const baseCost = baseSkill.costs[className];
             if (baseCost === 'I') return 0;
+
+            // Check deity overrides BEFORE null check
             if (baseCost === null) {
                 if ((className === 'Cleric' || className === 'Holy Warrior') && deityName) {
                     if (deityName === 'Avagon' && className === 'Cleric') {
@@ -1469,6 +1271,7 @@
 
             let cost = baseCost;
 
+            // Apply racial modifiers
             if (raceName === 'Elf') {
                 if (skillName === 'Bow') cost = Math.ceil(cost / 2);
                 if (skillName === 'Health') cost = cost * 2;
@@ -1496,6 +1299,7 @@
                 if (skillName === 'Tracking') cost = Math.ceil(cost / 2);
             }
 
+            // Apply deity modifiers for Cleric and Holy Warrior
             if ((className === 'Cleric' || className === 'Holy Warrior') && deityName) {
                 const deity = DEITIES[deityName];
                 if (!deity) return cost;
@@ -1523,12 +1327,14 @@
                     if (skillName === 'Nature Lore') cost = 0;
                 } else if (deityName === 'Etyana' && className === 'Holy Warrior') {
                     if (skillName === 'Nature Lore') cost = 20;
+                } else if (deityName === 'Gheldann' && className === 'Holy Warrior') {
                 } else if (deityName === 'Kandrell' && className === 'Cleric') {
                     if (skillName === 'Astrology') cost = 20;
                 } else if (deityName === 'Kandrell' && className === 'Holy Warrior') {
                     if (skillName === 'Regenerate') cost = Math.ceil(cost / 2);
                 } else if (deityName === 'Kyrriden' && className === 'Cleric') {
                     if (skillName === 'Weaponsmith' || skillName.includes('Armorsmith')) cost = Math.ceil(cost / 2);
+                } else if (deityName === 'Kyrriden' && className === 'Holy Warrior') {
                 } else if (deityName === 'Nivlac' && className === 'Cleric') {
                     if (skillName === 'Luck') cost = 15;
                     if (['Create Poison', 'Escape Bonds II', 'Lock Picking I', 'Lock Picking II'].includes(skillName)) {
@@ -1559,606 +1365,701 @@
             return cost;
         }
 
-        function calculateSpentSP() {
-            let total = 0;
-            Object.values(state.purchasedSkills).forEach(count => total += count);
-            Object.values(state.purchasedSpells).forEach(count => total += count);
-            Object.values(state.hiddenSkills).forEach(cost => total += cost);
-            return total;
+        function applyRacialMod(cost, skillName, raceName) {
+            if (raceName === 'Elf') {
+                if (skillName === 'Bow') return Math.ceil(cost / 2);
+                if (skillName === 'Health') return cost * 2;
+            } else if (raceName === 'Dwarf') {
+                if (['Armorsmith Leather','Armorsmith Chain','Armorsmith Plate','Armorsmith Metal','Weaponsmith'].some(s => skillName.includes(s))) return Math.ceil(cost / 2);
+                if (skillName === 'Regenerate') return Math.ceil(cost / 2);
+            } else if (raceName === 'Orgreth') {
+                if (skillName === 'Strength') return Math.ceil(cost / 2);
+            } else if (raceName === 'Half-Ogre') {
+                if (skillName === 'Battle Rage') return Math.ceil(cost / 2);
+            }
+            return cost;
         }
 
-        function getCurrentLevel() {
-            return getLevel(calculateSpentSP());
+        // ========== UI FUNCTIONS ==========
+
+        function switchTab(tabNum) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-button').forEach(el => el.classList.remove('active'));
+
+            document.getElementById('tab' + tabNum).classList.add('active');
+            document.querySelectorAll('.tab-button')[tabNum].classList.add('active');
+
+            if (tabNum === 1) renderSkillsTable();
+            if (tabNum === 2) renderSpellsTab();
+            if (tabNum === 3) renderDeitiesTab();
+            if (tabNum === 6) renderRulesTab();
+            if (tabNum === 5) renderAnalysisTab();
         }
 
-        function updateAll() {
-            const spent = calculateSpentSP();
-            const available = Math.max(0, state.spTotal - spent);
-            const level = getCurrentLevel();
-            const lp = getLP();
-
-            document.getElementById('spSpent').textContent = spent;
-            document.getElementById('spAvailable').textContent = available;
-            document.getElementById('currentLevel').textContent = level;
-            document.getElementById('currentLP').textContent = lp;
-            document.getElementById('skillCount').textContent = Object.keys(state.purchasedSkills).length;
-
-            document.getElementById('summaryName').textContent = state.characterName || 'Not set';
-            document.getElementById('summaryPlayer').textContent = state.playerName || 'Not set';
-            document.getElementById('summaryRace').textContent = state.race || 'Not selected';
-            document.getElementById('summaryClass').textContent = state.class || 'Not selected';
-            document.getElementById('summaryDeity').textContent = state.deity || 'Not selected';
-        }
-
-        function updateSpTotal() {
-            state.spTotal = parseInt(document.getElementById('spTotal').value) || 90;
+        function selectRace() {
+            state.race = document.getElementById('raceSelect').value;
             saveState();
+            updateRaceInfo();
+            updateAll();
         }
 
-        // ========== SKILLS TAB ==========
-
-        let currentFilter = 'All';
-
-        function filterSkills(category) {
-            currentFilter = category;
-            renderSkills();
+        function selectClass() {
+            state.class = document.getElementById('classSelect').value;
+            saveState();
+            updateClassInfo();
+            updateDeityGroup();
+            updateAll();
         }
 
-        function renderSkills() {
-            const tbody = document.getElementById('skillsBody');
-            tbody.innerHTML = '';
-
-            SKILLS.forEach(skill => {
-                if (currentFilter !== 'All' && skill.category !== currentFilter) return;
-
-                const cost = getSkillCost(skill.name, state.class, state.race, state.deity);
-                if (cost === null && !state.class) return;
-
-                const row = document.createElement('tr');
-                row.className = 'expandable-header';
-                row.innerHTML = `
-                    <td>${skill.name}</td>
-                    <td>${skill.category}</td>
-                    <td>${skill.code}</td>
-                    <td>${cost === null ? 'N/A' : cost}</td>
-                    <td>
-                        ${cost !== null ? `<button onclick="purchaseSkill('${skill.name.replace(/'/g, "\\'")}', ${cost})">+</button>` : ''}
-                    </td>
-                `;
-                row.onclick = () => toggleExpand(row);
-                tbody.appendChild(row);
-
-                const expand = document.createElement('tr');
-                expand.className = 'expandable-content';
-                expand.innerHTML = `
-                    <td colspan="5">
-                        <div style="padding: 10px 0;">
-                            <p><strong>Description:</strong> ${SKILL_DESCRIPTIONS[skill.name] || 'No description available'}</p>
-                            <p><strong>Code Explanation:</strong> ${describeCode(skill.code)}</p>
-                            <div style="margin-top: 10px;">
-                                <strong>Available to:</strong><br>
-                                ${Object.entries(skill.costs)
-                                    .filter(([_, c]) => c !== null)
-                                    .map(([cls, _]) => `<span class="badge class-ok">${cls}</span>`)
-                                    .join('')}
-                            </div>
-                        </div>
-                    </td>
-                `;
-                tbody.appendChild(expand);
-            });
+        function selectDeity() {
+            state.deity = document.getElementById('deitySelect').value;
+            saveState();
+            updateDeityInfo();
+            updateAll();
         }
 
-        function toggleExpand(row) {
-            const next = row.nextElementSibling;
-            if (next && next.classList.contains('expandable-content')) {
-                next.classList.toggle('expanded');
+        function updateRaceInfo() {
+            const race = state.race;
+            const infoDiv = document.getElementById('raceInfo');
+            if (!race || !RACES[race]) {
+                infoDiv.innerHTML = '';
+                return;
+            }
+
+            const raceData = RACES[race];
+            let html = '<div style="background: var(--fq-parchment-light); padding: 10px; border-radius: 3px; margin-top: 10px;">';
+
+            if (raceData.bonuses.length > 0) {
+                html += '<div><strong>Bonuses:</strong> ' + raceData.bonuses.join(', ') + '</div>';
+            }
+            if (raceData.limitations.length > 0) {
+                html += '<div><strong>Limitations:</strong> ' + raceData.limitations.join(', ') + '</div>';
+            }
+            if (raceData.resistances.length > 0) {
+                html += '<div><strong>Resistances:</strong> ' + raceData.resistances.join(', ') + '</div>';
+            }
+            html += '</div>';
+            infoDiv.innerHTML = html;
+        }
+
+        function updateClassInfo() {
+            const className = state.class;
+            const infoDiv = document.getElementById('classInfo');
+            if (!className || !CLASSES[className]) {
+                infoDiv.innerHTML = '';
+                return;
+            }
+
+            const classData = CLASSES[className];
+            let html = '<div style="background: var(--fq-parchment-light); padding: 10px; border-radius: 3px; margin-top: 10px;">';
+            html += '<div><strong>Armor:</strong> ' + classData.armor + '</div>';
+            html += '<div><strong>LP/Level:</strong> ' + classData.lpPerLevel + '</div>';
+            html += '<div><strong>Type:</strong> ' + classData.type + '</div>';
+            if (classData.primarySchool) {
+                html += '<div><strong>Primary School:</strong> ' + classData.primarySchool + '</div>';
+            }
+            html += '</div>';
+            infoDiv.innerHTML = html;
+        }
+
+        function updateDeityGroup() {
+            const deityGroup = document.getElementById('deityGroup');
+            const deitySelect = document.getElementById('deitySelect');
+
+            if (state.class === 'Cleric' || state.class === 'Holy Warrior') {
+                deityGroup.style.display = 'block';
+                deitySelect.disabled = false;
+            } else {
+                deityGroup.style.display = 'none';
+                deitySelect.disabled = true;
+                state.deity = '';
+                deitySelect.value = '';
+                document.getElementById('deityInfo').innerHTML = '';
             }
         }
 
-        function describeCode(code) {
-            const descriptions = {
-                'I': 'Innate/Free - included with your class at no SP cost',
-                'O': 'Once per event - can be used only once per event',
-                'M': 'Multiple Purchase - can buy multiple times, effects stack',
-                '1': 'Single Purchase - can buy this skill once'
-            };
-            return descriptions[code] || code;
+        function updateDeityInfo() {
+            const deity = state.deity;
+            const infoDiv = document.getElementById('deityInfo');
+            if (!deity || !DEITIES[deity]) {
+                infoDiv.innerHTML = '';
+                return;
+            }
+
+            const deityData = DEITIES[deity];
+            let html = '<div style="background: var(--fq-parchment-light); padding: 10px; border-radius: 3px; margin-top: 10px;">';
+            html += '<div><strong>' + deityData.title + '</strong></div>';
+
+            if (state.class === 'Cleric' && deityData.clericBenefits.length > 0) {
+                html += '<div><strong>Cleric Benefits:</strong> ' + deityData.clericBenefits.join('; ') + '</div>';
+                html += '<div><strong>Cleric Limitations:</strong> ' + (deityData.clericLimitations.length > 0 ? deityData.clericLimitations.join('; ') : 'None') + '</div>';
+            }
+            if (state.class === 'Holy Warrior' && deityData.holyWarriorBenefits.length > 0) {
+                html += '<div><strong>Holy Warrior Benefits:</strong> ' + deityData.holyWarriorBenefits.join('; ') + '</div>';
+            }
+            html += '</div>';
+            infoDiv.innerHTML = html;
         }
 
-        function purchaseSkill(skillName, cost) {
-            state.purchasedSkills[skillName] = (state.purchasedSkills[skillName] || 0) + 1;
+        function adjustSPTotal(delta) {
+            const input = document.getElementById('spTotal');
+            let val = parseInt(input.value) || 90;
+            val = Math.max(0, val + delta);
+            input.value = val;
+            saveCharacterData();
+        }
+
+        function updateAll() {
+            updatePurchasedSkillsList();
+            updateStatBar();
+        }
+
+        function updateStatBar() {
+            let spSpent = 0;
+            for (let skill in state.purchasedSkills) {
+                spSpent += state.purchasedSkills[skill];
+            }
+            for (let spell in state.purchasedSpells) {
+                spSpent += state.purchasedSpells[spell];
+            }
+
+            const spTotal = state.spTotal;
+            const spRemaining = spTotal - spSpent;
+
+            const level = LEVEL_THRESHOLDS.findIndex((threshold, idx) => idx === LEVEL_THRESHOLDS.length - 1 || spSpent < LEVEL_THRESHOLDS[idx + 1]) + 1;
+
+            let lp = 0;
+            if (state.class && CLASSES[state.class]) {
+                lp = CLASSES[state.class].lpPerLevel * level;
+                if (state.race === 'Hobbet') lp -= level;
+                if (state.race === 'Orgreth') lp += 2 * level;
+                if (state.race === 'Half-Ogre') lp += 3 * level;
+            }
+
+            document.getElementById('spSpent').textContent = spSpent;
+            document.getElementById('spRemaining').textContent = Math.max(0, spRemaining);
+            document.getElementById('level').textContent = level;
+            document.getElementById('lp').textContent = lp;
+        }
+
+        function updatePurchasedSkillsList() {
+            const container = document.getElementById('purchasedSkillsList');
+            let html = '';
+
+            for (let skillName in state.purchasedSkills) {
+                const cost = state.purchasedSkills[skillName];
+                html += '<div class="purchased-item">';
+                html += '<span class="purchased-item-name">' + skillName + '</span>';
+                html += '<span class="purchased-item-cost">' + cost + ' SP</span>';
+                html += '<button class="purchased-item-remove" onclick="removeSkill(\'' + skillName.replace(/'/g, "\\'") + '\')">Remove</button>';
+                html += '</div>';
+            }
+
+            for (let spellKey in state.purchasedSpells) {
+                const cost = state.purchasedSpells[spellKey];
+                const [school, spellName] = spellKey.split('|');
+                html += '<div class="purchased-item">';
+                html += '<span class="purchased-item-name">' + spellName + ' (' + school + ')</span>';
+                html += '<span class="purchased-item-cost">' + cost + ' SP</span>';
+                html += '<button class="purchased-item-remove" onclick="removeSpell(\'' + spellKey.replace(/'/g, "\\'") + '\')">Remove</button>';
+                html += '</div>';
+            }
+
+            if (html === '') {
+                html = '<p style="color: var(--fq-olive);">No skills or spells purchased yet.</p>';
+            }
+
+            container.innerHTML = html;
+        }
+
+        function filterSkills(category) {
+            renderSkillsTable(category);
+        }
+
+        function renderSkillsTable(filterCategory = 'All') {
+            const tbody = document.getElementById('skillsTableBody');
+            tbody.innerHTML = '';
+
+            let filtered = SKILLS;
+            if (filterCategory !== 'All') {
+                filtered = SKILLS.filter(s => s.category === filterCategory);
+            }
+
+            for (let skill of filtered) {
+                const cost = getSkillCost(skill.name, state.class, state.race, state.deity);
+
+                let row = '<tr>';
+                row += '<td>' + skill.name + '</td>';
+                row += '<td>' + skill.category + '</td>';
+                row += '<td>' + skill.code + '</td>';
+
+                if (cost === null) {
+                    row += '<td style="color: var(--fq-olive);">N/A</td>';
+                    row += '<td style="color: var(--fq-olive);">Not available for your class/race</td>';
+                } else {
+                    row += '<td>' + cost + ' SP</td>';
+                    row += '<td><button onclick="buySkill(\'' + skill.name.replace(/'/g, "\\'") + '\', ' + cost + ')">Buy</button></td>';
+                }
+
+                row += '</tr>';
+                tbody.innerHTML += row;
+            }
+        }
+
+        function buySkill(skillName, cost) {
+            if (!state.class) {
+                alert('Please select a class first');
+                return;
+            }
+
+            const finalCost = getSkillCost(skillName, state.class, state.race, state.deity);
+            if (finalCost === null) {
+                alert('This skill is not available for your class/race');
+                return;
+            }
+
+            if (state.purchasedSkills[skillName] === undefined) {
+                state.purchasedSkills[skillName] = 0;
+            }
+
+            state.purchasedSkills[skillName] += finalCost;
             saveState();
-            renderSkills();
+            updateAll();
+            alert(skillName + ' purchased for ' + finalCost + ' SP!');
         }
 
-        // ========== SPELLS TAB ==========
+        function removeSkill(skillName) {
+            delete state.purchasedSkills[skillName];
+            saveState();
+            updateAll();
+        }
 
-        function renderSpells() {
+        function removeSpell(spellKey) {
+            delete state.purchasedSpells[spellKey];
+            saveState();
+            updateAll();
+        }
+
+        function renderSpellsTab() {
             const container = document.getElementById('spellsContainer');
+            if (!state.class || !CLASSES[state.class]) {
+                container.innerHTML = '<p style="color: var(--fq-olive);">Please select a class first</p>';
+                return;
+            }
+
+            const classData = CLASSES[state.class];
             container.innerHTML = '';
 
-            Object.entries(SPELLS).forEach(([school, levels]) => {
-                const schoolDiv = document.createElement('div');
-                schoolDiv.className = 'section';
-                schoolDiv.innerHTML = `<h3>${school}</h3>`;
+            if (!classData.primarySchool) {
+                container.innerHTML = '<p style="color: var(--fq-olive);">Your class cannot cast spells.</p>';
+                return;
+            }
 
-                Object.entries(levels).forEach(([level, spells]) => {
-                    const levelDiv = document.createElement('div');
-                    levelDiv.style.marginBottom = '15px';
-                    levelDiv.innerHTML = `<strong>Level ${level}:</strong><br>`;
+            for (let school in SPELLS) {
+                let html = '<div class="section">';
+                html += '<h3>' + school + '</h3>';
+                html += '<table>';
+                html += '<thead><tr><th>Level</th><th>Spells</th><th>Cost per spell</th><th>Action</th></tr></thead>';
+                html += '<tbody>';
 
-                    spells.forEach(spell => {
-                        const label = document.createElement('label');
-                        label.style.display = 'flex';
-                        label.style.alignItems = 'center';
-                        label.style.marginBottom = '5px';
+                for (let level = 1; level <= 9; level++) {
+                    const spells = SPELLS[school][level];
+                    let costPerSpell = 0;
 
-                        const checkbox = document.createElement('input');
-                        checkbox.type = 'checkbox';
-                        checkbox.style.marginRight = '10px';
-                        checkbox.onchange = () => toggleSpell(school, spell);
+                    if (school === classData.primarySchool) {
+                        costPerSpell = classData.canCast === 'Straight' ? level * 10 : level * 15;
+                    } else if (classData.canCast && SPELL_ADJACENCY[classData.primarySchool].adjacent.includes(school)) {
+                        costPerSpell = classData.canCast === 'Straight' ? level * 25 : level * 35;
+                    } else if (classData.canCast && SPELL_ADJACENCY[classData.primarySchool].opposing.includes(school)) {
+                        if (classData.canCast === 'Hybrid') {
+                            costPerSpell = 'BLOCKED';
+                        } else {
+                            costPerSpell = level * 50;
+                        }
+                    } else {
+                        costPerSpell = 'N/A';
+                    }
 
-                        label.appendChild(checkbox);
-                        label.appendChild(document.createTextNode(spell));
-                        levelDiv.appendChild(label);
-                    });
+                    if (costPerSpell === 'N/A' || costPerSpell === 'BLOCKED') {
+                        html += '<tr style="opacity: 0.5;"><td>' + level + '</td><td>' + spells.join(', ') + '</td><td>' + costPerSpell + '</td><td>—</td></tr>';
+                    } else {
+                        html += '<tr><td>' + level + '</td><td>' + spells.join(', ') + '</td><td>' + costPerSpell + ' SP each</td><td><button onclick="buySpell(\'' + school + '\', ' + level + ', ' + costPerSpell + ')">Buy Level ' + level + '</button></td></tr>';
+                    }
+                }
 
-                    schoolDiv.appendChild(levelDiv);
-                });
-
-                container.appendChild(schoolDiv);
-            });
+                html += '</tbody></table></div>';
+                container.innerHTML += html;
+            }
         }
 
-        function toggleSpell(school, spell) {
-            const key = `${school}_${spell}`;
-            state.purchasedSpells[key] = state.purchasedSpells[key] ? 0 : 1;
+        function buySpell(school, level, costPerSpell) {
+            const spells = SPELLS[school][level];
+            let selected = [];
+            for (let spell of spells) {
+                if (confirm('Buy ' + spell + '?')) {
+                    selected.push(spell);
+                }
+            }
+
+            for (let spell of selected) {
+                const key = school + '|' + spell;
+                if (!state.purchasedSpells[key]) {
+                    state.purchasedSpells[key] = costPerSpell;
+                }
+            }
+
             saveState();
+            updateAll();
         }
 
-        // ========== DEITIES TAB ==========
-
-        function renderDeities() {
+        function renderDeitiesTab() {
             const container = document.getElementById('deitiesContainer');
             container.innerHTML = '';
 
-            Object.entries(DEITIES).forEach(([name, data]) => {
-                const card = document.createElement('div');
-                card.className = 'deity-card';
-                card.innerHTML = `
-                    <h3>${name} - ${data.title}</h3>
-                    <p><strong>Cleric Benefits:</strong></p>
-                    <ul style="margin-left: 20px;">
-                        ${data.clericBenefits.map(b => `<li>${b}</li>`).join('')}
-                    </ul>
-                    ${data.clericLimitations.length > 0 ? `
-                        <p><strong>Cleric Limitations:</strong></p>
-                        <ul style="margin-left: 20px;">
-                            ${data.clericLimitations.map(l => `<li>${l}</li>`).join('')}
-                        </ul>
-                    ` : ''}
-                    ${data.holyWarriorBenefits.length > 0 ? `
-                        <p><strong>Holy Warrior Benefits:</strong></p>
-                        <ul style="margin-left: 20px;">
-                            ${data.holyWarriorBenefits.map(b => `<li>${b}</li>`).join('')}
-                        </ul>
-                    ` : ''}
-                `;
-                container.appendChild(card);
-            });
+            for (let name in DEITIES) {
+                const deity = DEITIES[name];
+                let html = '<div class="deity-card">';
+                html += '<h3>' + name + ' - ' + deity.title + '</h3>';
+
+                if (deity.clericBenefits.length > 0) {
+                    html += '<p><strong>Cleric Benefits:</strong></p>';
+                    html += '<ul style="margin-left: 20px;">';
+                    for (let benefit of deity.clericBenefits) {
+                        html += '<li>' + benefit + '</li>';
+                    }
+                    html += '</ul>';
+                }
+
+                if (deity.clericLimitations && deity.clericLimitations.length > 0) {
+                    html += '<p><strong>Cleric Limitations:</strong></p>';
+                    html += '<ul style="margin-left: 20px;">';
+                    for (let limit of deity.clericLimitations) {
+                        html += '<li>' + limit + '</li>';
+                    }
+                    html += '</ul>';
+                }
+
+                if (deity.holyWarriorBenefits.length > 0) {
+                    html += '<p><strong>Holy Warrior Benefits:</strong></p>';
+                    html += '<ul style="margin-left: 20px;">';
+                    for (let benefit of deity.holyWarriorBenefits) {
+                        html += '<li>' + benefit + '</li>';
+                    }
+                    html += '</ul>';
+                }
+
+                html += '</div>';
+                container.innerHTML += html;
+            }
         }
 
-        // ========== RULES TAB ==========
-
-        function renderRules() {
+        function renderRulesTab() {
             const container = document.getElementById('rulesContainer');
             container.innerHTML = '';
 
-            const levelTable = document.createElement('div');
-            levelTable.innerHTML = '<h3>Level Advancement Table</h3>';
-            const table = document.createElement('table');
-            table.innerHTML = '<tr><th>Level</th><th>SP Required</th></tr>';
-            LEVEL_THRESHOLDS.forEach((sp, i) => {
-                table.innerHTML += `<tr><td>${i + 1}</td><td>${sp}</td></tr>`;
-            });
-            levelTable.appendChild(table);
-            container.appendChild(levelTable);
-
-            RULES.forEach(rule => {
-                const div = document.createElement('div');
-                div.className = 'deity-card';
-                div.innerHTML = `<h4>${rule.title}</h4><p>${rule.text}</p>`;
-                container.appendChild(div);
-            });
+            for (let rule of RULES) {
+                let html = '<div class="deity-card">';
+                html += '<h3>' + rule.title + '</h3>';
+                html += '<p>' + rule.text + '</p>';
+                html += '</div>';
+                container.innerHTML += html;
+            }
         }
 
         function searchRules() {
             const query = document.getElementById('rulesSearch').value.toLowerCase();
-            const rulesDiv = document.getElementById('rulesContainer');
-            const cards = rulesDiv.querySelectorAll('.deity-card');
+            const container = document.getElementById('rulesContainer');
+            container.innerHTML = '';
 
-            cards.forEach(card => {
-                const text = card.textContent.toLowerCase();
-                card.style.display = text.includes(query) ? 'block' : 'none';
-            });
+            const filtered = RULES.filter(r =>
+                r.title.toLowerCase().includes(query) ||
+                r.text.toLowerCase().includes(query)
+            );
+
+            for (let rule of filtered) {
+                let html = '<div class="deity-card">';
+                html += '<h3>' + rule.title + '</h3>';
+                html += '<p>' + rule.text + '</p>';
+                html += '</div>';
+                container.innerHTML += html;
+            }
+
+            if (filtered.length === 0) {
+                container.innerHTML = '<p style="color: var(--fq-olive);">No rules found matching your search.</p>';
+            }
         }
-
-        // ========== Q&A TAB ==========
 
         function searchQA() {
             const query = document.getElementById('qaSearch').value.toLowerCase();
-            const results = document.getElementById('qaResults');
-            results.innerHTML = '';
+            const container = document.getElementById('qaContainer');
+            container.innerHTML = '';
 
-            if (!query) return;
+            const results = [];
 
-            const matches = [];
-            RULES.forEach(rule => {
+            // Search rules
+            for (let rule of RULES) {
                 if (rule.title.toLowerCase().includes(query) || rule.text.toLowerCase().includes(query)) {
-                    matches.push(rule);
+                    results.push({type: 'rule', title: rule.title, text: rule.text});
                 }
-            });
+            }
 
-            Object.entries(SKILL_DESCRIPTIONS).forEach(([skill, desc]) => {
-                if (skill.toLowerCase().includes(query) || desc.toLowerCase().includes(query)) {
-                    matches.push({title: skill, text: desc});
+            // Search skills
+            for (let skill of SKILLS) {
+                if (skill.name.toLowerCase().includes(query) || skill.category.toLowerCase().includes(query)) {
+                    results.push({type: 'skill', title: skill.name, text: 'Category: ' + skill.category + ', Code: ' + skill.code});
                 }
-            });
+            }
 
-            if (matches.length === 0) {
-                results.innerHTML = '<p style="color: var(--fq-olive);">No matching rules found. Try different keywords or check the Fantasy Quest rulebook at fantasyquestlarp.com for the authoritative answer.</p>';
+            container.innerHTML = '';
+            for (let result of results) {
+                let html = '<div class="deity-card">';
+                html += '<h3>' + result.title + ' (' + result.type + ')</h3>';
+                html += '<p>' + result.text + '</p>';
+                html += '</div>';
+                container.innerHTML += html;
+            }
+
+            if (results.length === 0) {
+                container.innerHTML = '<p style="color: var(--fq-olive);">No results found.</p>';
+            }
+        }
+
+        function renderAnalysisTab() {
+            const container = document.getElementById('spAllocationChart');
+            container.innerHTML = '';
+
+            let allocation = {Fighting: 0, Stealth: 0, Magic: 0, Survival: 0, Craft: 0};
+            for (let skillName in state.purchasedSkills) {
+                const skill = SKILLS.find(s => s.name === skillName);
+                if (skill) {
+                    allocation[skill.category] = (allocation[skill.category] || 0) + state.purchasedSkills[skillName];
+                }
+            }
+
+            let html = '<table>';
+            let total = Object.values(allocation).reduce((a,b) => a+b, 0);
+            for (let category in allocation) {
+                const sp = allocation[category];
+                const pct = total > 0 ? Math.round(100 * sp / total) : 0;
+                html += '<tr><td>' + category + '</td><td>' + sp + ' SP (' + pct + '%)</td></tr>';
+            }
+            html += '</table>';
+            container.innerHTML = html;
+
+            // Efficiency report
+            const efficiencyContainer = document.getElementById('efficiencyReport');
+            efficiencyContainer.innerHTML = '<p>Most efficient skills (lowest cost for your build):</p>';
+            let efficient = [];
+            for (let skill of SKILLS) {
+                const cost = getSkillCost(skill.name, state.class, state.race, state.deity);
+                if (cost && cost > 0) {
+                    efficient.push({name: skill.name, cost: cost});
+                }
+            }
+            efficient.sort((a,b) => a.cost - b.cost);
+            efficient = efficient.slice(0, 5);
+            let effHtml = '<ul>';
+            for (let item of efficient) {
+                effHtml += '<li>' + item.name + ': ' + item.cost + ' SP</li>';
+            }
+            effHtml += '</ul>';
+            efficiencyContainer.innerHTML += effHtml;
+
+            // Progression paths
+            const progressionContainer = document.getElementById('progressionPaths');
+            progressionContainer.innerHTML = '<p><strong>Recommended builds for your class:</strong></p>';
+            let progHtml = '<ul>';
+            progHtml += '<li><strong>Tank:</strong> Prioritize Health, Armor-smith skills, shield/parry</li>';
+            progHtml += '<li><strong>DPS:</strong> Critical Attack, Strength, weapon skills, higher costs</li>';
+            progHtml += '<li><strong>Caster:</strong> Spell schools matching your primary, read magic, spell craft</li>';
+            progHtml += '<li><strong>Hybrid:</strong> Balance combat and magic skills</li>';
+            progHtml += '</ul>';
+            progressionContainer.innerHTML += progHtml;
+        }
+
+        function importCharacter() {
+            const text = document.getElementById('importText').value;
+            const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+
+            if (lines.length === 0) {
+                alert('Please paste a character card');
                 return;
             }
 
-            matches.forEach(match => {
-                const div = document.createElement('div');
-                div.className = 'deity-card';
-                div.innerHTML = `<h4>${match.title}</h4><p>${match.text}</p>`;
-                results.appendChild(div);
-            });
-        }
-
-        // ========== ANALYSIS TAB ==========
-
-        function renderAnalysis() {
-            const container = document.getElementById('buildProfile');
-            container.innerHTML = '';
-
-            const categories = {
-                'Fighting': 0,
-                'Stealth': 0,
-                'Magic': 0,
-                'Survival': 0,
-                'Craft': 0,
-                'Other': 0
-            };
-
-            Object.entries(state.purchasedSkills).forEach(([skillName, count]) => {
-                const skill = SKILLS.find(s => s.name === skillName);
-                if (skill) {
-                    categories[skill.category] = (categories[skill.category] || 0) + count;
-                }
-            });
-
-            Object.entries(categories).forEach(([cat, count]) => {
-                if (count > 0) {
-                    const div = document.createElement('div');
-                    div.style.marginBottom = '15px';
-                    div.innerHTML = `
-                        <p><strong>${cat}:</strong> ${count} purchases</p>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: ${(count / Math.max(1, calculateSpentSP())) * 100}%"></div>
-                        </div>
-                    `;
-                    container.appendChild(div);
-                }
-            });
-        }
-
-        // ========== IMPORT TAB ==========
-
-        function importCharacter() {
-            const textarea = document.getElementById('importTextarea').value;
-            const results = document.getElementById('importResults');
-            results.innerHTML = '';
-
-            const lines = textarea.split('\n').map(l => l.trim()).filter(l => l);
-            const character = parseCharacterCard(lines);
-
-            if (character) {
-                state.characterName = character.name;
-                state.playerName = character.player;
-                state.race = character.race;
-                state.class = character.class;
-                state.deity = character.deity;
-                state.spTotal = character.spTotal;
-                state.purchasedSkills = character.skills;
-                state.hiddenSkills = character.hidden;
-                saveState();
-
-                results.innerHTML = `
-                    <div class="success-message">Character imported successfully!</div>
-                    <div class="deity-card">
-                        <h3>Parsed Character</h3>
-                        <p><strong>Name:</strong> ${character.name}</p>
-                        <p><strong>Player:</strong> ${character.player}</p>
-                        <p><strong>Race:</strong> ${character.race}</p>
-                        <p><strong>Class:</strong> ${character.class}</p>
-                        <p><strong>Deity:</strong> ${character.deity}</p>
-                        <p><strong>Total SP:</strong> ${character.spTotal}</p>
-                    </div>
-                `;
+            // Parse first line as character header
+            const parts = lines[0].split('|').map(p => p.trim());
+            if (parts.length >= 5) {
+                state.characterName = parts[0];
+                state.playerName = parts[1];
+                state.race = parts[2];
+                state.class = parts[3];
+                state.deity = parts[4];
             }
-        }
 
-        function parseCharacterCard(lines) {
-            const character = {
-                name: '',
-                player: '',
-                race: '',
-                class: '',
-                deity: '',
-                spTotal: 90,
-                skills: {},
-                hidden: {}
-            };
-
-            lines.forEach(line => {
-                if (line.includes('Character:')) character.name = line.split(':')[1]?.trim() || '';
-                if (line.includes('Player:')) character.player = line.split(':')[1]?.trim() || '';
-                if (line.includes('Race:')) character.race = line.split(':')[1]?.trim() || '';
-                if (line.includes('Class:')) character.class = line.split(':')[1]?.trim() || '';
-                if (line.includes('Deity') || line.includes('Diety')) character.deity = line.split(':')[1]?.trim() || '';
-            });
-
-            return character;
-        }
-
-        // ========== TEMPLATES ==========
-
-        function loadTemplate(type) {
-            state.characterName = '';
-            state.playerName = '';
+            // Parse remaining lines as skills
             state.purchasedSkills = {};
-            state.purchasedSpells = {};
-            state.hiddenSkills = {};
-
-            if (type === 'warrior') {
-                state.class = 'Warrior';
-                state.race = 'Human';
-                state.deity = '';
-            } else if (type === 'cleric') {
-                state.class = 'Cleric';
-                state.race = 'Human';
-                state.deity = 'Avagon';
-            } else if (type === 'rogue') {
-                state.class = 'Assassin';
-                state.race = 'Hobbet';
-                state.deity = '';
-            } else if (type === 'mage') {
-                state.class = 'Sorcerer';
-                state.race = 'Human';
-                state.deity = '';
-            } else if (type === 'ranger') {
-                state.class = 'Ranger';
-                state.race = 'Human';
-                state.deity = '';
+            for (let i = 1; i < lines.length; i++) {
+                const skillLine = lines[i].split('|').map(p => p.trim());
+                if (skillLine.length >= 2) {
+                    const skillName = skillLine[0];
+                    const costStr = skillLine[1];
+                    const cost = parseInt(costStr) || 0;
+                    if (cost > 0) {
+                        state.purchasedSkills[skillName] = cost;
+                    }
+                }
             }
 
-            document.getElementById('characterName').value = '';
-            document.getElementById('playerName').value = '';
-            document.getElementById('raceSelect').value = state.race;
-            document.getElementById('classSelect').value = state.class;
-            document.getElementById('deitySelect').value = state.deity;
-
-            saveState();
-        }
-
-        // ========== EXPORT ==========
-
-        function exportJSON() {
-            const json = JSON.stringify(state, null, 2);
-            alert('Character data copied to clipboard!');
-            navigator.clipboard.writeText(json);
-        }
-
-        function downloadJSON() {
-            const json = JSON.stringify(state, null, 2);
-            const blob = new Blob([json], {type: 'application/json'});
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `${state.characterName || 'character'}.json`;
-            a.click();
-            URL.revokeObjectURL(url);
-        }
-
-        // ========== PLOT WRITER ==========
-
-        function enterPlotWriterMode() {
-            document.getElementById('plotWriterContainer').classList.remove('hidden');
-        }
-
-        function importRoster() {
-            const text = document.getElementById('bulkImport').value;
-            const results = document.getElementById('rosterAnalysis');
-            results.innerHTML = '<p>Roster imported and analyzed. GM tools in development.</p>';
-        }
-
-        // ========== INITIALIZATION ==========
-
-        window.addEventListener('DOMContentLoaded', () => {
-            loadState();
-            updateAll();
             document.getElementById('characterName').value = state.characterName;
             document.getElementById('playerName').value = state.playerName;
             document.getElementById('raceSelect').value = state.race;
             document.getElementById('classSelect').value = state.class;
             document.getElementById('deitySelect').value = state.deity;
-            document.getElementById('characterSheetUrl').value = state.characterSheetUrl;
-        });
 
-        // ========== FEEDBACK & COMMUNITY BOARD ==========
+            saveState();
+            updateDeityGroup();
+            updateAll();
 
-        function submitFeedbackGitHub() {
-            const category = document.getElementById('feedbackCategory').value;
-            const title = document.getElementById('feedbackTitle').value.trim();
-            const body = document.getElementById('feedbackBody').value.trim();
-            const name = document.getElementById('feedbackName').value.trim();
-
-            if (!title) { alert('Please provide a summary of your feedback.'); return; }
-            if (!body) { alert('Please provide some details about the issue.'); return; }
-
-            const categoryLabels = {
-                bug: 'bug', data: 'data-correction', feature: 'feature-request',
-                ui: 'ui-ux', rules: 'rules-question'
-            };
-            const categoryNames = {
-                bug: 'Bug Report', data: 'Data Correction', feature: 'Feature Request',
-                ui: 'UI/UX', rules: 'Rules Question'
-            };
-
-            const issueTitle = '[' + categoryNames[category] + '] ' + title;
-            const issueBody = '**Category:** ' + categoryNames[category] + '\n'
-                + '**Reported by:** ' + (name || 'Anonymous') + '\n'
-                + '**Date:** ' + new Date().toISOString().split('T')[0] + '\n\n'
-                + '## Description\n' + body + '\n\n'
-                + '---\n*Submitted via FQ Character Planner feedback form*';
-
-            const url = 'https://github.com/dsmith2211/fq-planner/issues/new'
-                + '?title=' + encodeURIComponent(issueTitle)
-                + '&body=' + encodeURIComponent(issueBody)
-                + '&labels=' + encodeURIComponent(categoryLabels[category] + ',community-feedback');
-
-            window.open(url, '_blank');
-
-            // Also store locally for tracking
-            const localFeedback = JSON.parse(localStorage.getItem('fq_planner_feedback') || '[]');
-            localFeedback.push({
-                category: category, title: title, body: body, name: name,
-                date: new Date().toISOString(), status: 'submitted'
-            });
-            localStorage.setItem('fq_planner_feedback', JSON.stringify(localFeedback));
-
-            // Clear form
-            document.getElementById('feedbackTitle').value = '';
-            document.getElementById('feedbackBody').value = '';
-            document.getElementById('feedbackName').value = '';
-            alert('GitHub issue page opened in a new tab. Please click "Submit new issue" there to complete your submission. Thank you!');
+            document.getElementById('importStatus').innerHTML = '<p style="color: var(--fq-green);">Character imported successfully!</p>';
         }
 
-        function copyFeedbackToClipboard() {
-            const category = document.getElementById('feedbackCategory').value;
-            const title = document.getElementById('feedbackTitle').value.trim();
-            const body = document.getElementById('feedbackBody').value.trim();
-            const name = document.getElementById('feedbackName').value.trim();
+        function parseAndStorePlots() {
+            const text = document.getElementById('plotsInput').value;
+            const plotTexts = text.split('---').map(t => t.trim()).filter(t => t.length > 0);
 
-            if (!title || !body) { alert('Please fill in summary and details first.'); return; }
+            gmData.plots = [];
+            for (let plotText of plotTexts) {
+                const lines = plotText.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+                let plot = {};
+                for (let line of lines) {
+                    const [key, val] = line.split(':').map(s => s.trim());
+                    if (key && val) {
+                        plot[key.toLowerCase()] = val;
+                    }
+                }
+                if (plot['plot name'] || plot.name) {
+                    gmData.plots.push(plot);
+                }
+            }
 
-            const categoryNames = {
-                bug: 'Bug Report', data: 'Data Correction', feature: 'Feature Request',
-                ui: 'UI/UX', rules: 'Rules Question'
-            };
-
-            const text = 'FQ Character Planner Feedback\n'
-                + '========================\n'
-                + 'Category: ' + categoryNames[category] + '\n'
-                + 'Summary: ' + title + '\n'
-                + 'From: ' + (name || 'Anonymous') + '\n'
-                + 'Date: ' + new Date().toLocaleDateString() + '\n\n'
-                + 'Details:\n' + body + '\n\n'
-                + 'Planner: https://dsmith2211.github.io/fq-planner/';
-
-            navigator.clipboard.writeText(text).then(() => {
-                alert('Feedback copied to clipboard! Paste it in Discord, Facebook, or wherever you prefer.');
-            });
+            saveGMData();
+            alert('Loaded ' + gmData.plots.length + ' plots');
         }
 
-        function loadIssueTracker() {
-            const statusEl = document.getElementById('issueTrackerStatus');
-            const bodyEl = document.getElementById('issueTrackerBody');
-            statusEl.textContent = 'Loading issues...';
+        function parseAndStoreAttendees() {
+            const text = document.getElementById('attendeesInput').value;
+            const charTexts = text.split('---').map(t => t.trim()).filter(t => t.length > 0);
 
-            // Fetch open AND closed issues from GitHub API (public repo, no auth needed)
-            Promise.all([
-                fetch('https://api.github.com/repos/dsmith2211/fq-planner/issues?state=open&labels=community-feedback&per_page=50').then(r => r.json()),
-                fetch('https://api.github.com/repos/dsmith2211/fq-planner/issues?state=closed&labels=community-feedback&per_page=50').then(r => r.json())
-            ]).then(([openIssues, closedIssues]) => {
-                const allIssues = [];
+            gmData.attendees = [];
+            for (let charText of charTexts) {
+                const lines = charText.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+                let char = {};
+                for (let line of lines) {
+                    const parts = line.split('|').map(p => p.trim());
+                    if (parts.length >= 1) {
+                        if (char.name === undefined) {
+                            char.name = parts[0];
+                            if (parts.length >= 2) char.player = parts[1];
+                            if (parts.length >= 3) char.race = parts[2];
+                            if (parts.length >= 4) char.class = parts[3];
+                            if (parts.length >= 5) char.deity = parts[4];
+                            char.skills = parts.slice(5);
+                        }
+                    }
+                }
+                if (char.name) {
+                    gmData.attendees.push(char);
+                }
+            }
 
-                // Process open issues
-                (Array.isArray(openIssues) ? openIssues : []).forEach(issue => {
-                    const labels = issue.labels.map(l => l.name);
-                    let status = 'Open';
-                    let statusColor = 'var(--fq-lime)';
-                    let statusIcon = 'NEW';
-                    if (labels.includes('in-progress')) { status = 'In Progress'; statusColor = '#BADA55'; statusIcon = 'WIP'; }
-                    if (labels.includes('needs-review')) { status = 'Needs Review'; statusColor = 'var(--fq-rust)'; statusIcon = 'REVIEW'; }
-                    if (labels.includes('wont-fix')) { status = 'Won\'t Fix'; statusColor = '#888'; statusIcon = 'DECLINED'; }
+            saveGMData();
+            alert('Loaded ' + gmData.attendees.length + ' characters');
+        }
 
-                    let category = 'General';
-                    if (labels.includes('bug')) category = 'Bug';
-                    if (labels.includes('data-correction')) category = 'Data';
-                    if (labels.includes('feature-request')) category = 'Feature';
-                    if (labels.includes('ui-ux')) category = 'UI/UX';
-                    if (labels.includes('rules-question')) category = 'Rules';
+        function generatePlotMatrix() {
+            const container = document.getElementById('plotMatchingMatrix');
+            if (gmData.plots.length === 0 || gmData.attendees.length === 0) {
+                container.innerHTML = '<p style="color: var(--fq-olive);">Load plots and attendees first</p>';
+                return;
+            }
 
-                    allIssues.push({
-                        status, statusColor, statusIcon, category,
-                        title: issue.title.replace(/^\[.*?\]\s*/, ''),
-                        reported: new Date(issue.created_at).toLocaleDateString(),
-                        resolved: null,
-                        url: issue.html_url
-                    });
-                });
+            let html = '<table style="font-size: 0.85em;">';
+            html += '<thead><tr><th>Plot</th><th>Top Matches</th></tr></thead>';
+            html += '<tbody>';
 
-                // Process closed issues
-                (Array.isArray(closedIssues) ? closedIssues : []).forEach(issue => {
-                    let category = 'General';
-                    const labels = issue.labels.map(l => l.name);
-                    if (labels.includes('bug')) category = 'Bug';
-                    if (labels.includes('data-correction')) category = 'Data';
-                    if (labels.includes('feature-request')) category = 'Feature';
-                    if (labels.includes('ui-ux')) category = 'UI/UX';
-                    if (labels.includes('rules-question')) category = 'Rules';
+            for (let plot of gmData.plots) {
+                let matches = [];
+                for (let attendee of gmData.attendees) {
+                    let score = 0;
+                    const plotName = plot['plot name'] || plot.name || '';
 
-                    allIssues.push({
-                        status: 'Fixed', statusColor: 'var(--fq-green)', statusIcon: 'FIXED', category,
-                        title: issue.title.replace(/^\[.*?\]\s*/, ''),
-                        reported: new Date(issue.created_at).toLocaleDateString(),
-                        resolved: new Date(issue.closed_at).toLocaleDateString(),
-                        url: issue.html_url
-                    });
-                });
+                    // Class match
+                    if (attendee.class && (plotName.toLowerCase().includes(attendee.class.toLowerCase()) || (plot.tags && plot.tags.toLowerCase().includes(attendee.class.toLowerCase())))) {
+                        score += 10;
+                    }
 
-                // Sort: open first, then by date
-                allIssues.sort((a, b) => {
-                    if (a.status !== 'Fixed' && b.status === 'Fixed') return -1;
-                    if (a.status === 'Fixed' && b.status !== 'Fixed') return 1;
-                    return 0;
-                });
+                    // Deity match
+                    if (attendee.deity && plot.tags && plot.tags.toLowerCase().includes(attendee.deity.toLowerCase())) {
+                        score += 5;
+                    }
 
-                if (allIssues.length === 0) {
-                    bodyEl.innerHTML = '<tr><td colspan="5" style="padding: 20px; text-align: center; color: var(--fq-tan);">No community feedback submitted yet. Be the first!</td></tr>';
-                } else {
-                    bodyEl.innerHTML = allIssues.map(issue =>
-                        '<tr style="border-bottom: 1px solid var(--fq-olive);">'
-                        + '<td style="padding: 8px;"><span style="background:' + issue.statusColor + '; color: #000; padding: 2px 8px; border-radius: 3px; font-size: 0.8em; font-weight: bold;">' + issue.statusIcon + '</span></td>'
-                        + '<td style="padding: 8px; color: var(--fq-tan);">' + issue.category + '</td>'
-                        + '<td style="padding: 8px;"><a href="' + issue.url + '" target="_blank" style="color: var(--fq-lime); text-decoration: none;">' + issue.title + '</a></td>'
-                        + '<td style="padding: 8px; color: var(--fq-tan); font-size: 0.9em;">' + issue.reported + '</td>'
-                        + '<td style="padding: 8px; color: ' + (issue.resolved ? 'var(--fq-green)' : 'var(--fq-tan)') + '; font-size: 0.9em;">' + (issue.resolved || '—') + '</td>'
-                        + '</tr>'
-                    ).join('');
+                    // Skill match
+                    if (attendee.skills) {
+                        for (let skill of attendee.skills) {
+                            if (plot.tags && plot.tags.toLowerCase().includes(skill.toLowerCase())) {
+                                score += 3;
+                            }
+                        }
+                    }
+
+                    matches.push({char: attendee.name, score: score});
                 }
 
-                statusEl.textContent = 'Loaded ' + allIssues.length + ' issues. Last refreshed: ' + new Date().toLocaleTimeString();
-            }).catch(err => {
-                statusEl.textContent = 'Could not load issues. GitHub API may be rate-limited. Try again in a minute.';
-                console.error('Issue tracker error:', err);
-            });
+                matches.sort((a,b) => b.score - a.score);
+                matches = matches.slice(0, 5);
+
+                let matchStr = matches.map(m => m.char + ' (' + m.score + ')').join(', ');
+                html += '<tr><td>' + (plot['plot name'] || plot.name || 'Unknown') + '</td><td>' + matchStr + '</td></tr>';
+            }
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
         }
+
+        function submitFeedback() {
+            const title = document.getElementById('feedbackTitle').value;
+            const body = document.getElementById('feedbackBody').value;
+
+            if (!title || !body) {
+                alert('Please fill in both title and description');
+                return;
+            }
+
+            const url = 'https://github.com/dsmith2211/fq-planner/issues/new?title=' + encodeURIComponent(title) + '&body=' + encodeURIComponent(body);
+            window.open(url, '_blank');
+
+            document.getElementById('feedbackStatus').innerHTML = '<p style="color: var(--fq-green);">Opened GitHub Issues in a new tab. Please review and submit your feedback.</p>';
+        }
+
+        // ========== INITIALIZATION ==========
+
+        window.onload = function() {
+            loadState();
+
+            // Restore character data
+            document.getElementById('characterName').value = state.characterName || '';
+            document.getElementById('playerName').value = state.playerName || '';
+            document.getElementById('raceSelect').value = state.race || '';
+            document.getElementById('classSelect').value = state.class || '';
+            document.getElementById('deitySelect').value = state.deity || '';
+            document.getElementById('spTotal').value = state.spTotal || 90;
+
+            updateRaceInfo();
+            updateClassInfo();
+            updateDeityGroup();
+            updateDeityInfo();
+            updateAll();
+        };
     </script>
 </body>
 </html>
