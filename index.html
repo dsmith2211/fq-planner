@@ -14,15 +14,37 @@
             --fq-green: #407C51;
             --fq-green-dark: #2B5336;
             --fq-green-deep: #15291B;
+            --fq-dark-bg: #1a1a14;
+            --fq-arcane: #6B5CE7;
+            --fq-dark-magic: #8B1A1A;
+            --fq-divine: #D4AF37;
+            --fq-element: #2E8B57;
+            --fq-mystic: #9B59B6;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            background-color: var(--fq-dark);
+            background: linear-gradient(135deg, #0d0d0a 0%, #1a1a14 50%, #0f0f0b 100%);
             color: var(--fq-parchment);
             font-family: 'Libre Baskerville', serif;
             line-height: 1.6;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(circle at 20% 50%, rgba(107, 92, 231, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(170, 61, 29, 0.02) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
         }
 
         h1, h2, h3 { font-family: 'Calistoga', cursive; }
@@ -36,55 +58,85 @@
             flex: 1;
             padding: 40px;
             overflow-y: auto;
+            background: linear-gradient(to bottom,
+                rgba(26, 26, 20, 0.8) 0%,
+                rgba(42, 42, 34, 0.4) 50%,
+                rgba(26, 26, 20, 0.8) 100%);
         }
 
         .side-panel {
             width: 320px;
-            background-color: var(--fq-green-deep);
+            background: linear-gradient(135deg, #0d0d0a 0%, #15291B 50%, #0d0d0a 100%);
             padding: 20px;
-            border-left: 3px solid var(--fq-lime);
+            border-left: 4px solid var(--fq-lime);
             overflow-y: auto;
             max-height: 100vh;
             position: sticky;
             top: 0;
+            box-shadow: inset 2px 0 15px rgba(186, 218, 85, 0.1);
         }
 
         .step-indicator {
             display: flex;
             gap: 8px;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
             flex-wrap: wrap;
             justify-content: center;
         }
 
         .step-dot {
-            width: 32px;
-            height: 32px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            background-color: var(--fq-green-dark);
+            background: linear-gradient(135deg, var(--fq-green-dark), #1a2f24);
             border: 2px solid var(--fq-parchment);
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            color: var(--fq-parchment);
+            box-shadow: 0 0 10px rgba(0,0,0,0.5), inset 0 0 5px rgba(0,0,0,0.3);
+            font-size: 0.9em;
+        }
+
+        .step-dot:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(186, 218, 85, 0.2), inset 0 0 5px rgba(0,0,0,0.3);
         }
 
         .step-dot.active {
-            background-color: var(--fq-lime);
+            background: radial-gradient(circle at 30% 30%, #d4ff00, var(--fq-lime));
             color: var(--fq-dark);
             border-color: var(--fq-lime);
+            box-shadow: 0 0 25px rgba(186, 218, 85, 0.6),
+                        0 0 40px rgba(186, 218, 85, 0.3),
+                        inset 0 0 10px rgba(255, 255, 255, 0.2);
+            animation: pulse-glow 2s ease-in-out infinite;
         }
 
         .step-dot.completed {
-            background-color: var(--fq-green);
+            background: linear-gradient(135deg, var(--fq-green), #2a7a3f);
             border-color: var(--fq-green);
+            box-shadow: 0 0 15px rgba(64, 124, 81, 0.4), inset 0 0 5px rgba(0,0,0,0.3);
+        }
+
+        .step-dot.completed::before {
+            content: '✓';
+            font-size: 1.2em;
+            color: var(--fq-parchment);
+            font-weight: bold;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 25px rgba(186, 218, 85, 0.6), 0 0 40px rgba(186, 218, 85, 0.3), inset 0 0 10px rgba(255, 255, 255, 0.2); }
+            50% { box-shadow: 0 0 35px rgba(186, 218, 85, 0.8), 0 0 60px rgba(186, 218, 85, 0.5), inset 0 0 15px rgba(255, 255, 255, 0.3); }
         }
 
         .step-content {
             display: none;
-            animation: fadeIn 0.3s;
+            animation: fadeIn 0.4s ease-out;
         }
 
         .step-content.active {
@@ -92,27 +144,32 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .welcome-hero {
             text-align: center;
-            padding: 40px;
-            background: linear-gradient(135deg, var(--fq-green-dark), var(--fq-green));
-            border-radius: 8px;
-            margin-bottom: 30px;
+            padding: 50px;
+            background: linear-gradient(135deg, rgba(64, 124, 81, 0.3) 0%, rgba(42, 42, 34, 0.5) 50%, rgba(107, 92, 231, 0.15) 100%);
+            border: 2px solid rgba(186, 218, 85, 0.3);
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(186, 218, 85, 0.2), inset 0 0 30px rgba(186, 218, 85, 0.05);
         }
 
         .welcome-hero h1 {
-            font-size: 3em;
+            font-size: 3.5em;
             color: var(--fq-lime);
             margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(186, 218, 85, 0.5), 0 2px 4px rgba(0, 0, 0, 0.8);
         }
 
         .welcome-hero p {
-            font-size: 1.1em;
+            font-size: 1.3em;
             color: var(--fq-parchment);
+            font-style: italic;
         }
 
         .path-buttons {
@@ -120,83 +177,136 @@
             gap: 20px;
             margin-bottom: 40px;
             justify-content: center;
+            flex-wrap: wrap;
         }
 
         .btn {
-            padding: 12px 24px;
+            padding: 14px 28px;
             border: 2px solid var(--fq-parchment);
-            background-color: var(--fq-green);
+            background: linear-gradient(135deg, var(--fq-green), var(--fq-green-dark));
             color: var(--fq-parchment);
             font-family: 'Calistoga', cursive;
             font-size: 1em;
             cursor: pointer;
-            border-radius: 4px;
-            transition: all 0.3s;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
         }
 
         .btn:hover {
-            background-color: var(--fq-rust);
+            background: linear-gradient(135deg, var(--fq-rust), #8b2d15);
             border-color: var(--fq-rust);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(170, 61, 29, 0.4), 0 0 20px rgba(170, 61, 29, 0.2);
+        }
+
+        .btn:active {
+            transform: translateY(0);
         }
 
         .btn.primary {
-            background-color: var(--fq-lime);
+            background: linear-gradient(135deg, var(--fq-lime), #a8cc44);
             color: var(--fq-dark);
             border-color: var(--fq-lime);
+            box-shadow: 0 0 20px rgba(186, 218, 85, 0.3), 0 4px 15px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
         }
 
         .btn.primary:hover {
-            background-color: var(--fq-rust);
+            background: linear-gradient(135deg, var(--fq-rust), #8b2d15);
             border-color: var(--fq-rust);
             color: var(--fq-parchment);
+            box-shadow: 0 0 30px rgba(170, 61, 29, 0.5), 0 6px 20px rgba(170, 61, 29, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
         }
 
         .race-grid, .class-grid, .deity-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 15px;
-            margin: 20px 0;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
         }
 
         .card {
             border: 2px solid var(--fq-parchment);
-            padding: 15px;
-            border-radius: 4px;
+            padding: 20px;
             cursor: pointer;
-            transition: all 0.3s;
-            background-color: rgba(64, 124, 81, 0.3);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            background: linear-gradient(135deg, rgba(64, 124, 81, 0.2) 0%, rgba(42, 42, 34, 0.3) 100%);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3), inset 0 0 20px rgba(186, 218, 85, 0.05);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: 10%;
+            right: 10%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(186, 218, 85, 0.3), transparent);
+        }
+
+        .card::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 10%;
+            right: 10%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(186, 218, 85, 0.3), transparent);
         }
 
         .card:hover {
             border-color: var(--fq-lime);
-            box-shadow: 0 0 10px rgba(186, 218, 85, 0.3);
+            box-shadow: 0 8px 25px rgba(186, 218, 85, 0.25), inset 0 0 20px rgba(186, 218, 85, 0.1);
+            transform: translateY(-4px);
+            background: linear-gradient(135deg, rgba(64, 124, 81, 0.3) 0%, rgba(64, 124, 81, 0.2) 100%);
         }
 
         .card.selected {
             border-color: var(--fq-lime);
-            background-color: rgba(186, 218, 85, 0.2);
-            box-shadow: 0 0 15px rgba(186, 218, 85, 0.5);
+            background: linear-gradient(135deg, rgba(186, 218, 85, 0.15) 0%, rgba(64, 124, 81, 0.25) 100%);
+            box-shadow: 0 0 30px rgba(186, 218, 85, 0.5), 0 8px 25px rgba(186, 218, 85, 0.2), inset 0 0 25px rgba(186, 218, 85, 0.1);
+            animation: card-pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes card-pulse {
+            0%, 100% { box-shadow: 0 0 30px rgba(186, 218, 85, 0.5), 0 8px 25px rgba(186, 218, 85, 0.2), inset 0 0 25px rgba(186, 218, 85, 0.1); }
+            50% { box-shadow: 0 0 40px rgba(186, 218, 85, 0.7), 0 10px 30px rgba(186, 218, 85, 0.3), inset 0 0 35px rgba(186, 218, 85, 0.15); }
         }
 
         .card h3 {
             color: var(--fq-lime);
-            margin-bottom: 10px;
-            font-size: 1.2em;
+            margin-bottom: 12px;
+            font-size: 1.3em;
+            text-shadow: 0 0 10px rgba(186, 218, 85, 0.3);
         }
 
         .card-badge {
             display: inline-block;
-            background-color: var(--fq-rust);
+            background: linear-gradient(135deg, var(--fq-rust), #8b2d15);
             color: var(--fq-parchment);
-            padding: 4px 8px;
-            border-radius: 3px;
-            font-size: 0.85em;
-            margin-bottom: 8px;
+            padding: 6px 12px;
+            font-size: 0.8em;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: 1px solid rgba(170, 61, 29, 0.5);
+            box-shadow: 0 2px 8px rgba(170, 61, 29, 0.2);
         }
 
         .card-details {
             font-size: 0.9em;
-            line-height: 1.5;
+            line-height: 1.6;
+            color: var(--fq-parchment);
         }
 
         .card-details strong {
@@ -204,15 +314,17 @@
         }
 
         .info-panel {
-            background-color: rgba(170, 61, 29, 0.2);
+            background: linear-gradient(135deg, rgba(170, 61, 29, 0.15) 0%, rgba(42, 42, 34, 0.2) 100%);
             border-left: 4px solid var(--fq-rust);
-            padding: 15px;
-            margin-top: 20px;
-            border-radius: 4px;
+            border-top: 1px solid rgba(170, 61, 29, 0.3);
+            border-bottom: 1px solid rgba(170, 61, 29, 0.3);
+            padding: 20px;
+            margin-top: 25px;
+            box-shadow: inset 0 0 20px rgba(170, 61, 29, 0.05);
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
         .form-group label {
@@ -220,131 +332,185 @@
             margin-bottom: 8px;
             font-weight: bold;
             color: var(--fq-lime);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.95em;
         }
 
         .form-group input, .form-group textarea {
             width: 100%;
-            padding: 10px;
-            background-color: rgba(0, 0, 0, 0.3);
+            padding: 12px;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.2));
             border: 1px solid var(--fq-green);
             color: var(--fq-parchment);
             font-family: inherit;
-            border-radius: 4px;
+            transition: all 0.3s;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
         }
 
         .form-group input:focus, .form-group textarea:focus {
             outline: none;
             border-color: var(--fq-lime);
-            box-shadow: 0 0 5px rgba(186, 218, 85, 0.3);
+            box-shadow: 0 0 15px rgba(186, 218, 85, 0.3), inset 0 0 10px rgba(186, 218, 85, 0.1);
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.1));
         }
 
         .level-threshold-table {
             width: 100%;
             border-collapse: collapse;
-            margin: 15px 0;
+            margin: 20px 0;
             font-size: 0.9em;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.1));
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
         .level-threshold-table th, .level-threshold-table td {
             border: 1px solid var(--fq-green);
-            padding: 8px;
+            padding: 12px;
             text-align: center;
         }
 
         .level-threshold-table th {
-            background-color: var(--fq-green);
+            background: linear-gradient(135deg, var(--fq-green), var(--fq-green-dark));
             color: var(--fq-dark);
             font-weight: bold;
+            font-family: 'Calistoga', cursive;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .level-threshold-table tr:hover {
+            background-color: rgba(186, 218, 85, 0.05);
         }
 
         .skill-table {
             width: 100%;
             border-collapse: collapse;
-            margin: 20px 0;
+            margin: 25px 0;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.1));
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
         .skill-table th, .skill-table td {
             border: 1px solid var(--fq-green-dark);
-            padding: 10px;
+            padding: 12px;
             text-align: left;
         }
 
         .skill-table th {
-            background-color: var(--fq-green);
+            background: linear-gradient(135deg, var(--fq-green), var(--fq-green-dark));
             color: var(--fq-dark);
             font-weight: bold;
             font-family: 'Calistoga', cursive;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .skill-table tr {
+            transition: background-color 0.2s;
         }
 
         .skill-table tr:nth-child(even) {
-            background-color: rgba(64, 124, 81, 0.2);
+            background-color: rgba(64, 124, 81, 0.15);
+        }
+
+        .skill-table tr:hover {
+            background-color: rgba(186, 218, 85, 0.1);
         }
 
         .skill-code {
             display: inline-block;
-            background-color: var(--fq-rust);
+            background: linear-gradient(135deg, var(--fq-rust), #8b2d15);
             color: var(--fq-parchment);
-            padding: 2px 6px;
-            border-radius: 3px;
+            padding: 3px 8px;
             font-weight: bold;
-            font-size: 0.85em;
+            font-size: 0.8em;
+            border: 1px solid rgba(170, 61, 29, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
         }
 
         .category-tag {
             display: inline-block;
-            padding: 3px 8px;
-            border-radius: 3px;
+            padding: 4px 10px;
             font-size: 0.8em;
             font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            border: 1px solid rgba(0, 0, 0, 0.3);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
         }
 
-        .category-Fighting { background-color: #8B0000; }
-        .category-Stealth { background-color: #4B0082; }
-        .category-Magic { background-color: #0047AB; }
-        .category-Survival { background-color: #2F5233; }
-        .category-Craft { background-color: #B8860B; }
+        .category-Fighting { background: linear-gradient(135deg, #8B0000, #600000); color: #FFB6C1; }
+        .category-Stealth { background: linear-gradient(135deg, #4B0082, #2d004d); color: #DDA0DD; }
+        .category-Magic { background: linear-gradient(135deg, #0047AB, #002d66); color: #87CEEB; }
+        .category-Survival { background: linear-gradient(135deg, #2F5233, #1a3019); color: #90EE90; }
+        .category-Craft { background: linear-gradient(135deg, #B8860B, #8b6400); color: #FFD700; }
 
         .qty-control {
             display: flex;
-            gap: 5px;
+            gap: 8px;
             align-items: center;
         }
 
         .qty-btn {
-            width: 24px;
-            height: 24px;
+            width: 28px;
+            height: 28px;
             padding: 0;
-            font-size: 0.8em;
+            font-size: 0.85em;
             cursor: pointer;
+            background: linear-gradient(135deg, var(--fq-green), var(--fq-green-dark));
+            border: 1px solid var(--fq-parchment);
+            color: var(--fq-parchment);
+            transition: all 0.2s;
+            font-weight: bold;
+            text-transform: uppercase;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .qty-btn:hover {
+            background: linear-gradient(135deg, var(--fq-lime), #a8cc44);
+            color: var(--fq-dark);
+            border-color: var(--fq-lime);
+            transform: translateY(-1px);
+        }
+
+        .qty-btn:active {
+            transform: translateY(1px);
         }
 
         .spell-school-section {
-            background-color: rgba(64, 124, 81, 0.2);
+            background: linear-gradient(135deg, rgba(64, 124, 81, 0.15), rgba(0, 0, 0, 0.2));
             border: 1px solid var(--fq-green);
-            border-radius: 4px;
             margin-bottom: 15px;
             overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
         }
 
         .spell-school-header {
-            background-color: var(--fq-green);
-            color: var(--fq-dark);
-            padding: 12px;
+            background: linear-gradient(135deg, var(--fq-green), var(--fq-green-dark));
+            color: var(--fq-parchment);
+            padding: 14px;
             cursor: pointer;
             font-weight: bold;
             display: flex;
             justify-content: space-between;
             align-items: center;
             font-family: 'Calistoga', cursive;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .spell-school-header:hover {
-            background-color: var(--fq-rust);
+            background: linear-gradient(135deg, var(--fq-rust), #8b2d15);
+            transform: translateX(2px);
         }
 
         .spell-school-content {
-            padding: 15px;
+            padding: 20px;
             display: none;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.05));
         }
 
         .spell-school-content.open {
@@ -352,53 +518,84 @@
         }
 
         .spell-level-group {
-            margin-bottom: 15px;
-            border-left: 3px solid var(--fq-lime);
+            margin-bottom: 20px;
+            border-left: 4px solid var(--fq-lime);
+            padding: 10px;
             padding-left: 15px;
+            background: linear-gradient(to right, rgba(186, 218, 85, 0.05), transparent);
         }
 
         .spell-level-group h4 {
             color: var(--fq-lime);
-            margin-bottom: 10px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.95em;
         }
 
         .character-sheet {
-            background-color: rgba(64, 124, 81, 0.1);
+            background: linear-gradient(135deg, rgba(64, 124, 81, 0.1) 0%, rgba(42, 42, 34, 0.15) 100%);
             border: 3px solid var(--fq-parchment);
-            border-radius: 4px;
-            padding: 30px;
+            padding: 40px;
+            position: relative;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4), inset 0 0 30px rgba(186, 218, 85, 0.05);
+        }
+
+        .character-sheet::before {
+            content: '✦';
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            font-size: 1.5em;
+            color: rgba(186, 218, 85, 0.2);
+        }
+
+        .character-sheet::after {
+            content: '✦';
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            font-size: 1.5em;
+            color: rgba(186, 218, 85, 0.2);
         }
 
         .char-header {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
+            gap: 25px;
+            margin-bottom: 35px;
+            padding-bottom: 25px;
             border-bottom: 2px solid var(--fq-lime);
         }
 
         .char-title {
             grid-column: 1 / -1;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(186, 218, 85, 0.2);
         }
 
         .char-title h1 {
-            font-size: 2.5em;
+            font-size: 2.8em;
             color: var(--fq-lime);
-            margin-bottom: 10px;
+            margin-bottom: 5px;
+            text-shadow: 0 0 15px rgba(186, 218, 85, 0.3);
         }
 
         .char-field {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 8px 0;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(186, 218, 85, 0.1);
         }
 
         .char-field label {
             color: var(--fq-rust);
             font-weight: bold;
             margin-right: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            font-size: 0.95em;
         }
 
         .char-field value {
@@ -408,28 +605,32 @@
 
         .progress-bar {
             width: 100%;
-            height: 20px;
-            background-color: var(--fq-green-dark);
+            height: 24px;
+            background: linear-gradient(to right, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.1));
             border: 1px solid var(--fq-lime);
-            border-radius: 4px;
             overflow: hidden;
-            margin-top: 5px;
+            margin-top: 8px;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
         }
 
         .progress-fill {
             height: 100%;
             background: linear-gradient(90deg, var(--fq-lime), var(--fq-rust));
-            transition: width 0.3s;
+            transition: width 0.4s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.7em;
+            font-size: 0.75em;
             color: var(--fq-dark);
             font-weight: bold;
+            box-shadow: 0 0 15px rgba(186, 218, 85, 0.3);
         }
 
         .sheet-section {
             margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.05));
+            border-left: 3px solid var(--fq-lime);
         }
 
         .sheet-section h2 {
@@ -437,22 +638,37 @@
             border-bottom: 2px solid var(--fq-rust);
             padding-bottom: 10px;
             margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 1.2em;
         }
 
         .sheet-section h3 {
             color: var(--fq-rust);
             margin-top: 15px;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            font-size: 0.95em;
         }
 
         .sheet-list {
             list-style: none;
-            margin-left: 15px;
+            margin-left: 20px;
         }
 
         .sheet-list li {
-            padding: 5px 0;
+            padding: 6px 0;
             color: var(--fq-parchment);
+            position: relative;
+            padding-left: 15px;
+        }
+
+        .sheet-list li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: var(--fq-lime);
         }
 
         .sheet-list strong {
@@ -463,77 +679,96 @@
             display: flex;
             justify-content: space-between;
             gap: 15px;
-            margin-top: 30px;
+            margin-top: 40px;
+            flex-wrap: wrap;
         }
 
         .nav-buttons button {
             flex: 1;
-            padding: 12px;
+            padding: 14px;
+            min-width: 120px;
         }
 
         .side-panel h3 {
             color: var(--fq-lime);
-            margin-bottom: 15px;
+            margin-bottom: 18px;
             font-size: 1.1em;
-            border-bottom: 1px solid var(--fq-green);
+            border-bottom: 2px solid rgba(186, 218, 85, 0.3);
             padding-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .side-panel .field-summary {
-            margin-bottom: 15px;
+            margin-bottom: 18px;
             font-size: 0.9em;
+            padding: 10px;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.1));
+            border-left: 2px solid var(--fq-lime);
         }
 
         .side-panel .field-label {
             color: var(--fq-rust);
             font-weight: bold;
-            margin-bottom: 3px;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            font-size: 0.85em;
         }
 
         .side-panel .field-value {
             color: var(--fq-parchment);
-            margin-bottom: 10px;
+            margin-bottom: 0;
         }
 
         .sp-progress {
-            margin: 15px 0;
+            margin: 20px 0;
         }
 
         .import-section {
-            background-color: rgba(170, 61, 29, 0.15);
-            border: 1px solid var(--fq-rust);
-            padding: 15px;
-            border-radius: 4px;
-            margin-bottom: 20px;
+            background: linear-gradient(135deg, rgba(170, 61, 29, 0.15) 0%, rgba(42, 42, 34, 0.1) 100%);
+            border: 2px solid var(--fq-rust);
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(170, 61, 29, 0.1);
         }
 
         .import-section h3 {
             color: var(--fq-rust);
-            margin-bottom: 12px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .restrictions {
-            background-color: rgba(200, 0, 0, 0.1);
-            border-left: 3px solid #FF6B6B;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 3px;
+            background: linear-gradient(135deg, rgba(200, 0, 0, 0.1) 0%, rgba(100, 0, 0, 0.05) 100%);
+            border-left: 4px solid #FF6B6B;
+            padding: 12px;
+            margin: 12px 0;
+            border-top: 1px solid rgba(255, 107, 107, 0.2);
+            border-bottom: 1px solid rgba(255, 107, 107, 0.2);
         }
 
         .restrictions strong {
             color: #FF6B6B;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
         }
 
         @media (max-width: 1200px) {
-            .side-panel { width: 250px; }
-            .main-content { padding: 20px; }
+            .side-panel { width: 280px; }
+            .main-content { padding: 30px; }
         }
 
         @media (max-width: 768px) {
             .container { flex-direction: column; }
-            .side-panel { width: 100%; max-height: 200px; position: relative; }
+            .side-panel { width: 100%; max-height: 220px; position: relative; }
+            .main-content { padding: 20px; }
             .race-grid, .class-grid, .deity-grid { grid-template-columns: 1fr; }
             .char-header { grid-template-columns: 1fr; }
+            .welcome-hero { padding: 30px; margin-bottom: 25px; }
+            .welcome-hero h1 { font-size: 2.5em; }
+            .character-sheet { padding: 25px; }
         }
 
         .hidden { display: none; }
@@ -544,190 +779,167 @@
         <div class="main-content">
             <div class="step-indicator" id="stepIndicator"></div>
 
-            <!-- STEP 1: WELCOME / IMPORT -->
+            <!-- STEP 0: WELCOME / IMPORT -->
             <div id="step-0" class="step-content active">
                 <div class="welcome-hero">
-                    <h1>Fantasy Quest</h1>
-                    <p>Character Planner v6</p>
+                    <h1>⚔ FANTASY QUEST ⚔</h1>
+                    <p>Character Planner v6 — Forge Your Destiny</p>
                 </div>
                 <div class="path-buttons">
-                    <button class="btn primary" onclick="startNewCharacter()">New Character</button>
-                    <button class="btn" onclick="toggleImportSection()">Import Existing</button>
+                    <button class="btn" onclick="startNewCharacter()">Begin New Journey</button>
+                    <button class="btn" onclick="toggleImportSection()">Import Existing Character</button>
                 </div>
-
                 <div id="importSection" class="hidden">
                     <div class="import-section">
-                        <h3>Import from Google Sheets</h3>
+                        <h3>⚔ Import from Google Sheets</h3>
                         <div class="form-group">
-                            <label>Google Sheets URL:</label>
+                            <label>Sheets URL:</label>
                             <input type="text" id="sheetsUrl" placeholder="https://docs.google.com/spreadsheets/d/...">
+                            <button class="btn primary" style="margin-top: 10px;" onclick="importFromURL()">Load from Sheets</button>
                         </div>
-                        <button class="btn" onclick="importFromURL()">Import from URL</button>
                     </div>
-
                     <div class="import-section">
-                        <h3>Import from CSV Paste</h3>
+                        <h3>⚔ Paste Character Card Data</h3>
                         <div class="form-group">
-                            <label>Paste CSV or Character Data:</label>
+                            <label>CSV Data:</label>
                             <textarea id="pasteInput" rows="8" placeholder="Paste CSV data here..."></textarea>
+                            <button class="btn primary" style="margin-top: 10px;" onclick="importFromPaste()">Parse & Import</button>
                         </div>
-                        <button class="btn" onclick="importFromPaste()">Import from Paste</button>
                     </div>
-
                     <div id="importSummary" class="import-section hidden"></div>
                 </div>
             </div>
 
-            <!-- STEP 2: RACE SELECTION -->
+            <!-- STEP 1: RACE -->
             <div id="step-1" class="step-content">
-                <h2>Step 2: Select Your Race</h2>
-                <p>Choose your character's race. Each provides unique bonuses, limitations, and resistances.</p>
+                <h2>⚔ Choose Your Race</h2>
+                <p style="margin-bottom: 20px; color: var(--fq-parchment); font-style: italic;">Every hero's tale begins with their bloodline. Choose wisely.</p>
                 <div class="race-grid" id="raceGrid"></div>
                 <div id="raceInfo" class="info-panel hidden"></div>
                 <div class="nav-buttons">
                     <button class="btn" onclick="goToStep(0)">Back</button>
-                    <button class="btn primary" id="nextRace" onclick="goToStep(2)" disabled>Next</button>
+                    <button class="btn primary" id="nextRace" onclick="goToStep(2)" disabled>Next: Choose Class</button>
                 </div>
             </div>
 
-            <!-- STEP 3: CLASS SELECTION -->
+            <!-- STEP 2: CLASS -->
             <div id="step-2" class="step-content">
-                <h2>Step 3: Select Your Class</h2>
-                <p>Choose your class. Some classes are restricted by race.</p>
+                <h2>⚔ Choose Your Class</h2>
+                <p style="margin-bottom: 20px; color: var(--fq-parchment); font-style: italic;">Your profession defines how you'll face the trials ahead.</p>
                 <div class="class-grid" id="classGrid"></div>
                 <div id="classInfo" class="info-panel hidden"></div>
                 <div class="nav-buttons">
                     <button class="btn" onclick="goToStep(1)">Back</button>
-                    <button class="btn primary" id="nextClass" onclick="goToStep(3)" disabled>Next</button>
+                    <button class="btn primary" id="nextClass" onclick="goToStep(3)" disabled>Next: Choose Deity</button>
                 </div>
             </div>
 
-            <!-- STEP 4: DEITY SELECTION -->
+            <!-- STEP 3: DEITY -->
             <div id="step-3" class="step-content">
-                <h2>Step 4: Select a Deity (Optional)</h2>
-                <p>Choose a deity to gain special benefits, or skip if you prefer no deity.</p>
-                <div class="nav-buttons">
-                    <button class="btn" onclick="selectDeity('None'); goToStep(4)">Skip Deity</button>
-                </div>
+                <h2>⚔ Choose Your Deity</h2>
+                <p style="margin-bottom: 20px; color: var(--fq-parchment); font-style: italic;">Select a divine patron to guide your path. (Divine magic users) Choose "No Deity" for others.</p>
                 <div class="deity-grid" id="deityGrid"></div>
                 <div id="deityInfo" class="info-panel hidden"></div>
                 <div class="nav-buttons">
                     <button class="btn" onclick="goToStep(2)">Back</button>
-                    <button class="btn primary" id="nextDeity" onclick="goToStep(4)">Next</button>
+                    <button class="btn primary" id="nextDeity" onclick="goToStep(4)">Next: Assign Skill Points</button>
                 </div>
             </div>
 
-            <!-- STEP 5: SKILL POINTS BUDGET -->
+            <!-- STEP 4: SKILL POINTS -->
             <div id="step-4" class="step-content">
-                <h2>Step 5: Set Your Budget</h2>
-                <p>Configure your character's skill points budget and basic information.</p>
-
+                <h2>⚔ Assign Your Skill Points</h2>
                 <div class="form-group">
                     <label>Character Name:</label>
                     <input type="text" id="charName" placeholder="Enter character name" oninput="updateState('charName', this.value)">
                 </div>
-
                 <div class="form-group">
                     <label>Player Name:</label>
                     <input type="text" id="playerName" placeholder="Enter your name" oninput="updateState('playerName', this.value)">
                 </div>
-
                 <div class="form-group">
-                    <label>Total Skill Points:</label>
+                    <label>Total Skill Points Available:</label>
                     <input type="number" id="spTotal" value="90" min="0" max="5000" oninput="updateState('spTotal', parseInt(this.value))">
                 </div>
-
-                <h3>Level Thresholds</h3>
+                <h3>⚜ Level Thresholds</h3>
                 <table class="level-threshold-table">
                     <thead>
                         <tr>
                             <th>Level</th>
-                            <th>Required SP</th>
-                            <th>Cumulative</th>
+                            <th>Threshold</th>
                         </tr>
                     </thead>
                     <tbody id="levelTable"></tbody>
                 </table>
-
                 <div class="nav-buttons">
                     <button class="btn" onclick="goToStep(3)">Back</button>
-                    <button class="btn primary" onclick="goToStep(5)">Next</button>
+                    <button class="btn primary" onclick="goToStep(5)">Next: Purchase Skills</button>
                 </div>
             </div>
 
-            <!-- STEP 6: SKILLS SHOPPING -->
+            <!-- STEP 5: SKILLS -->
             <div id="step-5" class="step-content">
-                <h2>Step 6: Purchase Skills</h2>
-                <p>Build your character's skill set. Be strategic with your skill point budget!</p>
-
-                <div class="form-group" style="margin-bottom: 15px;">
-                    <label>Category Filter:</label>
-                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                        <button class="btn" style="flex: 1; min-width: 80px;" onclick="setSkillCategory('All')">All</button>
-                        <button class="btn" style="flex: 1; min-width: 80px;" onclick="setSkillCategory('Fighting')">Fighting</button>
-                        <button class="btn" style="flex: 1; min-width: 80px;" onclick="setSkillCategory('Stealth')">Stealth</button>
-                        <button class="btn" style="flex: 1; min-width: 80px;" onclick="setSkillCategory('Magic')">Magic</button>
-                        <button class="btn" style="flex: 1; min-width: 80px;" onclick="setSkillCategory('Survival')">Survival</button>
-                        <button class="btn" style="flex: 1; min-width: 80px;" onclick="setSkillCategory('Craft')">Craft</button>
-                    </div>
+                <h2>⚔ Purchase Skills</h2>
+                <div style="margin-bottom: 20px; display: flex; gap: 20px; align-items: center; flex-wrap: wrap;">
+                    <select id="categoryFilter" onchange="setSkillCategory(this.value)" style="padding: 8px; background: linear-gradient(135deg, var(--fq-green), var(--fq-green-dark)); color: var(--fq-parchment); border: 1px solid var(--fq-parchment); cursor: pointer; font-family: inherit;">
+                        <option value="">All Categories</option>
+                        <option value="Fighting">Fighting</option>
+                        <option value="Stealth">Stealth</option>
+                        <option value="Magic">Magic</option>
+                        <option value="Survival">Survival</option>
+                        <option value="Craft">Craft</option>
+                    </select>
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="checkbox" id="hideNA" onchange="renderSkills()">
+                        <span style="color: var(--fq-parchment);">Hide Unavailable</span>
+                    </label>
                 </div>
-
-                <label style="display: flex; gap: 10px; align-items: center; margin-bottom: 15px;">
-                    <input type="checkbox" id="hideNA" onchange="renderSkills()">
-                    <span>Hide N/A for this class</span>
-                </label>
-
                 <table class="skill-table">
                     <thead>
                         <tr>
-                            <th>Skill</th>
-                            <th>Category</th>
-                            <th>Code</th>
-                            <th>Cost</th>
-                            <th>Qty</th>
-                            <th>Total</th>
+                            <th style="width: 15%;">Code</th>
+                            <th style="width: 25%;">Skill Name</th>
+                            <th style="width: 15%;">Category</th>
+                            <th style="width: 10%;">Cost</th>
+                            <th style="width: 10%;">Qty</th>
+                            <th style="width: 25%;">Action</th>
                         </tr>
                     </thead>
                     <tbody id="skillsBody"></tbody>
                 </table>
-
                 <div class="nav-buttons">
                     <button class="btn" onclick="goToStep(4)">Back</button>
-                    <button class="btn primary" id="nextSkills" onclick="goToStep(6)">Next</button>
+                    <button class="btn primary" id="nextSkills" onclick="goToStep(6)">Next: Purchase Spells</button>
                 </div>
             </div>
 
-            <!-- STEP 7: SPELLS SHOPPING -->
+            <!-- STEP 6: SPELLS -->
             <div id="step-6" class="step-content">
-                <h2>Step 7: Learn Spells</h2>
-                <p>If your class learns magic, purchase spells here. Otherwise, skip to your character sheet.</p>
-
+                <h2>⚔ Purchase Spells</h2>
                 <div id="spellsContainer"></div>
-
                 <div class="nav-buttons">
                     <button class="btn" onclick="goToStep(5)">Back</button>
-                    <button class="btn primary" onclick="goToStep(7)">Next</button>
+                    <button class="btn primary" onclick="goToStep(7)">Next: Review Character</button>
                 </div>
             </div>
 
-            <!-- STEP 8: CHARACTER SHEET -->
+            <!-- STEP 7: CHARACTER SHEET -->
             <div id="step-7" class="step-content">
+                <h2>⚔ Your Character Sheet</h2>
                 <div class="character-sheet" id="characterSheet"></div>
-
                 <div class="nav-buttons">
-                    <button class="btn" onclick="goToStep(5)">Edit Build</button>
-                    <button class="btn" onclick="clearAll()">Clear & Start Over</button>
-                    <button class="btn" onclick="exportCharacter()">Export</button>
-                    <button class="btn primary" onclick="window.print()">Print</button>
+                    <button class="btn" onclick="goToStep(6)">Back</button>
+                    <button class="btn primary" onclick="exportCharacter()">Export Character</button>
+                    <button class="btn" onclick="startNewCharacter()">Start Over</button>
                 </div>
             </div>
         </div>
 
         <!-- SIDE PANEL -->
         <div class="side-panel">
-            <h3>Character Summary</h3>
+            <h3>⚔ Character Build</h3>
             <div class="field-summary">
-                <div class="field-label">Name</div>
+                <div class="field-label">Character Name</div>
                 <div class="field-value" id="sideName">—</div>
             </div>
             <div class="field-summary">
@@ -743,27 +955,22 @@
                 <div class="field-value" id="sideDeity">—</div>
             </div>
             <div class="sp-progress">
-                <div class="field-label">Skill Points</div>
-                <div class="field-value">
+                <div class="field-label" style="margin-bottom: 8px;">Skill Points</div>
+                <div style="font-size: 0.95em; margin-bottom: 8px;">
                     <span id="sideSpSpent">0</span> / <span id="sideSpTotal">90</span>
                 </div>
                 <div class="progress-bar">
                     <div class="progress-fill" id="sideProgress" style="width: 0%"></div>
                 </div>
             </div>
-            <div style="border-top: 1px solid var(--fq-green); padding-top: 15px; margin-top: 15px;">
-                <div class="field-label">Purchased Skills</div>
-                <div id="sidePurchasedSkills" style="font-size: 0.85em; margin-bottom: 15px;"></div>
-                <div class="field-label">Purchased Spells</div>
-                <div id="sidePurchasedSpells" style="font-size: 0.85em; margin-bottom: 15px;"></div>
-                <button class="btn" style="width: 100%; margin-top: 15px;" onclick="clearAll()">Clear Cart</button>
-            </div>
+            <h3 style="margin-top: 25px;">⚔ Purchased Skills</h3>
+            <div id="sidePurchasedSkills" style="font-size: 0.85em; margin-bottom: 15px;"></div>
+            <h3>⚔ Purchased Spells</h3>
+            <div id="sidePurchasedSpells" style="font-size: 0.85em; margin-bottom: 15px;"></div>
         </div>
     </div>
 
     <script>
-        // ========== ENGINE CONSTANTS (DO NOT MODIFY) ==========
-
         const RACES = {
             Human: {
                 bonuses: [],
