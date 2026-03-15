@@ -1416,12 +1416,18 @@
             let total = 0;
             for (const skillName in state.skills) {
                 const qty = state.skills[skillName] || 0;
+                const skill = SKILLS.find(s => s.name === skillName);
                 // Prefer imported card cost (customCosts) over DB cost
                 // Card costs reflect what was actually paid; DB costs are for new purchases
-                let cost = (state.customCosts && state.customCosts[skillName] !== undefined)
-                    ? state.customCosts[skillName]
-                    : getSkillCost(skillName, state.class, state.race, state.deity);
-                if (cost !== null && cost !== undefined) total += cost * qty;
+                if (state.customCosts && state.customCosts[skillName] !== undefined) {
+                    // Imported characters: use flat cost × qty (card recorded the actual cost)
+                    total += state.customCosts[skillName] * qty;
+                } else {
+                    const baseCost = getSkillCost(skillName, state.class, state.race, state.deity);
+                    if (baseCost !== null && baseCost !== undefined) {
+                        total += getSkillTotalCost(baseCost, qty, skill ? skill.codes : 'O');
+                    }
+                }
             }
             for (const school in state.spells) {
                 for (const level in state.spells[school]) {
@@ -1620,6 +1626,58 @@
             }
         }
 
+        // Multi-purchase cost rules (Rulebook p26):
+        // O = One purchase only
+        // M = Multiple purchase, flat cost (no increase)
+        // # = Multiple purchase, cost increases by base each time (base, base*2, base*3...)
+        // % = Same as # but 4th purchase onward, calculated total is halved
+        //     e.g., base=20: 1st=20, 2nd=40, 3rd=60, 4th=40 (80/2), 5th=50 (100/2)
+
+        function getSkillPurchaseType(codes) {
+            if (!codes) return 'O';
+            if (codes.includes('%')) return '%';
+            if (codes.includes('#')) return '#';
+            if (codes.includes('M')) return 'M';
+            return 'O';
+        }
+
+        function getMaxPurchases(codes) {
+            const type = getSkillPurchaseType(codes);
+            if (type === 'O') return 1;
+            // # and % and M are technically unlimited, cap at reasonable max for UI
+            return 10;
+        }
+
+        function getNthPurchaseCost(baseCost, n, purchaseType) {
+            // n is 1-based (1st purchase, 2nd purchase, etc.)
+            if (purchaseType === 'M') return baseCost; // flat cost every time
+            if (purchaseType === 'O') return n === 1 ? baseCost : 0;
+            if (purchaseType === '#') return baseCost * n;
+            if (purchaseType === '%') {
+                // Same as # for purchases 1-3
+                // 4th purchase onward: (baseCost * n) / 2
+                if (n <= 3) return baseCost * n;
+                return Math.ceil((baseCost * n) / 2);
+            }
+            return baseCost;
+        }
+
+        function getSkillTotalCost(baseCost, qty, codes) {
+            if (!baseCost || qty <= 0) return 0;
+            const type = getSkillPurchaseType(codes);
+            let total = 0;
+            for (let i = 1; i <= qty; i++) {
+                total += getNthPurchaseCost(baseCost, i, type);
+            }
+            return total;
+        }
+
+        function getNextPurchaseCost(baseCost, currentQty, codes) {
+            if (!baseCost) return null;
+            const type = getSkillPurchaseType(codes);
+            return getNthPurchaseCost(baseCost, currentQty + 1, type);
+        }
+
         function renderSkills() {
             const hideNA = document.getElementById('hideNA').checked;
             const tbody = document.getElementById('skillsBody');
@@ -1631,29 +1689,46 @@
             }
 
             for (const skill of filtered) {
-                const cost = getSkillCost(skill.name, state.class, state.race, state.deity);
-                if (hideNA && cost === null) continue;
+                const baseCost = getSkillCost(skill.name, state.class, state.race, state.deity);
+                if (hideNA && baseCost === null) continue;
 
                 const qty = state.skills[skill.name] || 0;
-                const maxQty = skill.code === 'M' ? 5 : 1;
+                const maxQty = getMaxPurchases(skill.codes);
+                const purchaseType = getSkillPurchaseType(skill.codes);
 
-                const costStr = cost === null ? 'N/A' : (cost === 0 ? 'Free' : cost);
-                const totalCost = cost && cost > 0 ? cost * qty : 0;
+                const totalCost = getSkillTotalCost(baseCost, qty, skill.codes);
+
+                // Show base cost and next purchase cost for scaling skills
+                let costStr;
+                if (baseCost === null) {
+                    costStr = '<span style="color: var(--fq-rust);">N/A</span>';
+                } else if (baseCost === 0) {
+                    costStr = 'Free';
+                } else if (purchaseType === '#' || purchaseType === '%') {
+                    const nextCost = qty < maxQty ? getNextPurchaseCost(baseCost, qty, skill.codes) : null;
+                    costStr = `${baseCost} <span style="font-size:0.75em;color:var(--fq-rust);">(${purchaseType})</span>`;
+                    if (nextCost && qty > 0) costStr += `<br><span style="font-size:0.8em;">Next: ${nextCost}</span>`;
+                } else {
+                    costStr = baseCost;
+                }
+
+                const atMax = qty >= maxQty || baseCost === null;
+                const canAdd = !atMax && baseCost !== null;
 
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${skill.name}</td>
                     <td><span class="category-tag category-${skill.category}">${skill.category}</span></td>
-                    <td><span class="skill-code">${skill.code}</span></td>
+                    <td><span class="skill-code">${skill.codes}</span></td>
                     <td>${costStr}</td>
                     <td>
                         <div class="qty-control">
-                            <button class="qty-btn" onclick="buySkill('${skill.name}', -1)">−</button>
+                            <button class="qty-btn" onclick="buySkill('${skill.name}', -1)" ${qty <= 0 ? 'disabled' : ''}>−</button>
                             <span>${qty}</span>
-                            <button class="qty-btn" onclick="buySkill('${skill.name}', 1)" ${qty >= maxQty && skill.code !== 'M' ? 'disabled' : ''}>+</button>
+                            <button class="qty-btn" onclick="buySkill('${skill.name}', 1)" ${!canAdd ? 'disabled' : ''}>+</button>
                         </div>
                     </td>
-                    <td>${totalCost}</td>
+                    <td>${totalCost > 0 ? totalCost : '—'}</td>
                 `;
                 tbody.appendChild(row);
             }
@@ -1664,11 +1739,11 @@
         function buySkill(skillName, delta) {
             if (!state.skills[skillName]) state.skills[skillName] = 0;
             const skill = SKILLS.find(s => s.name === skillName);
-            const maxQty = skill.code === 'M' ? 5 : 1;
-            const cost = getSkillCost(skillName, state.class, state.race, state.deity);
+            const maxQty = getMaxPurchases(skill.codes);
+            const baseCost = getSkillCost(skillName, state.class, state.race, state.deity);
 
             if (delta > 0 && state.skills[skillName] >= maxQty) return;
-            if (delta > 0 && cost === null) return;
+            if (delta > 0 && baseCost === null) return;
 
             state.skills[skillName] += delta;
             if (state.skills[skillName] < 0) state.skills[skillName] = 0;
