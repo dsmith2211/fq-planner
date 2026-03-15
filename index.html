@@ -3,854 +3,760 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fantasy Quest LARP Character Planner v5</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <title>Fantasy Quest Character Planner v6</title>
     <link href="https://fonts.googleapis.com/css2?family=Calistoga&family=Libre+Baskerville:ital@0;1&display=swap" rel="stylesheet">
     <style>
         :root {
             --fq-dark: #393D32;
             --fq-parchment: #F1E3C8;
-            --fq-parchment-light: #F3EFE7;
-            --fq-olive: #676758;
+            --fq-lime: #BADA55;
             --fq-rust: #AA3D1D;
-            --fq-rust-dark: #9E3B1B;
             --fq-green: #407C51;
             --fq-green-dark: #2B5336;
             --fq-green-deep: #15291B;
-            --fq-lime: #BADA55;
-            --fq-btn-green: #63AA4B;
-            --fq-tan: #C3BAA3;
-            --fq-dark-bg: #04320A;
-            --fq-text: #F1E3C8;
-            --fq-text-dark: #393D32;
-            --fq-warning: #f39c12;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
+            background-color: var(--fq-dark);
+            color: var(--fq-parchment);
             font-family: 'Libre Baskerville', serif;
-            background: var(--fq-dark);
-            color: var(--fq-text);
             line-height: 1.6;
         }
 
-        h1, h2, h3, h4, h5, h6 {
-            font-family: 'Calistoga', cursive;
-        }
+        h1, h2, h3 { font-family: 'Calistoga', cursive; }
 
         .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
-            margin-right: 320px;
-        }
-
-        @media (max-width: 1024px) {
-            .container { margin-right: 0; }
-        }
-
-        .header {
-            background: linear-gradient(135deg, var(--fq-green-deep) 0%, var(--fq-green-dark) 100%);
-            padding: 30px;
-            border-radius: 8px;
-            margin-bottom: 30px;
-            text-align: center;
-            border-left: 5px solid var(--fq-rust);
-        }
-
-        .header h1 {
-            font-size: 2.5em;
-            color: var(--fq-lime);
-            margin-bottom: 5px;
-        }
-
-        .header p {
-            color: var(--fq-parchment);
-            font-size: 0.95em;
-        }
-
-        .tabs {
             display: flex;
-            flex-wrap: wrap;
-            gap: 5px;
-            margin-bottom: 20px;
-            border-bottom: 2px solid var(--fq-olive);
-            padding-bottom: 10px;
+            min-height: 100vh;
         }
 
-        .tab-btn {
-            padding: 10px 20px;
-            background: var(--fq-olive);
-            border: none;
-            color: var(--fq-text);
-            cursor: pointer;
-            font-family: 'Calistoga', cursive;
-            font-size: 0.95em;
-            border-radius: 4px 4px 0 0;
-            transition: all 0.3s ease;
+        .main-content {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
         }
 
-        .tab-btn:hover {
-            background: var(--fq-btn-green);
-            color: var(--fq-text-dark);
-        }
-
-        .tab-btn.active {
-            background: var(--fq-btn-green);
-            color: var(--fq-text-dark);
-            font-weight: bold;
-        }
-
-        .tab-content {
-            display: none;
-            background: var(--fq-parchment-light);
+        .side-panel {
+            width: 320px;
+            background-color: var(--fq-green-deep);
             padding: 20px;
-            border-radius: 0 0 8px 8px;
-            color: var(--fq-text-dark);
+            border-left: 3px solid var(--fq-lime);
+            overflow-y: auto;
+            max-height: 100vh;
+            position: sticky;
+            top: 0;
         }
 
-        .tab-content.active {
+        .step-indicator {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .step-dot {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: var(--fq-green-dark);
+            border: 2px solid var(--fq-parchment);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .step-dot.active {
+            background-color: var(--fq-lime);
+            color: var(--fq-dark);
+            border-color: var(--fq-lime);
+        }
+
+        .step-dot.completed {
+            background-color: var(--fq-green);
+            border-color: var(--fq-green);
+        }
+
+        .step-content {
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+
+        .step-content.active {
             display: block;
         }
 
-        .form-row {
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .welcome-hero {
+            text-align: center;
+            padding: 40px;
+            background: linear-gradient(135deg, var(--fq-green-dark), var(--fq-green));
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .welcome-hero h1 {
+            font-size: 3em;
+            color: var(--fq-lime);
+            margin-bottom: 10px;
+        }
+
+        .welcome-hero p {
+            font-size: 1.1em;
+            color: var(--fq-parchment);
+        }
+
+        .path-buttons {
             display: flex;
             gap: 20px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
+            margin-bottom: 40px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: 2px solid var(--fq-parchment);
+            background-color: var(--fq-green);
+            color: var(--fq-parchment);
+            font-family: 'Calistoga', cursive;
+            font-size: 1em;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background-color: var(--fq-rust);
+            border-color: var(--fq-rust);
+        }
+
+        .btn.primary {
+            background-color: var(--fq-lime);
+            color: var(--fq-dark);
+            border-color: var(--fq-lime);
+        }
+
+        .btn.primary:hover {
+            background-color: var(--fq-rust);
+            border-color: var(--fq-rust);
+            color: var(--fq-parchment);
+        }
+
+        .race-grid, .class-grid, .deity-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .card {
+            border: 2px solid var(--fq-parchment);
+            padding: 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background-color: rgba(64, 124, 81, 0.3);
+        }
+
+        .card:hover {
+            border-color: var(--fq-lime);
+            box-shadow: 0 0 10px rgba(186, 218, 85, 0.3);
+        }
+
+        .card.selected {
+            border-color: var(--fq-lime);
+            background-color: rgba(186, 218, 85, 0.2);
+            box-shadow: 0 0 15px rgba(186, 218, 85, 0.5);
+        }
+
+        .card h3 {
+            color: var(--fq-lime);
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .card-badge {
+            display: inline-block;
+            background-color: var(--fq-rust);
+            color: var(--fq-parchment);
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 0.85em;
+            margin-bottom: 8px;
+        }
+
+        .card-details {
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+
+        .card-details strong {
+            color: var(--fq-lime);
+        }
+
+        .info-panel {
+            background-color: rgba(170, 61, 29, 0.2);
+            border-left: 4px solid var(--fq-rust);
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 4px;
         }
 
         .form-group {
-            flex: 1;
-            min-width: 200px;
+            margin-bottom: 20px;
         }
 
         .form-group label {
             display: block;
-            font-weight: bold;
-            margin-bottom: 5px;
-            color: var(--fq-text-dark);
-        }
-
-        .form-group-hint {
-            font-size: 0.85em;
-            color: #999;
-            margin-top: 2px;
-            font-style: italic;
-        }
-
-        .form-group select, .form-group input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid var(--fq-olive);
-            border-radius: 4px;
-            font-family: 'Libre Baskerville', serif;
-            color: var(--fq-text-dark);
-            background: white;
-        }
-
-        .form-group select:focus, .form-group input:focus {
-            outline: none;
-            border-color: var(--fq-rust);
-            box-shadow: 0 0 5px rgba(170, 61, 29, 0.3);
-        }
-
-        .stat-bar {
-            display: flex;
-            gap: 20px;
-            padding: 15px;
-            background: var(--fq-olive);
-            border-radius: 4px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .stat-item {
-            flex: 1;
-            min-width: 150px;
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
-            text-align: center;
-        }
-
-        .stat-item .label {
-            font-size: 0.85em;
-            opacity: 0.9;
-        }
-
-        .stat-item .value {
-            font-size: 1.5em;
+            margin-bottom: 8px;
             font-weight: bold;
             color: var(--fq-lime);
         }
 
-        .warning-text {
-            color: var(--fq-rust);
-            font-weight: bold;
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--fq-green);
+            color: var(--fq-parchment);
+            font-family: inherit;
+            border-radius: 4px;
+        }
+
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: var(--fq-lime);
+            box-shadow: 0 0 5px rgba(186, 218, 85, 0.3);
+        }
+
+        .level-threshold-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
             font-size: 0.9em;
         }
 
-        button {
-            padding: 8px 15px;
-            background: var(--fq-btn-green);
-            border: none;
-            color: var(--fq-text-dark);
+        .level-threshold-table th, .level-threshold-table td {
+            border: 1px solid var(--fq-green);
+            padding: 8px;
+            text-align: center;
+        }
+
+        .level-threshold-table th {
+            background-color: var(--fq-green);
+            color: var(--fq-dark);
+            font-weight: bold;
+        }
+
+        .skill-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .skill-table th, .skill-table td {
+            border: 1px solid var(--fq-green-dark);
+            padding: 10px;
+            text-align: left;
+        }
+
+        .skill-table th {
+            background-color: var(--fq-green);
+            color: var(--fq-dark);
+            font-weight: bold;
+            font-family: 'Calistoga', cursive;
+        }
+
+        .skill-table tr:nth-child(even) {
+            background-color: rgba(64, 124, 81, 0.2);
+        }
+
+        .skill-code {
+            display: inline-block;
+            background-color: var(--fq-rust);
+            color: var(--fq-parchment);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: bold;
+            font-size: 0.85em;
+        }
+
+        .category-tag {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .category-Fighting { background-color: #8B0000; }
+        .category-Stealth { background-color: #4B0082; }
+        .category-Magic { background-color: #0047AB; }
+        .category-Survival { background-color: #2F5233; }
+        .category-Craft { background-color: #B8860B; }
+
+        .qty-control {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+
+        .qty-btn {
+            width: 24px;
+            height: 24px;
+            padding: 0;
+            font-size: 0.8em;
             cursor: pointer;
+        }
+
+        .spell-school-section {
+            background-color: rgba(64, 124, 81, 0.2);
+            border: 1px solid var(--fq-green);
             border-radius: 4px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .spell-school-header {
+            background-color: var(--fq-green);
+            color: var(--fq-dark);
+            padding: 12px;
+            cursor: pointer;
             font-weight: bold;
-            transition: background 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'Calistoga', cursive;
         }
 
-        button:hover {
-            background: var(--fq-rust);
-            color: var(--fq-text);
+        .spell-school-header:hover {
+            background-color: var(--fq-rust);
         }
 
-        button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            background: #ccc;
-        }
-
-        .import-section {
-            background: white;
-            padding: 20px;
-            border-radius: 4px;
-            margin-bottom: 20px;
-            border: 2px dashed var(--fq-rust);
-        }
-
-        .import-section h3 {
-            color: var(--fq-text-dark);
-            margin-bottom: 10px;
-        }
-
-        .import-section p {
-            color: var(--fq-text-dark);
-            margin-bottom: 10px;
-            font-size: 0.9em;
-        }
-
-        .import-section textarea {
-            width: 100%;
-            min-height: 150px;
-            padding: 10px;
-            border: 1px solid var(--fq-olive);
-            border-radius: 4px;
-            font-family: monospace;
-            font-size: 0.9em;
-        }
-
-        .import-section input[type="text"] {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid var(--fq-olive);
-            border-radius: 4px;
-        }
-
-        .import-section button {
-            margin-top: 10px;
-            margin-right: 5px;
-        }
-
-        .import-summary {
+        .spell-school-content {
             padding: 15px;
-            margin-top: 15px;
-            background: rgba(100, 200, 100, 0.2);
-            border-left: 4px solid var(--fq-green);
-            border-radius: 4px;
-            color: var(--fq-text-dark);
-        }
-
-        .import-summary.hidden {
             display: none;
         }
 
-        .import-summary h4 {
+        .spell-school-content.open {
+            display: block;
+        }
+
+        .spell-level-group {
+            margin-bottom: 15px;
+            border-left: 3px solid var(--fq-lime);
+            padding-left: 15px;
+        }
+
+        .spell-level-group h4 {
+            color: var(--fq-lime);
+            margin-bottom: 10px;
+        }
+
+        .character-sheet {
+            background-color: rgba(64, 124, 81, 0.1);
+            border: 3px solid var(--fq-parchment);
+            border-radius: 4px;
+            padding: 30px;
+        }
+
+        .char-header {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--fq-lime);
+        }
+
+        .char-title {
+            grid-column: 1 / -1;
+        }
+
+        .char-title h1 {
+            font-size: 2.5em;
+            color: var(--fq-lime);
+            margin-bottom: 10px;
+        }
+
+        .char-field {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+        }
+
+        .char-field label {
+            color: var(--fq-rust);
+            font-weight: bold;
+            margin-right: 15px;
+        }
+
+        .char-field value {
+            color: var(--fq-parchment);
+            font-size: 1.1em;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: var(--fq-green-dark);
+            border: 1px solid var(--fq-lime);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--fq-lime), var(--fq-rust));
+            transition: width 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7em;
+            color: var(--fq-dark);
+            font-weight: bold;
+        }
+
+        .sheet-section {
+            margin-bottom: 30px;
+        }
+
+        .sheet-section h2 {
+            color: var(--fq-lime);
+            border-bottom: 2px solid var(--fq-rust);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .sheet-section h3 {
+            color: var(--fq-rust);
+            margin-top: 15px;
             margin-bottom: 8px;
-            color: var(--fq-text-dark);
         }
 
-        .import-summary ul {
-            margin-left: 20px;
-            font-size: 0.9em;
+        .sheet-list {
+            list-style: none;
+            margin-left: 15px;
         }
 
-        .side-panel {
-            position: fixed;
-            right: 0;
-            top: 0;
-            width: 300px;
-            height: 100vh;
-            background: var(--fq-green-deep);
-            color: var(--fq-text);
-            padding: 20px;
-            overflow-y: auto;
-            border-left: 4px solid var(--fq-rust);
-            box-shadow: -4px 0 12px rgba(0, 0, 0, 0.5);
+        .sheet-list li {
+            padding: 5px 0;
+            color: var(--fq-parchment);
+        }
+
+        .sheet-list strong {
+            color: var(--fq-lime);
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .nav-buttons button {
+            flex: 1;
+            padding: 12px;
         }
 
         .side-panel h3 {
             color: var(--fq-lime);
             margin-bottom: 15px;
             font-size: 1.1em;
+            border-bottom: 1px solid var(--fq-green);
+            padding-bottom: 10px;
         }
 
-        .progress-bar {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 4px;
-            overflow: hidden;
-            margin-bottom: 10px;
-            height: 20px;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--fq-rust), var(--fq-lime));
-            width: 0%;
-            transition: width 0.3s ease;
-        }
-
-        .cart-item {
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.1);
-            margin: 5px 0;
-            border-radius: 4px;
+        .side-panel .field-summary {
+            margin-bottom: 15px;
             font-size: 0.9em;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
         }
 
-        .cart-item-name {
-            flex: 1;
-        }
-
-        .cart-item-cost {
-            color: var(--fq-lime);
-            margin: 0 10px;
-        }
-
-        .cart-item-qty {
+        .side-panel .field-label {
             color: var(--fq-rust);
-            font-weight: bold;
-            min-width: 30px;
-            text-align: center;
-        }
-
-        .cart-controls {
-            display: flex;
-            gap: 5px;
-        }
-
-        .cart-controls button {
-            padding: 4px 8px;
-            font-size: 0.8em;
-        }
-
-        .clear-cart-btn {
-            width: 100%;
-            margin-top: 15px;
-            background: var(--fq-rust);
-        }
-
-        .rules-search-box {
-            margin-bottom: 15px;
-        }
-
-        .rules-search-box input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid var(--fq-olive);
-            border-radius: 4px;
-            font-size: 0.95em;
-        }
-
-        .rules-q {
-            background: white;
-            padding: 15px;
-            border-radius: 4px;
-            margin-bottom: 15px;
-            border-left: 4px solid var(--fq-rust);
-        }
-
-        .rules-q h4 {
-            color: var(--fq-rust);
-            margin-bottom: 8px;
-        }
-
-        .rules-q p {
-            color: var(--fq-text-dark);
-            font-size: 0.95em;
-            line-height: 1.6;
-        }
-
-        .rule-category {
-            color: #666;
-            font-size: 0.85em;
             font-weight: bold;
             margin-bottom: 3px;
         }
 
-        .highlight {
-            background: #ffff00;
-            color: black;
-            font-weight: bold;
-        }
-
-        .deity-card {
-            background: white;
-            padding: 15px;
-            border-radius: 4px;
-            margin-bottom: 15px;
-            border-left: 4px solid var(--fq-green);
-        }
-
-        .deity-title {
-            color: var(--fq-rust);
-            font-weight: bold;
-            font-size: 1.1em;
-            margin-bottom: 8px;
-        }
-
-        .deity-subtitle {
-            color: var(--fq-olive);
-            font-style: italic;
-            font-size: 0.9em;
+        .side-panel .field-value {
+            color: var(--fq-parchment);
             margin-bottom: 10px;
         }
 
-        .deity-section {
-            margin: 8px 0;
-            font-size: 0.9em;
-        }
-
-        .deity-section h5 {
-            color: var(--fq-text-dark);
-            font-weight: bold;
-            margin-bottom: 3px;
-        }
-
-        .deity-section ul {
-            margin-left: 20px;
-            color: var(--fq-text-dark);
-        }
-
-        .deity-optional-note {
-            font-size: 0.85em;
-            color: #666;
-            font-style: italic;
-            margin-top: 3px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
+        .sp-progress {
             margin: 15px 0;
         }
 
-        table th {
-            background: var(--fq-rust);
-            color: var(--fq-text);
+        .import-section {
+            background-color: rgba(170, 61, 29, 0.15);
+            border: 1px solid var(--fq-rust);
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        .import-section h3 {
+            color: var(--fq-rust);
+            margin-bottom: 12px;
+        }
+
+        .restrictions {
+            background-color: rgba(200, 0, 0, 0.1);
+            border-left: 3px solid #FF6B6B;
             padding: 10px;
-            text-align: left;
-            font-weight: bold;
-        }
-
-        table td {
-            padding: 8px;
-            border-bottom: 1px solid var(--fq-olive);
-        }
-
-        table tr:nth-child(even) {
-            background: rgba(0, 0, 0, 0.05);
-        }
-
-        .skill-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.85em;
-        }
-        .skill-table th {
-            background: var(--fq-green-dark);
-            color: var(--fq-lime);
-            padding: 8px 6px;
-            text-align: left;
-            font-size: 0.85em;
-            position: sticky;
-            top: 0;
-            z-index: 1;
-        }
-        .skill-table td {
-            padding: 6px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            vertical-align: middle;
-        }
-        .skill-table tr:hover {
-            background: rgba(186, 218, 85, 0.08);
-        }
-        .skill-table .cat-tag {
-            display: inline-block;
-            padding: 2px 8px;
-            border-radius: 10px;
-            font-size: 0.8em;
-            font-weight: bold;
-            color: white;
-        }
-        .cat-Fighting { background: #e74c3c; }
-        .cat-Stealth { background: #8e44ad; }
-        .cat-Magic { background: #3498db; }
-        .cat-Survival { background: #27ae60; }
-        .cat-Craft { background: #e67e22; }
-        .code-tag {
-            display: inline-block;
-            padding: 1px 6px;
+            margin: 10px 0;
             border-radius: 3px;
-            font-size: 0.8em;
-            background: rgba(255,255,255,0.15);
-            color: var(--fq-text-dark);
-        }
-        .cost-na { color: #666; font-style: italic; }
-        .cost-innate { color: var(--fq-lime); font-weight: bold; }
-        .cost-modified { color: var(--fq-warning); font-weight: bold; }
-        .skill-table .buy-btn {
-            padding: 4px 10px;
-            font-size: 0.8em;
-            margin: 1px;
-        }
-        .skill-qty-controls {
-            display: flex;
-            gap: 3px;
-            align-items: center;
-        }
-        .qty-input {
-            width: 35px;
-            padding: 3px;
-            text-align: center;
-            border: 1px solid var(--fq-olive);
-            border-radius: 2px;
-            font-size: 0.8em;
-        }
-        .qty-display {
-            display: inline-block;
-            background: var(--fq-lime);
-            color: var(--fq-text-dark);
-            padding: 2px 8px;
-            border-radius: 10px;
-            font-weight: bold;
-            font-size: 0.85em;
         }
 
-        .spell-school-section {
-            background: white;
-            border-radius: 4px;
-            margin-bottom: 15px;
-            border-left: 4px solid var(--fq-rust);
-        }
-        .spell-school-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px 15px;
-            cursor: pointer;
-            background: var(--fq-green-dark);
-            border-radius: 4px 4px 0 0;
-        }
-        .spell-school-header:hover {
-            background: var(--fq-green);
-        }
-        .spell-school-header h3 {
-            margin: 0;
-            color: var(--fq-lime);
-            font-size: 1.1em;
-            flex: 1;
-        }
-        .school-info {
-            font-size: 0.85em;
-            color: var(--fq-tan);
-            margin-right: 10px;
-        }
-        .expand-arrow {
-            color: var(--fq-lime);
-            font-size: 0.9em;
-            transition: transform 0.2s;
-        }
-        .expand-arrow.expanded {
-            transform: rotate(180deg);
-        }
-        .spell-school-body {
-            display: none;
-            padding: 12px 15px;
-        }
-        .spell-school-body.expanded {
-            display: block;
-        }
-        .spell-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.85em;
-        }
-        .spell-table th {
-            background: rgba(0,0,0,0.1);
-            color: var(--fq-text-dark);
-            padding: 6px 8px;
-            text-align: left;
-            font-size: 0.85em;
-            border-bottom: 1px solid var(--fq-olive);
-        }
-        .spell-table td {
-            padding: 5px 8px;
-            border-bottom: 1px solid rgba(0,0,0,0.05);
-            vertical-align: middle;
-        }
-        .spell-table tr:hover {
-            background: rgba(186, 218, 85, 0.05);
-        }
-        .spell-names {
-            font-size: 0.8em;
-            color: var(--fq-text-dark);
-        }
-        .spell-locked {
-            opacity: 0.4;
-            color: #999;
-        }
-        .tower-rule-warning {
-            color: var(--fq-rust);
-            font-size: 0.8em;
-            font-weight: bold;
+        .restrictions strong {
+            color: #FF6B6B;
         }
 
-        .deity-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 12px;
+        @media (max-width: 1200px) {
+            .side-panel { width: 250px; }
+            .main-content { padding: 20px; }
         }
-        .deity-compact {
-            background: white;
-            border: 1px solid var(--fq-olive);
-            border-radius: 4px;
-            overflow: hidden;
-            border-left: 4px solid var(--fq-green);
+
+        @media (max-width: 768px) {
+            .container { flex-direction: column; }
+            .side-panel { width: 100%; max-height: 200px; position: relative; }
+            .race-grid, .class-grid, .deity-grid { grid-template-columns: 1fr; }
+            .char-header { grid-template-columns: 1fr; }
         }
-        .deity-compact-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px;
-            cursor: pointer;
-            background: var(--fq-green-dark);
-            color: var(--fq-lime);
-        }
-        .deity-compact-header:hover {
-            background: var(--fq-green);
-        }
-        .deity-compact-header h4 {
-            margin: 0;
-            font-size: 1em;
-        }
-        .deity-epithet {
-            font-size: 0.75em;
-            color: var(--fq-tan);
-            font-style: italic;
-        }
-        .deity-compact-body {
-            display: none;
-            padding: 12px;
-            font-size: 0.85em;
-            background: rgba(255, 255, 255, 0.5);
-            color: var(--fq-text-dark);
-        }
-        .deity-compact-body.expanded {
-            display: block;
-        }
-        .deity-compact-body h5 {
-            color: var(--fq-rust);
-            margin: 8px 0 4px;
-            font-size: 0.9em;
-        }
-        .deity-compact-body ul {
-            margin: 0 0 0 16px;
-            padding: 0;
-        }
-        .deity-compact-body li {
-            margin: 2px 0;
-            line-height: 1.4;
-        }
+
+        .hidden { display: none; }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>Fantasy Quest LARP Character Planner</h1>
-            <p>Plan your character build with precise SP tracking and cost calculations</p>
-        </div>
+        <div class="main-content">
+            <div class="step-indicator" id="stepIndicator"></div>
 
-        <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab(0)">Build</button>
-            <button class="tab-btn" onclick="switchTab(1)">Import</button>
-            <button class="tab-btn" onclick="switchTab(2)">Skills</button>
-            <button class="tab-btn" onclick="switchTab(3)">Spells</button>
-            <button class="tab-btn" onclick="switchTab(4)">Deities</button>
-            <button class="tab-btn" onclick="switchTab(5)">Rules</button>
-        </div>
+            <!-- STEP 1: WELCOME / IMPORT -->
+            <div id="step-0" class="step-content active">
+                <div class="welcome-hero">
+                    <h1>Fantasy Quest</h1>
+                    <p>Character Planner v6</p>
+                </div>
+                <div class="path-buttons">
+                    <button class="btn primary" onclick="startNewCharacter()">New Character</button>
+                    <button class="btn" onclick="toggleImportSection()">Import Existing</button>
+                </div>
 
-        <!-- TAB 0: BUILD -->
-        <div id="tab-0" class="tab-content active">
-            <div class="form-row">
+                <div id="importSection" class="hidden">
+                    <div class="import-section">
+                        <h3>Import from Google Sheets</h3>
+                        <div class="form-group">
+                            <label>Google Sheets URL:</label>
+                            <input type="text" id="sheetsUrl" placeholder="https://docs.google.com/spreadsheets/d/...">
+                        </div>
+                        <button class="btn" onclick="importFromURL()">Import from URL</button>
+                    </div>
+
+                    <div class="import-section">
+                        <h3>Import from CSV Paste</h3>
+                        <div class="form-group">
+                            <label>Paste CSV or Character Data:</label>
+                            <textarea id="pasteInput" rows="8" placeholder="Paste CSV data here..."></textarea>
+                        </div>
+                        <button class="btn" onclick="importFromPaste()">Import from Paste</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 2: RACE SELECTION -->
+            <div id="step-1" class="step-content">
+                <h2>Step 2: Select Your Race</h2>
+                <p>Choose your character's race. Each provides unique bonuses, limitations, and resistances.</p>
+                <div class="race-grid" id="raceGrid"></div>
+                <div id="raceInfo" class="info-panel hidden"></div>
+                <div class="nav-buttons">
+                    <button class="btn" onclick="goToStep(0)">Back</button>
+                    <button class="btn primary" id="nextRace" onclick="goToStep(2)" disabled>Next</button>
+                </div>
+            </div>
+
+            <!-- STEP 3: CLASS SELECTION -->
+            <div id="step-2" class="step-content">
+                <h2>Step 3: Select Your Class</h2>
+                <p>Choose your class. Some classes are restricted by race.</p>
+                <div class="class-grid" id="classGrid"></div>
+                <div id="classInfo" class="info-panel hidden"></div>
+                <div class="nav-buttons">
+                    <button class="btn" onclick="goToStep(1)">Back</button>
+                    <button class="btn primary" id="nextClass" onclick="goToStep(3)" disabled>Next</button>
+                </div>
+            </div>
+
+            <!-- STEP 4: DEITY SELECTION -->
+            <div id="step-3" class="step-content">
+                <h2>Step 4: Select a Deity (Optional)</h2>
+                <p>Choose a deity to gain special benefits, or skip if you prefer no deity.</p>
+                <div class="nav-buttons">
+                    <button class="btn" onclick="selectDeity('None'); goToStep(4)">Skip Deity</button>
+                </div>
+                <div class="deity-grid" id="deityGrid"></div>
+                <div id="deityInfo" class="info-panel hidden"></div>
+                <div class="nav-buttons">
+                    <button class="btn" onclick="goToStep(2)">Back</button>
+                    <button class="btn primary" id="nextDeity" onclick="goToStep(4)">Next</button>
+                </div>
+            </div>
+
+            <!-- STEP 5: SKILL POINTS BUDGET -->
+            <div id="step-4" class="step-content">
+                <h2>Step 5: Set Your Budget</h2>
+                <p>Configure your character's skill points budget and basic information.</p>
+
                 <div class="form-group">
-                    <label>Race</label>
-                    <select id="raceSelect" onchange="updateBuild()">
-                        <option value="">-- Select Race --</option>
-                        <option value="Human">Human</option>
-                        <option value="Elf">Elf</option>
-                        <option value="Dwarf">Dwarf</option>
-                        <option value="Hobbet">Hobbet</option>
-                        <option value="Orgreth">Orgreth</option>
-                        <option value="Half-Ogre">Half-Ogre</option>
-                        <option value="Wolven">Wolven</option>
-                    </select>
+                    <label>Character Name:</label>
+                    <input type="text" id="charName" placeholder="Enter character name" oninput="updateState('charName', this.value)">
                 </div>
+
                 <div class="form-group">
-                    <label>Class</label>
-                    <select id="classSelect" onchange="updateBuild()">
-                        <option value="">-- Select Class --</option>
-                        <option value="Warrior">Warrior</option>
-                        <option value="Ranger">Ranger</option>
-                        <option value="Cavalier">Cavalier</option>
-                        <option value="Bounty Hunter">Bounty Hunter</option>
-                        <option value="Assassin">Assassin</option>
-                        <option value="Bard">Bard</option>
-                        <option value="Cleric">Cleric</option>
-                        <option value="Holy Warrior">Holy Warrior</option>
-                        <option value="Healer">Healer</option>
-                        <option value="Druid">Druid</option>
-                        <option value="Monk">Monk</option>
-                        <option value="Sorcerer">Sorcerer</option>
-                        <option value="Dark Mage">Dark Mage</option>
-                        <option value="Witch">Witch</option>
-                        <option value="Paladin">Paladin</option>
-                    </select>
+                    <label>Player Name:</label>
+                    <input type="text" id="playerName" placeholder="Enter your name" oninput="updateState('playerName', this.value)">
                 </div>
+
                 <div class="form-group">
-                    <label>Deity (Optional)</label>
-                    <select id="deitySelect" onchange="updateBuild()">
-                        <option value="">-- Select Deity --</option>
-                        <option value="Avagon">Avagon (The Paladin)</option>
-                        <option value="Brodinn">Brodinn (The Tempest)</option>
-                        <option value="Caymlyn">Caymlyn (The Enchantress)</option>
-                        <option value="Danubu">Danubu (Lord of Night)</option>
-                        <option value="Etyana">Etyana (The Nymph)</option>
-                        <option value="Gheldann">Gheldann (Keeper of Souls)</option>
-                        <option value="Kandrell">Kandrell (Mistress of the Moon)</option>
-                        <option value="Kyrriden">Kyrriden (The World-Forger)</option>
-                        <option value="Nivlac">Nivlac (The Trickster)</option>
-                        <option value="Peryn">Peryn (The Hunter)</option>
-                        <option value="Undathos">Undathos (The Un-Living)</option>
-                        <option value="Voe">Voe (He Who Watches)</option>
-                        <option value="Volgen">Volgen (The Judge)</option>
-                        <option value="Pan-Deific">Pan-Deific (Through the aid of the gods I...)</option>
-                    </select>
-                    <div class="form-group-hint">Deities are optional and primarily benefit Clerics and Holy Warriors</div>
+                    <label>Total Skill Points:</label>
+                    <input type="number" id="spTotal" value="90" min="0" max="5000" oninput="updateState('spTotal', parseInt(this.value))">
+                </div>
+
+                <h3>Level Thresholds</h3>
+                <table class="level-threshold-table">
+                    <thead>
+                        <tr>
+                            <th>Level</th>
+                            <th>Required SP</th>
+                            <th>Cumulative</th>
+                        </tr>
+                    </thead>
+                    <tbody id="levelTable"></tbody>
+                </table>
+
+                <div class="nav-buttons">
+                    <button class="btn" onclick="goToStep(3)">Back</button>
+                    <button class="btn primary" onclick="goToStep(5)">Next</button>
                 </div>
             </div>
 
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Total Skill Points Budget</label>
-                    <input type="number" id="spTotalInput" value="90" onchange="setSPTotal()" min="0">
+            <!-- STEP 6: SKILLS SHOPPING -->
+            <div id="step-5" class="step-content">
+                <h2>Step 6: Purchase Skills</h2>
+                <p>Build your character's skill set. Be strategic with your skill point budget!</p>
+
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label>Category Filter:</label>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <button class="btn" style="flex: 1; min-width: 80px;" onclick="setSkillCategory('All')">All</button>
+                        <button class="btn" style="flex: 1; min-width: 80px;" onclick="setSkillCategory('Fighting')">Fighting</button>
+                        <button class="btn" style="flex: 1; min-width: 80px;" onclick="setSkillCategory('Stealth')">Stealth</button>
+                        <button class="btn" style="flex: 1; min-width: 80px;" onclick="setSkillCategory('Magic')">Magic</button>
+                        <button class="btn" style="flex: 1; min-width: 80px;" onclick="setSkillCategory('Survival')">Survival</button>
+                        <button class="btn" style="flex: 1; min-width: 80px;" onclick="setSkillCategory('Craft')">Craft</button>
+                    </div>
+                </div>
+
+                <label style="display: flex; gap: 10px; align-items: center; margin-bottom: 15px;">
+                    <input type="checkbox" id="hideNA" onchange="renderSkills()">
+                    <span>Hide N/A for this class</span>
+                </label>
+
+                <table class="skill-table">
+                    <thead>
+                        <tr>
+                            <th>Skill</th>
+                            <th>Category</th>
+                            <th>Code</th>
+                            <th>Cost</th>
+                            <th>Qty</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="skillsBody"></tbody>
+                </table>
+
+                <div class="nav-buttons">
+                    <button class="btn" onclick="goToStep(4)">Back</button>
+                    <button class="btn primary" id="nextSkills" onclick="goToStep(6)">Next</button>
                 </div>
             </div>
 
-            <div class="stat-bar">
-                <div class="stat-item">
-                    <div class="label">Level</div>
-                    <div class="value" id="levelDisplay">1</div>
-                </div>
-                <div class="stat-item">
-                    <div class="label">SP Spent</div>
-                    <div class="value" id="spSpentDisplay">0</div>
-                </div>
-                <div class="stat-item">
-                    <div class="label">SP Remaining</div>
-                    <div class="value" id="spRemainingDisplay">90</div>
-                </div>
-                <div class="stat-item">
-                    <div class="label">Life Points/Level</div>
-                    <div class="value" id="lpDisplay">0</div>
+            <!-- STEP 7: SPELLS SHOPPING -->
+            <div id="step-6" class="step-content">
+                <h2>Step 7: Learn Spells</h2>
+                <p>If your class learns magic, purchase spells here. Otherwise, skip to your character sheet.</p>
+
+                <div id="spellsContainer"></div>
+
+                <div class="nav-buttons">
+                    <button class="btn" onclick="goToStep(5)">Back</button>
+                    <button class="btn primary" onclick="goToStep(7)">Next</button>
                 </div>
             </div>
 
-            <h3>Character Details</h3>
-            <p style="margin-bottom: 15px; color: var(--fq-text-dark); font-size: 0.95em;">
-                Your level is calculated based on total SP spent on skills and spells. Select your race, class, and optionally a deity. Then purchase skills and spells from the Skills and Spells tabs to build your character.
-            </p>
-        </div>
+            <!-- STEP 8: CHARACTER SHEET -->
+            <div id="step-7" class="step-content">
+                <div class="character-sheet" id="characterSheet"></div>
 
-        <!-- TAB 1: IMPORT -->
-        <div id="tab-1" class="tab-content">
-            <div class="import-section">
-                <h3>Import Character from Google Sheet</h3>
-                <p>Paste a Google Sheets URL or CSV data to auto-populate your character:</p>
-                <input type="text" id="sheetUrlInput" placeholder="https://docs.google.com/spreadsheets/d/1ABC..." />
-                <button onclick="importFromURL()">Import from URL</button>
-
-                <h3 style="margin-top: 20px;">Or Paste CSV Data</h3>
-                <textarea id="importTextarea" placeholder="Paste character card data or CSV here..."></textarea>
-                <button onclick="importFromPaste()">Import from Paste</button>
-
-                <div id="importSummary" class="import-summary hidden"></div>
+                <div class="nav-buttons">
+                    <button class="btn" onclick="goToStep(5)">Edit Build</button>
+                    <button class="btn" onclick="clearAll()">Clear & Start Over</button>
+                    <button class="btn" onclick="exportCharacter()">Export</button>
+                    <button class="btn primary" onclick="window.print()">Print</button>
+                </div>
             </div>
         </div>
 
-        <!-- TAB 2: SKILLS -->
-        <div id="tab-2" class="tab-content">
-            <p style="margin-bottom: 15px; color: var(--fq-text-dark);">
-                Purchase skills by clicking the Buy button. Skills with code 'M' can be purchased multiple times (capped at 5 unless specified). Skills with code '1' or 'O' can only be purchased once.
-            </p>
-            <div id="skillsContainer"></div>
-        </div>
-
-        <!-- TAB 3: SPELLS -->
-        <div id="tab-3" class="tab-content">
-            <p style="margin-bottom: 15px; color: var(--fq-text-dark);">
-                Tower Rule: You must have at least 2 spells at level N before purchasing any spell at level N+1. Level 1 has no prerequisite. Your class and school relationship determine cost.
-            </p>
-            <div id="spellsContainer"></div>
-        </div>
-
-        <!-- TAB 4: DEITIES -->
-        <div id="tab-4" class="tab-content">
-            <p style="margin-bottom: 15px; color: var(--fq-text-dark);">
-                Deities offer special benefits to Clerics and Holy Warriors. Click a deity card to expand details.
-            </p>
-            <div id="deitiesContainer" class="deity-grid"></div>
-        </div>
-
-        <!-- TAB 5: RULES -->
-        <div id="tab-5" class="tab-content">
-            <div class="rules-search-box">
-                <input type="text" id="rulesSearchInput" placeholder="Search rules, skills, spells, deities..." onkeyup="filterRules()">
+        <!-- SIDE PANEL -->
+        <div class="side-panel">
+            <h3>Character Summary</h3>
+            <div class="field-summary">
+                <div class="field-label">Name</div>
+                <div class="field-value" id="sideName">—</div>
             </div>
-            <div id="rulesContainer"></div>
+            <div class="field-summary">
+                <div class="field-label">Race</div>
+                <div class="field-value" id="sideRace">—</div>
+            </div>
+            <div class="field-summary">
+                <div class="field-label">Class</div>
+                <div class="field-value" id="sideClass">—</div>
+            </div>
+            <div class="field-summary">
+                <div class="field-label">Deity</div>
+                <div class="field-value" id="sideDeity">—</div>
+            </div>
+            <div class="sp-progress">
+                <div class="field-label">Skill Points</div>
+                <div class="field-value">
+                    <span id="sideSpSpent">0</span> / <span id="sideSpTotal">90</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="sideProgress" style="width: 0%"></div>
+                </div>
+            </div>
+            <div style="border-top: 1px solid var(--fq-green); padding-top: 15px; margin-top: 15px;">
+                <div class="field-label">Purchased Skills</div>
+                <div id="sidePurchasedSkills" style="font-size: 0.85em; margin-bottom: 15px;"></div>
+                <div class="field-label">Purchased Spells</div>
+                <div id="sidePurchasedSpells" style="font-size: 0.85em; margin-bottom: 15px;"></div>
+                <button class="btn" style="width: 100%; margin-top: 15px;" onclick="clearAll()">Clear Cart</button>
+            </div>
         </div>
-    </div>
-
-    <!-- SIDE PANEL -->
-    <div class="side-panel">
-        <h3>Cart</h3>
-        <div class="progress-bar">
-            <div class="progress-fill" id="progressFill"></div>
-        </div>
-        <div id="cartContainer"></div>
-        <button class="clear-cart-btn" onclick="clearCart()">Clear Cart</button>
     </div>
 
     <script>
@@ -1427,418 +1333,631 @@
             return total;
         }
 
-        function updateAll() {
-            const spSpent = getTotalSPSpent();
-            const spRemaining = state.spTotal - spSpent;
-            const level = calculateLevel();
-            const lp = calculateLP();
+        function goToStep(stepNum) {
+            if (stepNum === 2 && !state.race) {
+                alert('Please select a race first.');
+                return;
+            }
+            if (stepNum === 3 && !state.class) {
+                alert('Please select a class first.');
+                return;
+            }
 
-            document.getElementById('levelDisplay').textContent = level;
-            document.getElementById('spSpentDisplay').textContent = spSpent;
-            document.getElementById('spRemainingDisplay').textContent = spRemaining;
-            document.getElementById('lpDisplay').textContent = lp;
-
-            const percentage = Math.min(100, (spSpent / state.spTotal) * 100);
-            document.getElementById('progressFill').style.width = percentage + '%';
-
-            updateSidePanel();
+            document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+            document.getElementById(`step-${stepNum}`).classList.add('active');
+            state.currentStep = stepNum;
             saveState();
+
+            updateStepIndicator();
+            if (stepNum === 5) renderSkills();
+            if (stepNum === 6) renderSpells();
+            if (stepNum === 7) renderCharacterSheet();
         }
 
-        function updateSidePanel() {
-            const cart = document.getElementById('cartContainer');
-            cart.innerHTML = '';
-
-            let hasItems = false;
-
-            for (const skillName in state.skills) {
-                if (state.skills[skillName] > 0) {
-                    hasItems = true;
-                    // Prefer imported card cost over DB cost
-                    let cost = (state.customCosts && state.customCosts[skillName] !== undefined)
-                        ? state.customCosts[skillName]
-                        : getSkillCost(skillName, state.class, state.race, state.deity);
-                    const totalCost = (cost || 0) * state.skills[skillName];
-                    const isCustom = !SKILLS.find(s => s.name === skillName);
-                    cart.innerHTML += `
-                        <div class="cart-item">
-                            <div class="cart-item-name">${skillName}${isCustom ? ' *' : ''}</div>
-                            <div class="cart-item-cost">${totalCost} SP</div>
-                            <div class="cart-item-qty">${state.skills[skillName]}x</div>
-                            <div class="cart-controls">
-                                <button onclick="removeSkill('${skillName.replace(/'/g, "\\'")}')">−</button>
-                            </div>
-                        </div>
-                    `;
-                }
+        function updateStepIndicator() {
+            const container = document.getElementById('stepIndicator');
+            container.innerHTML = '';
+            const steps = ['Welcome', 'Race', 'Class', 'Deity', 'Budget', 'Skills', 'Spells', 'Sheet'];
+            for (let i = 0; i < steps.length; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'step-dot';
+                if (i === state.currentStep) dot.classList.add('active');
+                if (i < state.currentStep) dot.classList.add('completed');
+                dot.textContent = i + 1;
+                dot.onclick = () => goToStep(i);
+                container.appendChild(dot);
             }
+        }
 
-            for (const school in state.spells) {
-                for (const level in state.spells[school]) {
-                    const qty = state.spells[school][level];
-                    if (qty > 0) {
-                        hasItems = true;
-                        const costPerSpell = getSpellCost(school, parseInt(level));
-                        const totalCost = (costPerSpell || 0) * qty;
-                        cart.innerHTML += `
-                            <div class="cart-item">
-                                <div class="cart-item-name">${school} L${level}</div>
-                                <div class="cart-item-cost">${totalCost} SP</div>
-                                <div class="cart-item-qty">${qty}x</div>
-                                <div class="cart-controls">
-                                    <button onclick="removeSpell('${school}', ${level})">−</button>
-                                </div>
-                            </div>
-                        `;
-                    }
-                }
+        function startNewCharacter() {
+            state.race = null;
+            state.class = null;
+            saveState();
+            goToStep(1);
+            renderRaces();
+        }
+
+        function toggleImportSection() {
+            const section = document.getElementById('importSection');
+            section.classList.toggle('hidden');
+        }
+
+        function selectDeity(name) {
+            state.deity = name;
+            saveState();
+            updateSidePanel();
+        }
+
+        function renderRaces() {
+            const grid = document.getElementById('raceGrid');
+            grid.innerHTML = '';
+            for (const [raceName, raceData] of Object.entries(RACES)) {
+                const card = document.createElement('div');
+                card.className = 'card';
+                if (state.race === raceName) card.classList.add('selected');
+                card.innerHTML = `
+                    <h3>${raceName}</h3>
+                    ${raceData.bonuses.length ? `<div><strong>Bonuses:</strong> ${raceData.bonuses.join(', ')}</div>` : ''}
+                    ${raceData.limitations.length ? `<div class="restrictions"><strong>Limitations:</strong> ${raceData.limitations.join(', ')}</div>` : ''}
+                    ${raceData.resistances.length ? `<div><strong>Resistances:</strong> ${raceData.resistances.join(', ')}</div>` : ''}
+                `;
+                card.onclick = () => {
+                    state.race = raceName;
+                    state.skills = {};
+                    state.spells = {};
+                    saveState();
+                    renderRaces();
+                    document.getElementById('nextRace').disabled = false;
+                    updateSidePanel();
+                };
+                grid.appendChild(card);
             }
+        }
 
-            if (!hasItems) {
-                cart.innerHTML = '<p style="color: rgba(255,255,255,0.5); font-size: 0.9em;">No skills purchased yet</p>';
+        function renderClasses() {
+            const grid = document.getElementById('classGrid');
+            grid.innerHTML = '';
+            const restrictedClasses = getRestrictedClasses(state.race);
+
+            for (const [className, classData] of Object.entries(CLASSES)) {
+                const card = document.createElement('div');
+                card.className = 'card';
+                if (state.class === className) card.classList.add('selected');
+                if (restrictedClasses.includes(className)) {
+                    card.style.opacity = '0.5';
+                    card.style.cursor = 'not-allowed';
+                }
+
+                const spellInfo = classData.canCast ? `${classData.canCast} caster • ${classData.primarySchool}` : 'Non-caster';
+                card.innerHTML = `
+                    <h3>${className}</h3>
+                    <span class="card-badge">${classData.type}</span>
+                    <div class="card-details">
+                        <div><strong>Armor:</strong> ${classData.armor}</div>
+                        <div><strong>LP/Level:</strong> ${classData.lpPerLevel}</div>
+                        <div><strong>Casting:</strong> ${spellInfo}</div>
+                    </div>
+                `;
+                card.onclick = () => {
+                    if (restrictedClasses.includes(className)) return;
+                    state.class = className;
+                    state.skills = {};
+                    state.spells = {};
+                    saveState();
+                    renderClasses();
+                    document.getElementById('nextClass').disabled = false;
+                    updateSidePanel();
+                };
+                grid.appendChild(card);
+            }
+        }
+
+        function getRestrictedClasses(raceName) {
+            if (raceName === 'Half-Ogre') {
+                return ['Bard', 'Cleric', 'Holy Warrior', 'Healer', 'Druid', 'Monk', 'Sorcerer', 'Dark Mage', 'Witch', 'Paladin'];
+            }
+            return [];
+        }
+
+        function renderDeities() {
+            const grid = document.getElementById('deityGrid');
+            grid.innerHTML = '';
+
+            const noneCard = document.createElement('div');
+            noneCard.className = 'card';
+            if (state.deity === 'None') noneCard.classList.add('selected');
+            noneCard.innerHTML = `<h3>None</h3><p>No deity</p>`;
+            noneCard.onclick = () => {
+                state.deity = 'None';
+                saveState();
+                renderDeities();
+                document.getElementById('nextDeity').disabled = false;
+                updateSidePanel();
+            };
+            grid.appendChild(noneCard);
+
+            for (const [deityName, deityData] of Object.entries(DEITIES)) {
+                const card = document.createElement('div');
+                card.className = 'card';
+                if (state.deity === deityName) card.classList.add('selected');
+                card.innerHTML = `
+                    <h3>${deityName}</h3>
+                    <p style="color: var(--fq-rust); font-size: 0.9em;">${deityData.title}</p>
+                    <p style="font-size: 0.85em;">Click for details</p>
+                `;
+                card.onclick = () => {
+                    state.deity = deityName;
+                    saveState();
+                    renderDeities();
+                    document.getElementById('nextDeity').disabled = false;
+                    updateSidePanel();
+                };
+                grid.appendChild(card);
             }
         }
 
         function renderSkills() {
-            if (!state.class) {
-                document.getElementById('skillsContainer').innerHTML = '<p style="color: var(--fq-text-dark);">Please select a class first.</p>';
-                return;
+            const hideNA = document.getElementById('hideNA').checked;
+            const tbody = document.getElementById('skillsBody');
+            tbody.innerHTML = '';
+
+            let filtered = SKILLS;
+            if (skillCategoryFilter.value !== 'All') {
+                filtered = SKILLS.filter(s => s.category === skillCategoryFilter.value);
             }
 
-            let html = '<table class="skill-table"><thead><tr><th>Skill</th><th>Cat</th><th>Code</th><th>Cost</th><th>Qty</th><th>Action</th></tr></thead><tbody>';
-
-            SKILLS.forEach(skill => {
+            for (const skill of filtered) {
                 const cost = getSkillCost(skill.name, state.class, state.race, state.deity);
+                if (hideNA && cost === null) continue;
+
                 const qty = state.skills[skill.name] || 0;
-                const canBuyMultiple = skill.code === 'M';
-                const canBuyOnce = skill.code === '1' || skill.code === 'O';
-                const isInnate = skill.code === 'I';
+                const maxQty = skill.code === 'M' ? 5 : 1;
 
-                let costDisplay = '';
-                if (cost === null) {
-                    costDisplay = '<span class="cost-na">N/A</span>';
-                } else if (cost === 0) {
-                    costDisplay = '<span class="cost-innate">0 (I)</span>';
-                } else {
-                    const baseCost = getBaseCost(skill.name, state.class);
-                    if (baseCost !== cost) {
-                        costDisplay = `<span class="cost-modified">${cost}</span>`;
-                    } else {
-                        costDisplay = cost;
-                    }
-                }
+                const costStr = cost === null ? 'N/A' : (cost === 0 ? 'Free' : cost);
+                const totalCost = cost && cost > 0 ? cost * qty : 0;
 
-                let actionBtn = '';
-                if (cost !== null) {
-                    const spRemaining = state.spTotal - getTotalSPSpent();
-                    const canAfford = cost <= spRemaining;
-                    const canBuy = (canBuyMultiple && qty < 5) || (canBuyOnce && qty === 0) || isInnate;
-
-                    if (canBuy && canAfford) {
-                        actionBtn = `<button class="buy-btn" onclick="buySkill('${skill.name.replace(/'/g, "\\'")}', ${cost})">Buy</button>`;
-                    } else if (qty > 0) {
-                        actionBtn = `<button class="buy-btn" onclick="removeSkill('${skill.name.replace(/'/g, "\\'")}')">−</button>`;
-                    } else {
-                        actionBtn = `<button class="buy-btn" disabled>Buy</button>`;
-                    }
-                }
-
-                html += `<tr>
+                const row = document.createElement('tr');
+                row.innerHTML = `
                     <td>${skill.name}</td>
-                    <td><span class="cat-tag cat-${skill.category}">${skill.category.substring(0,3)}</span></td>
-                    <td><span class="code-tag">${skill.code}</span></td>
-                    <td>${costDisplay}</td>
-                    <td><span class="qty-display">${qty}</span></td>
-                    <td>${actionBtn}</td>
-                </tr>`;
-            });
+                    <td><span class="category-tag category-${skill.category}">${skill.category}</span></td>
+                    <td><span class="skill-code">${skill.code}</span></td>
+                    <td>${costStr}</td>
+                    <td>
+                        <div class="qty-control">
+                            <button class="qty-btn" onclick="buySkill('${skill.name}', -1)">−</button>
+                            <span>${qty}</span>
+                            <button class="qty-btn" onclick="buySkill('${skill.name}', 1)" ${qty >= maxQty && skill.code !== 'M' ? 'disabled' : ''}>+</button>
+                        </div>
+                    </td>
+                    <td>${totalCost}</td>
+                `;
+                tbody.appendChild(row);
+            }
 
-            html += '</tbody></table>';
-            document.getElementById('skillsContainer').innerHTML = html;
+            updateSidePanel();
         }
 
-        function buySkill(skillName, cost) {
+        function buySkill(skillName, delta) {
             if (!state.skills[skillName]) state.skills[skillName] = 0;
-            state.skills[skillName]++;
-            updateAll();
+            const skill = SKILLS.find(s => s.name === skillName);
+            const maxQty = skill.code === 'M' ? 5 : 1;
+            const cost = getSkillCost(skillName, state.class, state.race, state.deity);
+
+            if (delta > 0 && state.skills[skillName] >= maxQty) return;
+            if (delta > 0 && cost === null) return;
+
+            state.skills[skillName] += delta;
+            if (state.skills[skillName] < 0) state.skills[skillName] = 0;
+
+            saveState();
             renderSkills();
         }
 
-        function removeSkill(skillName) {
-            if (state.skills[skillName] > 0) {
-                state.skills[skillName]--;
-            }
-            updateAll();
+        function setSkillCategory(cat) {
+            skillCategoryFilter.value = cat;
             renderSkills();
         }
 
         function renderSpells() {
+            const container = document.getElementById('spellsContainer');
+            container.innerHTML = '';
+
             if (!state.class || !CLASSES[state.class].canCast) {
-                document.getElementById('spellsContainer').innerHTML = '<p style="color: var(--fq-text-dark);">Your class cannot cast spells.</p>';
+                container.innerHTML = '<p>Your class does not learn spells. Click Next to view your character sheet.</p>';
                 return;
             }
 
-            const classInfo = CLASSES[state.class];
-            let html = '';
+            for (const school of Object.keys(SPELLS)) {
+                const section = document.createElement('div');
+                section.className = 'spell-school-section';
 
-            for (const school in SPELLS) {
-                let relationship = 'Primary';
-                if (school !== classInfo.primarySchool) {
-                    if (SPELL_ADJACENCY[school]?.adjacent.includes(classInfo.primarySchool)) {
-                        relationship = 'Adjacent';
-                    } else if (SPELL_ADJACENCY[school]?.opposing.includes(classInfo.primarySchool)) {
-                        if (classInfo.canCast === 'Hybrid') {
-                            relationship = 'Forbidden (Hybrid)';
-                        } else {
-                            relationship = 'Opposing';
-                        }
-                    }
+                const header = document.createElement('div');
+                header.className = 'spell-school-header';
+
+                const classInfo = CLASSES[state.class];
+                let relationship = 'Opposing';
+                if (school === classInfo.primarySchool) relationship = 'Primary';
+                else if (SPELL_ADJACENCY[school]?.adjacent.includes(classInfo.primarySchool)) relationship = 'Adjacent';
+
+                header.innerHTML = `<span>${school} (${relationship})</span><span>▼</span>`;
+                header.onclick = () => {
+                    const content = section.querySelector('.spell-school-content');
+                    content.classList.toggle('open');
+                    header.querySelector('span:last-child').style.transform = content.classList.contains('open') ? 'rotate(180deg)' : '';
+                };
+
+                const content = document.createElement('div');
+                content.className = 'spell-school-content';
+
+                const schoolData = SPELLS[school];
+                for (const level of Object.keys(schoolData).sort((a, b) => a - b)) {
+                    const levelGroup = document.createElement('div');
+                    levelGroup.className = 'spell-level-group';
+
+                    const costPerLevel = getSpellCost(school, level);
+                    const levelHeader = document.createElement('h4');
+                    levelHeader.textContent = `Level ${level} (${costPerLevel} SP each)`;
+                    levelGroup.appendChild(levelHeader);
+
+                    const spells = schoolData[level];
+                    const spellsList = document.createElement('div');
+                    spellsList.style.marginBottom = '10px';
+                    spellsList.innerHTML = spells.map(s => `<div style="font-size: 0.9em;">• ${s}</div>`).join('');
+                    levelGroup.appendChild(spellsList);
+
+                    const qtyControl = document.createElement('div');
+                    qtyControl.className = 'qty-control';
+                    const qty = state.spells[school]?.[level] || 0;
+                    const canBuyMore = checkTowerRule(school, level);
+                    qtyControl.innerHTML = `
+                        <button class="qty-btn" onclick="buySpell('${school}', ${level}, -1)">−</button>
+                        <span>${qty}</span>
+                        <button class="qty-btn" onclick="buySpell('${school}', ${level}, 1)" ${!canBuyMore ? 'title="Need 2+ at level ' + (level - 1) + ' first"' : ''} ${!canBuyMore && level > 1 ? 'disabled' : ''}>+</button>
+                    `;
+                    levelGroup.appendChild(qtyControl);
+
+                    content.appendChild(levelGroup);
                 }
 
-                const costPerLevel = getSpellCost(school, 1) / 1;
-                html += `<div class="spell-school-section">
-                    <div class="spell-school-header" onclick="toggleSpellSchool('${school}')">
-                        <h3>${school}</h3>
-                        <div class="school-info">${relationship} | ${costPerLevel} SP/level</div>
-                        <span class="expand-arrow" id="arrow-${school}">▼</span>
-                    </div>
-                    <div class="spell-school-body" id="body-${school}">
-                        <table class="spell-table">
-                            <thead><tr><th>Level</th><th>Spells</th><th>Qty</th><th>Cost</th><th>Action</th></tr></thead>
-                            <tbody>`;
-
-                for (let lvl = 1; lvl <= 9; lvl++) {
-                    const spellList = SPELLS[school][lvl] || [];
-                    const currentQty = state.spells[school] ? (state.spells[school][lvl] || 0) : 0;
-                    const costPerSpell = getSpellCost(school, lvl);
-
-                    let towerRuleStatus = '';
-                    let canBuy = true;
-                    if (lvl > 1) {
-                        const prevLevelQty = state.spells[school] ? (state.spells[school][lvl-1] || 0) : 0;
-                        if (prevLevelQty < 2) {
-                            towerRuleStatus = `<span class="tower-rule-warning">Need ${2-prevLevelQty} more at L${lvl-1}</span>`;
-                            canBuy = false;
-                        }
-                    }
-
-                    let actionBtn = '';
-                    if (relationship === 'Forbidden (Hybrid)') {
-                        actionBtn = '<button disabled>Forbidden</button>';
-                    } else if (canBuy && costPerSpell && costPerSpell <= (state.spTotal - getTotalSPSpent())) {
-                        actionBtn = `<button class="buy-btn" onclick="buySpell('${school}', ${lvl}, ${costPerSpell})">Buy</button>`;
-                    } else if (currentQty > 0) {
-                        actionBtn = `<button class="buy-btn" onclick="removeSpell('${school}', ${lvl})">−</button>`;
-                    } else {
-                        actionBtn = '<button class="buy-btn" disabled>Buy</button>';
-                    }
-
-                    html += `<tr${canBuy ? '' : ' class="spell-locked"'}>
-                        <td>L${lvl}</td>
-                        <td><span class="spell-names">${spellList.join(', ')}</span></td>
-                        <td>${currentQty}</td>
-                        <td>${costPerSpell} SP</td>
-                        <td>${actionBtn} ${towerRuleStatus}</td>
-                    </tr>`;
-                }
-
-                html += '</tbody></table></div></div>';
+                section.appendChild(header);
+                section.appendChild(content);
+                container.appendChild(section);
             }
 
-            document.getElementById('spellsContainer').innerHTML = html;
+            updateSidePanel();
         }
 
-        function toggleSpellSchool(school) {
-            const body = document.getElementById(`body-${school}`);
-            const arrow = document.getElementById(`arrow-${school}`);
-            body.classList.toggle('expanded');
-            arrow.classList.toggle('expanded');
+        function checkTowerRule(school, level) {
+            if (level === 1) return true;
+            const prevLevel = state.spells[school]?.[level - 1] || 0;
+            return prevLevel >= 2;
         }
 
-        function buySpell(school, level, cost) {
+        function buySpell(school, level, delta) {
             if (!state.spells[school]) state.spells[school] = {};
             if (!state.spells[school][level]) state.spells[school][level] = 0;
-            state.spells[school][level]++;
-            updateAll();
+
+            if (delta > 0 && !checkTowerRule(school, level)) return;
+
+            state.spells[school][level] += delta;
+            if (state.spells[school][level] < 0) state.spells[school][level] = 0;
+
+            saveState();
             renderSpells();
         }
 
-        function removeSpell(school, level) {
-            if (state.spells[school] && state.spells[school][level] > 0) {
-                state.spells[school][level]--;
-            }
-            updateAll();
-            renderSpells();
-        }
+        function renderCharacterSheet() {
+            const container = document.getElementById('characterSheet');
+            const level = calculateLevel();
+            const lp = calculateLP();
+            const spSpent = getTotalSPSpent();
+            const spRemaining = state.spTotal - spSpent;
 
-        function renderDeities() {
-            let html = '';
-            for (const deityName in DEITIES) {
-                const deity = DEITIES[deityName];
-                const isSelected = state.deity === deityName;
-                html += `<div class="deity-compact">
-                    <div class="deity-compact-header" onclick="toggleDeityCard('${deityName}')">
-                        <div>
-                            <h4>${deityName}</h4>
-                            <div class="deity-epithet">${deity.title}</div>
-                        </div>
-                        <span class="expand-arrow" id="arrow-deity-${deityName}">▼</span>
+            let html = `
+                <div class="char-header">
+                    <div class="char-title">
+                        <h1>${state.charName || 'Unnamed Character'}</h1>
+                        <p>${state.playerName || 'Player Name Not Set'}</p>
                     </div>
-                    <div class="deity-compact-body" id="body-deity-${deityName}">
-                        <h5>Cleric Benefits</h5>
-                        <ul>${deity.clericBenefits.map(b => `<li>${b}</li>`).join('')}</ul>
-                        <h5>Cleric Limitations</h5>
-                        <ul>${deity.clericLimitations.length > 0 ? deity.clericLimitations.map(l => `<li>${l}</li>`).join('') : '<li>None</li>'}</ul>
-                        <h5>Holy Warrior Benefits</h5>
-                        <ul>${deity.holyWarriorBenefits.length > 0 ? deity.holyWarriorBenefits.map(b => `<li>${b}</li>`).join('') : '<li>None</li>'}</ul>
-                    </div>
-                </div>`;
-            }
-            document.getElementById('deitiesContainer').innerHTML = html;
-        }
+                </div>
 
-        function toggleDeityCard(name) {
-            const body = document.getElementById(`body-deity-${name}`);
-            const arrow = document.getElementById(`arrow-deity-${name}`);
-            body.classList.toggle('expanded');
-            arrow.classList.toggle('expanded');
-        }
+                <div class="char-field">
+                    <label>Race</label>
+                    <value>${state.race || '—'}</value>
+                </div>
+                <div class="char-field">
+                    <label>Class</label>
+                    <value>${state.class || '—'}</value>
+                </div>
+                <div class="char-field">
+                    <label>Deity</label>
+                    <value>${state.deity || 'None'}</value>
+                </div>
+                <div class="char-field">
+                    <label>Level</label>
+                    <value>${level}</value>
+                </div>
+                <div class="char-field">
+                    <label>Life Points</label>
+                    <value>${lp}</value>
+                </div>
+                <div class="char-field">
+                    <label>Skill Points</label>
+                    <value>${spSpent} / ${state.spTotal}</value>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: ${Math.min(100, (spSpent / state.spTotal) * 100)}%">${Math.round((spSpent / state.spTotal) * 100)}%</div>
+                </div>
 
-        function renderRules() {
-            let html = '';
-            RULES.forEach(rule => {
-                html += `<div class="rules-q">
-                    <h4>${rule.title}</h4>
-                    <p>${rule.text}</p>
-                </div>`;
-            });
-            document.getElementById('rulesContainer').innerHTML = html;
-        }
+                <div class="sheet-section">
+                    <h2>Skills</h2>
+            `;
 
-        function filterRules() {
-            const query = document.getElementById('rulesSearchInput').value.toLowerCase();
-            const results = [];
+            const categories = ['Fighting', 'Stealth', 'Magic', 'Survival', 'Craft'];
+            for (const category of categories) {
+                const skillsInCat = SKILLS.filter(s => s.category === category);
+                const purchasedInCat = skillsInCat.filter(s => state.skills[s.name] && state.skills[s.name] > 0);
 
-            if (!query) {
-                renderRules();
-                return;
-            }
-
-            RULES.forEach(rule => {
-                if (rule.title.toLowerCase().includes(query) || rule.text.toLowerCase().includes(query)) {
-                    results.push(rule);
+                if (purchasedInCat.length > 0) {
+                    html += `<h3>${category}</h3><ul class="sheet-list">`;
+                    for (const skill of purchasedInCat) {
+                        const qty = state.skills[skill.name];
+                        const cost = getSkillCost(skill.name, state.class, state.race, state.deity);
+                        const totalCost = cost && cost > 0 ? cost * qty : 0;
+                        html += `<li><strong>${skill.name}</strong> × ${qty}${totalCost > 0 ? ` (${totalCost} SP)` : ' (Free)'}</li>`;
+                    }
+                    html += '</ul>';
                 }
-            });
+            }
 
-            SKILLS.forEach(skill => {
-                if (skill.name.toLowerCase().includes(query)) {
-                    results.push({
-                        title: skill.name,
-                        text: `Category: ${skill.category} | Code: ${skill.code}`,
-                        category: 'Skill'
-                    });
-                }
-            });
+            html += `
+                </div>
 
-            for (const school in SPELLS) {
-                for (const level in SPELLS[school]) {
-                    const spells = SPELLS[school][level];
-                    spells.forEach(spell => {
-                        if (spell.toLowerCase().includes(query)) {
-                            results.push({
-                                title: spell,
-                                text: `${school} Level ${level}`,
-                                category: 'Spell'
-                            });
+                <div class="sheet-section">
+                    <h2>Spells</h2>
+            `;
+
+            const classInfo = state.class && CLASSES[state.class] ? CLASSES[state.class] : null;
+            if (classInfo && classInfo.canCast) {
+                let hasSpells = false;
+                for (const school of Object.keys(SPELLS)) {
+                    const schoolData = SPELLS[school];
+                    const purchasedLevels = [];
+                    for (const level of Object.keys(schoolData)) {
+                        const qty = state.spells[school]?.[level] || 0;
+                        if (qty > 0) purchasedLevels.push({level, qty});
+                    }
+                    if (purchasedLevels.length > 0) {
+                        hasSpells = true;
+                        html += `<h3>${school}</h3>`;
+                        for (const {level, qty} of purchasedLevels) {
+                            const cost = getSpellCost(school, level);
+                            html += `<div>Level ${level}: ${qty} spell${qty > 1 ? 's' : ''} (${cost * qty} SP)</div>`;
                         }
-                    });
+                    }
+                }
+                if (!hasSpells) html += '<p>No spells learned.</p>';
+            } else {
+                html += '<p>This class does not learn spells.</p>';
+            }
+
+            html += `
+                </div>
+
+                <div class="sheet-section">
+                    <h2>Racial Traits</h2>
+            `;
+
+            if (state.race && RACES[state.race]) {
+                const race = RACES[state.race];
+                if (race.bonuses.length > 0) {
+                    html += `<h3>Bonuses</h3><ul class="sheet-list">`;
+                    for (const bonus of race.bonuses) {
+                        html += `<li>${bonus}</li>`;
+                    }
+                    html += '</ul>';
+                }
+                if (race.limitations.length > 0) {
+                    html += `<h3>Limitations</h3><ul class="sheet-list">`;
+                    for (const limit of race.limitations) {
+                        html += `<li>${limit}</li>`;
+                    }
+                    html += '</ul>';
+                }
+                if (race.resistances.length > 0) {
+                    html += `<h3>Resistances</h3><ul class="sheet-list">`;
+                    for (const resist of race.resistances) {
+                        html += `<li>${resist}</li>`;
+                    }
+                    html += '</ul>';
                 }
             }
 
-            for (const deityName in DEITIES) {
-                const deity = DEITIES[deityName];
-                if (deityName.toLowerCase().includes(query) || deity.title.toLowerCase().includes(query)) {
-                    results.push({
-                        title: deityName,
-                        text: deity.title,
-                        category: 'Deity'
-                    });
+            html += `
+                </div>
+
+                <div class="sheet-section">
+                    <h2>Class Features</h2>
+            `;
+
+            if (classInfo) {
+                html += `
+                    <ul class="sheet-list">
+                        <li><strong>Armor Allowed:</strong> ${classInfo.armor}</li>
+                        <li><strong>LP per Level:</strong> ${classInfo.lpPerLevel}</li>
+                        ${classInfo.canCast ? `<li><strong>Casting:</strong> ${classInfo.canCast}</li><li><strong>Primary School:</strong> ${classInfo.primarySchool}</li>` : '<li><strong>Casting:</strong> Non-caster</li>'}
+                    </ul>
+                `;
+            }
+
+            html += `
+                </div>
+            `;
+
+            if (state.deity && state.deity !== 'None' && DEITIES[state.deity]) {
+                const deity = DEITIES[state.deity];
+                html += `
+                    <div class="sheet-section">
+                        <h2>Deity Benefits (${state.deity})</h2>
+                        <h3>${deity.title}</h3>
+                `;
+                if (state.class === 'Cleric' || state.class === 'Healer') {
+                    html += `<h3>Cleric Benefits</h3><ul class="sheet-list">`;
+                    for (const benefit of deity.clericBenefits) {
+                        html += `<li>${benefit}</li>`;
+                    }
+                    html += '</ul>';
+                    html += `<h3>Cleric Limitations</h3><ul class="sheet-list">`;
+                    for (const limit of deity.clericLimitations) {
+                        html += `<li>${limit}</li>`;
+                    }
+                    html += '</ul>';
+                } else if (state.class === 'Holy Warrior' || state.class === 'Paladin') {
+                    html += `<h3>Holy Warrior Benefits</h3><ul class="sheet-list">`;
+                    for (const benefit of deity.holyWarriorBenefits) {
+                        html += `<li>${benefit}</li>`;
+                    }
+                    html += '</ul>';
                 }
+                html += `
+                    </div>
+                `;
             }
 
-            let html = '';
-            results.forEach(result => {
-                const category = result.category || 'Rule';
-                html += `<div class="rules-q">
-                    <div class="rule-category">[${category}]</div>
-                    <h4>${result.title}</h4>
-                    <p>${result.text}</p>
-                </div>`;
-            });
-
-            if (results.length === 0) {
-                html = '<p style="color: var(--fq-text-dark);">No results found.</p>';
-            }
-
-            document.getElementById('rulesContainer').innerHTML = html;
+            container.innerHTML = html;
         }
 
-        function clearCart() {
+        function updateSidePanel() {
+            document.getElementById('sideName').textContent = state.charName || '—';
+            document.getElementById('sideRace').textContent = state.race || '—';
+            document.getElementById('sideClass').textContent = state.class || '—';
+            document.getElementById('sideDeity').textContent = state.deity || '—';
+
+            const spSpent = getTotalSPSpent();
+            document.getElementById('sideSpSpent').textContent = spSpent;
+            document.getElementById('sideSpTotal').textContent = state.spTotal;
+
+            const percent = Math.min(100, (spSpent / state.spTotal) * 100);
+            document.getElementById('sideProgress').style.width = percent + '%';
+
+            let skillsHTML = '';
+            for (const skillName in state.skills) {
+                const qty = state.skills[skillName];
+                if (qty > 0) {
+                    skillsHTML += `<div>${skillName} × ${qty}</div>`;
+                }
+            }
+            document.getElementById('sidePurchasedSkills').innerHTML = skillsHTML || '<div style="color: var(--fq-rust);">None purchased</div>';
+
+            let spellsHTML = '';
+            for (const school in state.spells) {
+                for (const level in state.spells[school]) {
+                    const qty = state.spells[school][level];
+                    if (qty > 0) {
+                        spellsHTML += `<div>${school} L${level} × ${qty}</div>`;
+                    }
+                }
+            }
+            document.getElementById('sidePurchasedSpells').innerHTML = spellsHTML || '<div style="color: var(--fq-rust);">None purchased</div>';
+        }
+
+        function clearAll() {
+            if (!confirm('Clear all character data? This cannot be undone.')) return;
+            state.race = null;
+            state.class = null;
+            state.deity = 'None';
+            state.charName = '';
+            state.playerName = '';
+            state.spTotal = 90;
             state.skills = {};
             state.spells = {};
-            state.customCosts = {};
-            updateAll();
-            renderSkills();
-            renderSpells();
+            state.currentStep = 0;
+            saveState();
+            location.reload();
         }
 
-        // Google Sheets import
-        function importFromURL() {
-            const url = document.getElementById('sheetUrlInput').value;
-            if (!url) {
-                alert('Please paste a URL');
-                return;
+        function exportCharacter() {
+            const level = calculateLevel();
+            const lp = calculateLP();
+            const spSpent = getTotalSPSpent();
+
+            let text = `Fantasy Quest Character Export\n`;
+            text += `================================\n\n`;
+            text += `Name: ${state.charName || 'Unnamed'}\n`;
+            text += `Player: ${state.playerName || 'Unknown'}\n`;
+            text += `Race: ${state.race || 'Unknown'}\n`;
+            text += `Class: ${state.class || 'Unknown'}\n`;
+            text += `Deity: ${state.deity || 'None'}\n\n`;
+            text += `Level: ${level}\n`;
+            text += `Life Points: ${lp}\n`;
+            text += `Skill Points: ${spSpent} / ${state.spTotal}\n\n`;
+
+            text += `SKILLS:\n`;
+            for (const skillName in state.skills) {
+                if (state.skills[skillName] > 0) {
+                    text += `  ${skillName} × ${state.skills[skillName]}\n`;
+                }
             }
 
-            const match = url.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
-            if (!match) {
-                alert('Invalid Google Sheets URL');
-                return;
-            }
-
-            const sheetId = match[1];
-            const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv&gid=0`;
-
-            // Try direct fetch first (works if CORS headers present)
-            fetch(csvUrl, { redirect: 'follow' })
-                .then(response => {
-                    if (!response.ok) throw new Error('HTTP ' + response.status);
-                    return response.text();
-                })
-                .then(csv => {
-                    if (csv.length < 20) throw new Error('Empty response');
-                    parseCharacterCard(csv);
-                })
-                .catch(err => {
-                    // CORS or network error — show manual instructions
-                    const csvLink = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv&gid=0`;
-                    const summaryDiv = document.getElementById('importSummary');
-                    if (summaryDiv) {
-                        summaryDiv.innerHTML = `<strong>Could not auto-fetch (CORS restriction).</strong><br>` +
-                            `<a href="${csvLink}" target="_blank" style="color:var(--fq-lime);">Click here to download CSV</a>, ` +
-                            `then paste the contents in the text box below and click "Import from Text".`;
-                        summaryDiv.classList.remove('hidden');
+            text += `\nSPELLS:\n`;
+            for (const school in state.spells) {
+                for (const level in state.spells[school]) {
+                    if (state.spells[school][level] > 0) {
+                        text += `  ${school} Level ${level} × ${state.spells[school][level]}\n`;
                     }
-                });
+                }
+            }
+
+            const blob = new Blob([text], {type: 'text/plain'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${state.charName || 'character'}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
         }
 
-        function importFromPaste() {
-            const data = document.getElementById('importTextarea').value;
-            if (!data) {
-                alert('Please paste data');
-                return;
+        function parseCharacterCard(csvData) {
+            const lines = csvData.trim().split('\n');
+            const result = {charName: '', race: '', class: '', deity: 'None', skills: {}, spells: {}};
+
+            for (const line of lines) {
+                const [key, ...valueParts] = line.split(':');
+                const value = valueParts.join(':').trim();
+
+                if (key.toLowerCase().includes('name')) result.charName = value;
+                if (key.toLowerCase().includes('race')) result.race = value;
+                if (key.toLowerCase().includes('class')) result.class = value;
+                if (key.toLowerCase().includes('deity')) result.deity = value;
             }
-            parseCharacterCard(data);
+
+            return result;
+        }
+
+        function fuzzyMatchSkill(input) {
+            const matches = SKILLS.map(s => ({
+                name: s.name,
+                distance: levenshteinDistance(input.toLowerCase(), s.name.toLowerCase())
+            })).sort((a, b) => a.distance - b.distance);
+
+            return matches[0]?.distance < 5 ? matches[0].name : null;
+        }
+
+        function levenshteinDistance(s1, s2) {
+            const m = s1.length, n = s2.length;
+            const dp = Array(m + 1).fill(0).map(() => Array(n + 1).fill(0));
+            for (let i = 0; i <= m; i++) dp[i][0] = i;
+            for (let j = 0; j <= n; j++) dp[0][j] = j;
+            for (let i = 1; i <= m; i++) {
+                for (let j = 1; j <= n; j++) {
+                    if (s1[i - 1] === s2[j - 1]) {
+                        dp[i][j] = dp[i - 1][j - 1];
+                    } else {
+                        dp[i][j] = 1 + Math.min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]);
+                    }
+                }
+            }
+            return dp[m][n];
         }
 
         function parseCharacterCard(csvData) {
@@ -2058,12 +2177,11 @@
             if (charEl && state.charName) charEl.value = state.charName;
             const playerEl = document.getElementById('playerName');
             if (playerEl && state.playerName) playerEl.value = state.playerName;
-            document.getElementById('spTotalInput').value = state.spTotal;
+            const spInput = document.getElementById('spTotalInput');
+            if (spInput) spInput.value = state.spTotal;
 
-            updateAll();
-            renderSkills();
-            renderSpells();
-            showImportSummary(summary);
+            if (typeof updateAll === 'function') updateAll();
+            if (typeof showImportSummary === 'function') showImportSummary(summary);
         }
 
         function fuzzyMatchSkill(input) {
@@ -2114,35 +2232,74 @@
 
         function showImportSummary(summary) {
             const summaryDiv = document.getElementById('importSummary');
-            summaryDiv.classList.remove('hidden');
-            const spSpent = getTotalSPSpent();
-            const customSkills = Object.keys(state.customCosts);
-            summaryDiv.innerHTML = `
-                <h4>Import Summary</h4>
-                <ul>
-                    <li><strong>Character:</strong> ${state.charName || '—'} (${state.playerName || '—'})</li>
-                    <li><strong>Race:</strong> ${state.race || '—'} | <strong>Class:</strong> ${state.class || '—'} | <strong>Deity:</strong> ${state.deity || '—'}</li>
-                    <li><strong>Skills Imported:</strong> ${summary.matched} | <strong>Spells Imported:</strong> ${summary.spells}</li>
-                    <li><strong>SP Budget:</strong> ${state.spTotal} | <strong>SP Spent:</strong> ${spSpent} | <strong>SP Remaining:</strong> ${state.spTotal - spSpent}</li>
-                </ul>
-                ${customSkills.length > 0 ? `
-                    <p style="font-size:0.85em; color: var(--fq-warning);"><strong>* Skills not in planner database (imported with card costs):</strong> ${customSkills.join(', ')}</p>
-                ` : ''}
-                ${summary.unmatched_items.length > 0 ? `
-                    <p><strong>Unmatched items:</strong></p>
-                    <ul>${summary.unmatched_items.map(item => `<li>${item}</li>`).join('')}</ul>
-                ` : ''}
-            `;
+            if (summaryDiv) {
+                summaryDiv.classList.remove('hidden');
+                const spSpent = getTotalSPSpent();
+                const customSkills = Object.keys(state.customCosts);
+                summaryDiv.innerHTML = `
+                    <h4>Import Summary</h4>
+                    <ul>
+                        <li><strong>Character:</strong> ${state.charName || '—'} (${state.playerName || '—'})</li>
+                        <li><strong>Race:</strong> ${state.race || '—'} | <strong>Class:</strong> ${state.class || '—'} | <strong>Deity:</strong> ${state.deity || '—'}</li>
+                        <li><strong>Skills Imported:</strong> ${summary.matched} | <strong>Spells Imported:</strong> ${summary.spells}</li>
+                        <li><strong>SP Budget:</strong> ${state.spTotal} | <strong>SP Spent:</strong> ${spSpent} | <strong>SP Remaining:</strong> ${state.spTotal - spSpent}</li>
+                    </ul>
+                    ${customSkills.length > 0 ? `<p><strong>Custom Skills:</strong> ${customSkills.join(', ')}</p>` : ''}
+                `;
+            }
         }
 
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
+        function importFromURL() {
+            const url = document.getElementById('sheetsUrl').value.trim();
+            if (!url) {
+                alert('Please enter a URL');
+                return;
+            }
+            alert('Google Sheets import not yet implemented. Please use the CSV paste option.');
+        }
+
+        function importFromPaste() {
+            const csvData = document.getElementById('pasteInput').value.trim();
+            if (!csvData) {
+                alert('Please paste character data');
+                return;
+            }
+            const imported = parseCharacterCard(csvData);
+            Object.assign(state, imported);
+            saveState();
+            showImportSummary(imported);
+            goToStep(7);
+        }
+
+        // ========== INITIALIZATION ==========
+
+        window.addEventListener('load', () => {
             loadState();
-            if (state.race) document.getElementById('raceSelect').value = state.race;
-            if (state.class) document.getElementById('classSelect').value = state.class;
-            if (state.deity) document.getElementById('deitySelect').value = state.deity;
-            document.getElementById('spTotalInput').value = state.spTotal;
-            updateAll();
+            updateStepIndicator();
+            goToStep(state.currentStep);
+
+            if (state.currentStep === 1) renderRaces();
+            if (state.currentStep === 2) renderClasses();
+            if (state.currentStep === 3) renderDeities();
+            if (state.currentStep === 4) {
+                const tbody = document.getElementById('levelTable');
+                tbody.innerHTML = LEVEL_THRESHOLDS.map((threshold, idx) => `
+                    <tr>
+                        <td>${idx + 1}</td>
+                        <td>${LEVEL_THRESHOLDS[idx + 1] - threshold || '—'}</td>
+                        <td>${threshold}</td>
+                    </tr>
+                `).join('');
+
+                document.getElementById('charName').value = state.charName;
+                document.getElementById('playerName').value = state.playerName;
+                document.getElementById('spTotal').value = state.spTotal;
+            }
+            if (state.currentStep === 5) renderSkills();
+            if (state.currentStep === 6) renderSpells();
+            if (state.currentStep === 7) renderCharacterSheet();
+
+            updateSidePanel();
         });
     </script>
 </body>
