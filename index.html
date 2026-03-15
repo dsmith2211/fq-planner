@@ -1,0 +1,1899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fantasy Quest LARP Character Planner</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Crimson+Text:ital@0;1&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Crimson Text', serif;
+            background-color: #1a1a1a;
+            color: #e8dcc4;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #d4af37;
+            padding-bottom: 20px;
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 2.5em;
+            color: #d4af37;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+        }
+
+        .stat-bar {
+            position: sticky;
+            top: 0;
+            background-color: #2a2a2a;
+            border: 2px solid #d4af37;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            z-index: 100;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.5);
+        }
+
+        .stat-item {
+            padding: 10px;
+            background-color: #1a1a1a;
+            border: 1px solid #d4af37;
+            border-radius: 4px;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            color: #a89968;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .stat-value {
+            font-size: 1.5em;
+            color: #d4af37;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .stat-bar input {
+            width: 100%;
+            padding: 8px;
+            background-color: #3a3a3a;
+            border: 1px solid #d4af37;
+            color: #d4af37;
+            border-radius: 4px;
+            font-family: inherit;
+            margin-top: 5px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            border-bottom: 2px solid #d4af37;
+        }
+
+        .tab-button {
+            padding: 12px 20px;
+            background-color: #2a2a2a;
+            border: 2px solid #666;
+            color: #a89968;
+            cursor: pointer;
+            font-family: 'Cinzel', serif;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            border-bottom: none;
+            margin-bottom: -2px;
+        }
+
+        .tab-button:hover {
+            background-color: #3a3a3a;
+            color: #d4af37;
+            border-color: #d4af37;
+        }
+
+        .tab-button.active {
+            background-color: #d4af37;
+            color: #1a1a1a;
+            border-color: #d4af37;
+            font-weight: bold;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .card {
+            background-color: #2a2a2a;
+            border: 2px solid #666;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card h3 {
+            font-family: 'Cinzel', serif;
+            color: #d4af37;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #d4af37;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #a89968;
+            text-transform: uppercase;
+            font-size: 0.9em;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 10px;
+            background-color: #3a3a3a;
+            border: 1px solid #d4af37;
+            color: #e8dcc4;
+            border-radius: 4px;
+            font-family: inherit;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: #ffd700;
+            box-shadow: 0 0 5px rgba(212, 175, 55, 0.5);
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 900px) {
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        button {
+            padding: 10px 15px;
+            background-color: #d4af37;
+            border: none;
+            color: #1a1a1a;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            font-family: 'Cinzel', serif;
+        }
+
+        button:hover {
+            background-color: #ffd700;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(212, 175, 55, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button.small {
+            padding: 6px 12px;
+            font-size: 0.9em;
+        }
+
+        button.danger {
+            background-color: #d32f2f;
+        }
+
+        button.danger:hover {
+            background-color: #ff5252;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th {
+            background-color: #1f4e79;
+            color: #d4af37;
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+            border-bottom: 2px solid #d4af37;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #444;
+        }
+
+        tr:nth-child(even) {
+            background-color: #d6e4f0;
+            color: #1a1a1a;
+        }
+
+        tr:nth-child(odd) {
+            background-color: #2a2a2a;
+            color: #e8dcc4;
+        }
+
+        .warning {
+            background-color: #fff2cc !important;
+            color: #333 !important;
+        }
+
+        .success {
+            background-color: #e8f5e9 !important;
+            color: #1b5e20 !important;
+        }
+
+        .danger-bg {
+            background-color: #fce4ec !important;
+            color: #880e4f !important;
+        }
+
+        .skill-row {
+            display: grid;
+            grid-template-columns: 1.5fr 0.8fr 0.8fr 0.8fr 0.3fr 0.3fr;
+            gap: 10px;
+            align-items: center;
+            padding: 12px;
+            border: 1px solid #666;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            background-color: #2a2a2a;
+        }
+
+        .skill-row:nth-child(even) {
+            background-color: #353535;
+        }
+
+        .skill-name {
+            font-weight: bold;
+            color: #d4af37;
+        }
+
+        .skill-cost {
+            text-align: center;
+            color: #a89968;
+        }
+
+        .skill-cost.modified {
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+
+        .qty-control {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+
+        .qty-control input {
+            width: 50px;
+            padding: 5px;
+            text-align: center;
+        }
+
+        .qty-control button {
+            padding: 4px 8px;
+            font-size: 0.8em;
+        }
+
+        .filter-bar {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-bar button {
+            flex: 1;
+            min-width: 100px;
+        }
+
+        .filter-bar button.active {
+            background-color: #d4af37;
+            color: #1a1a1a;
+        }
+
+        .summary-box {
+            background-color: #1f4e79;
+            border: 2px solid #d4af37;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            color: #d4af37;
+        }
+
+        .summary-box h4 {
+            margin-bottom: 10px;
+            font-family: 'Cinzel', serif;
+        }
+
+        .summary-box ul {
+            margin-left: 20px;
+        }
+
+        .summary-box li {
+            margin-bottom: 5px;
+        }
+
+        .privacy-notice {
+            background-color: #0d4d0d;
+            border: 2px solid #66bb6a;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            color: #a5d6a7;
+            font-size: 0.95em;
+        }
+
+        .deity-info {
+            background-color: #4a235a;
+            border-left: 4px solid #d4af37;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+        }
+
+        .deity-info h4 {
+            color: #d4af37;
+            margin-bottom: 10px;
+            font-family: 'Cinzel', serif;
+        }
+
+        .deity-benefits, .deity-limitations {
+            margin-bottom: 10px;
+        }
+
+        .deity-benefits h5, .deity-limitations h5 {
+            color: #a89968;
+            font-size: 0.95em;
+            margin-top: 8px;
+            margin-bottom: 5px;
+        }
+
+        .deity-benefits {
+            color: #a5d6a7;
+        }
+
+        .deity-limitations {
+            color: #ffab91;
+        }
+
+        .spell-level-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .spell-level-group {
+            background-color: #2a2a2a;
+            border: 2px solid #666;
+            border-radius: 8px;
+            padding: 15px;
+        }
+
+        .spell-level-group.disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .spell-level-group h4 {
+            color: #d4af37;
+            margin-bottom: 12px;
+            border-bottom: 1px solid #d4af37;
+            padding-bottom: 8px;
+            font-family: 'Cinzel', serif;
+        }
+
+        .spell-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #444;
+        }
+
+        .spell-item:last-child {
+            border-bottom: none;
+        }
+
+        .spell-name {
+            flex: 1;
+            color: #a89968;
+        }
+
+        .spell-cost {
+            color: #d4af37;
+            font-weight: bold;
+            margin: 0 10px;
+            min-width: 50px;
+            text-align: right;
+        }
+
+        .spell-item button {
+            padding: 4px 8px;
+            font-size: 0.8em;
+        }
+
+        .tower-warning {
+            background-color: #fff2cc;
+            border-left: 4px solid #ffc107;
+            padding: 10px;
+            margin-bottom: 10px;
+            color: #333;
+            border-radius: 4px;
+        }
+
+        .rules-search {
+            margin-bottom: 20px;
+        }
+
+        .rules-search input {
+            width: 100%;
+            padding: 12px;
+            font-size: 1em;
+        }
+
+        .rule-item {
+            background-color: #2a2a2a;
+            border-left: 4px solid #d4af37;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .rule-item.show {
+            display: block;
+        }
+
+        .rule-item h4 {
+            color: #d4af37;
+            margin-bottom: 8px;
+            font-family: 'Cinzel', serif;
+        }
+
+        .rule-item p {
+            color: #a89968;
+            line-height: 1.6;
+        }
+
+        .rule-item code {
+            background-color: #1a1a1a;
+            padding: 2px 4px;
+            border-radius: 3px;
+            color: #d4af37;
+        }
+
+        .export-box {
+            background-color: #2a2a2a;
+            border: 2px solid #d4af37;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        .export-box textarea {
+            width: 100%;
+            min-height: 200px;
+            font-family: monospace;
+            font-size: 0.9em;
+            padding: 10px;
+            margin: 10px 0;
+        }
+
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .template-card {
+            background-color: #2a2a2a;
+            border: 2px solid #666;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .template-card h5 {
+            color: #d4af37;
+            margin-bottom: 10px;
+            font-family: 'Cinzel', serif;
+        }
+
+        .template-card p {
+            font-size: 0.9em;
+            color: #a89968;
+            margin-bottom: 10px;
+        }
+
+        .template-card button {
+            width: 100%;
+        }
+
+        .analysis-table {
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        .analysis-table td:first-child {
+            color: #d4af37;
+            font-weight: bold;
+        }
+
+        .analysis-table td:last-child {
+            text-align: right;
+            color: #a89968;
+        }
+
+        .no-data {
+            text-align: center;
+            color: #a89968;
+            padding: 30px;
+            font-style: italic;
+        }
+
+        .spell-info-detail {
+            font-size: 0.85em;
+            color: #999;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚔ Fantasy Quest LARP Character Planner ⚔</h1>
+            <p style="color: #a89968; margin-top: 10px;">Skill Point Calculator & Build Manager</p>
+        </header>
+
+        <div class="stat-bar">
+            <div class="stat-item">
+                <div class="stat-label">SP Spent</div>
+                <div class="stat-value"><span id="spSpent">0</span> / <span id="spTotal">90</span></div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Level</div>
+                <div class="stat-value" id="levelValue">1</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Life Points/Level</div>
+                <div class="stat-value" id="lpValue">0</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Skills Purchased</div>
+                <div class="stat-value" id="skillCount">0</div>
+            </div>
+            <div class="stat-item">
+                <label for="spTotalInput">Total SP Available:</label>
+                <input type="number" id="spTotalInput" value="90" min="1">
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-button active" onclick="switchTab(event, 'build')">BUILD</button>
+            <button class="tab-button" onclick="switchTab(event, 'skills')">SKILLS</button>
+            <button class="tab-button" onclick="switchTab(event, 'spells')">SPELLS</button>
+            <button class="tab-button" onclick="switchTab(event, 'deities')">DEITIES</button>
+            <button class="tab-button" onclick="switchTab(event, 'analysis')">ANALYSIS</button>
+            <button class="tab-button" onclick="switchTab(event, 'rules')">RULES</button>
+        </div>
+
+        <!-- BUILD TAB -->
+        <div id="build" class="tab-content active">
+            <div class="privacy-notice">
+                🔒 <strong>Privacy Notice:</strong> All data stored locally in your browser. No server, no accounts, no data leaves your device.
+            </div>
+
+            <div class="card">
+                <h3>Character Foundation</h3>
+                <div class="two-column">
+                    <div class="form-group">
+                        <label for="raceSelect">Race</label>
+                        <select id="raceSelect" onchange="updateBuild()">
+                            <option value="">-- Select Race --</option>
+                            <option value="Human">Human</option>
+                            <option value="Elf">Elf</option>
+                            <option value="Dwarf">Dwarf</option>
+                            <option value="Hobbet">Hobbet</option>
+                            <option value="Orgreth">Orgreth</option>
+                            <option value="Half-Ogre">Half-Ogre</option>
+                            <option value="Wolven">Wolven</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="classSelect">Class</label>
+                        <select id="classSelect" onchange="updateBuild()">
+                            <option value="">-- Select Class --</option>
+                            <option value="Warrior">Warrior</option>
+                            <option value="Ranger">Ranger</option>
+                            <option value="Cavalier">Cavalier</option>
+                            <option value="Bounty Hunter">Bounty Hunter</option>
+                            <option value="Assassin">Assassin</option>
+                            <option value="Bard">Bard</option>
+                            <option value="Cleric">Cleric</option>
+                            <option value="Holy Warrior">Holy Warrior</option>
+                            <option value="Healer">Healer</option>
+                            <option value="Druid">Druid</option>
+                            <option value="Monk">Monk</option>
+                            <option value="Sorcerer">Sorcerer</option>
+                            <option value="Dark Mage">Dark Mage</option>
+                            <option value="Witch">Witch</option>
+                            <option value="Paladin">Paladin</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="deitySelect">Deity</label>
+                        <select id="deitySelect" onchange="updateBuild()">
+                            <option value="">-- Select Deity --</option>
+                            <option value="Avagon">Avagon (The Paladin)</option>
+                            <option value="Brodinn">Brodinn (The Tempest)</option>
+                            <option value="Caymlyn">Caymlyn (The Enchantress)</option>
+                            <option value="Danubu">Danubu (Lord of Night)</option>
+                            <option value="Etyana">Etyana (The Nymph)</option>
+                            <option value="Gheldann">Gheldann (Keeper of Souls)</option>
+                            <option value="Kandrell">Kandrell (Mistress of the Moon)</option>
+                            <option value="Kyrriden">Kyrriden (The World-Forger)</option>
+                            <option value="Nivlac">Nivlac (The Trickster)</option>
+                            <option value="Peryn">Peryn (The Hunter)</option>
+                            <option value="Undathos">Undathos (The Un-Living)</option>
+                            <option value="Voe">Voe (He Who Watches)</option>
+                            <option value="Volgen">Volgen (The Judge)</option>
+                            <option value="Pan-Deific">Pan-Deific</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Race Bonuses & Limitations</h3>
+                <div id="raceBonusDisplay" class="summary-box">
+                    <p>Select a race to view bonuses and limitations.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Deity Bonuses & Limitations</h3>
+                <div id="deityBonusDisplay" class="summary-box">
+                    <p>Select a deity to view bonuses and limitations.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Current Build Summary</h3>
+                <div id="buildSummary" class="summary-box">
+                    <p>Build summary will appear here as you add skills and spells.</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Import/Export Build</h3>
+                <div class="export-box">
+                    <button onclick="exportBuild()">📋 Export Build (Copy JSON)</button>
+                    <button onclick="document.getElementById('importArea').style.display = 'block'">📂 Import Build</button>
+                    <div id="importArea" style="display: none; margin-top: 15px;">
+                        <label>Paste JSON Build:</label>
+                        <textarea id="importText" placeholder='Paste exported JSON here...'></textarea>
+                        <button onclick="importBuild()">Load Build</button>
+                        <button onclick="document.getElementById('importArea').style.display = 'none'" class="danger">Cancel</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Quick Start Templates</h3>
+                <div class="template-grid">
+                    <div class="template-card">
+                        <h5>Tank Warrior</h5>
+                        <p>Human Warrior<br>90 SP</p>
+                        <button onclick="loadTemplate('tank-warrior')">Load</button>
+                    </div>
+                    <div class="template-card">
+                        <h5>Healer Cleric</h5>
+                        <p>Human Cleric<br>90 SP</p>
+                        <button onclick="loadTemplate('healer-cleric')">Load</button>
+                    </div>
+                    <div class="template-card">
+                        <h5>Backstab Assassin</h5>
+                        <p>Human Assassin<br>90 SP</p>
+                        <button onclick="loadTemplate('assassin')">Load</button>
+                    </div>
+                    <div class="template-card">
+                        <h5>Arcane Nuker</h5>
+                        <p>Human Sorcerer<br>90 SP</p>
+                        <button onclick="loadTemplate('sorcerer')">Load</button>
+                    </div>
+                    <div class="template-card">
+                        <h5>Ranger Archer</h5>
+                        <p>Elf Ranger<br>90 SP</p>
+                        <button onclick="loadTemplate('ranger')">Load</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SKILLS TAB -->
+        <div id="skills" class="tab-content">
+            <div class="card">
+                <h3>Skills</h3>
+                <div class="filter-bar" id="skillFilterBar"></div>
+                <div id="skillsContainer"></div>
+            </div>
+        </div>
+
+        <!-- SPELLS TAB -->
+        <div id="spells" class="tab-content">
+            <div id="spellTowerWarning" class="tower-warning" style="display: none;">
+                ⚠️ <strong>Tower Rule Violation:</strong> You need at least 2 spells at a lower level before purchasing the next level in each school.
+            </div>
+            <div class="card">
+                <h3>Spells</h3>
+                <div id="spellsContainer"></div>
+            </div>
+        </div>
+
+        <!-- DEITIES TAB -->
+        <div id="deities" class="tab-content">
+            <div class="card">
+                <h3>Deities Reference</h3>
+                <div id="deitiesContainer"></div>
+            </div>
+        </div>
+
+        <!-- ANALYSIS TAB -->
+        <div id="analysis" class="tab-content">
+            <div class="card">
+                <h3>Build Analysis</h3>
+                <div id="analysisContainer"></div>
+            </div>
+        </div>
+
+        <!-- RULES TAB -->
+        <div id="rules" class="tab-content">
+            <div class="card">
+                <h3>Rules Reference</h3>
+                <div class="rules-search">
+                    <input type="text" id="rulesSearch" placeholder="Search rules..." onkeyup="filterRules()">
+                </div>
+                <div id="rulesContainer"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== DATA DEFINITIONS ==========
+
+        const RACES = {
+            Human: {
+                bonuses: [],
+                limitations: [],
+                resistances: [],
+                weaponRestrictions: [],
+                armorRestrictions: []
+            },
+            Elf: {
+                bonuses: ['Bow costs ½', 'Health costs 2×'],
+                limitations: ['Cannot use iron/steel weapons (silvered/wooden/magical OK)'],
+                resistances: ['+1 level resistance to Charm/Sleep'],
+                weaponRestrictions: ['iron', 'steel'],
+                armorRestrictions: []
+            },
+            Dwarf: {
+                bonuses: ['Smithing skills cost ½', 'Regenerate costs ½'],
+                limitations: ['Magic costs 2×', 'Cannot use bows', 'Cannot use two-handed swords'],
+                resistances: ['+1 level resistance to poison'],
+                weaponRestrictions: ['bow', 'two-handed sword'],
+                armorRestrictions: []
+            },
+            Hobbet: {
+                bonuses: ['Stealth skills cost ½'],
+                limitations: ['Cannot use two-handed weapons', '-1 LP per level'],
+                resistances: ['+1 level resistance to Fear'],
+                weaponRestrictions: ['two-handed'],
+                armorRestrictions: []
+            },
+            Orgreth: {
+                bonuses: ['Strength costs ½'],
+                limitations: ['Magic costs 2×', 'Cannot learn Read/Write', '+2 LP per level'],
+                resistances: [],
+                weaponRestrictions: [],
+                armorRestrictions: []
+            },
+            'Half-Ogre': {
+                bonuses: ['Battle Rage costs ½', '+3 LP per level'],
+                limitations: ['Cannot learn magic', 'Cannot use bows'],
+                resistances: [],
+                weaponRestrictions: ['bow'],
+                armorRestrictions: []
+            },
+            Wolven: {
+                bonuses: ['Nature Lore free', 'Tracking costs ½'],
+                limitations: ['Cannot wear metal armor'],
+                resistances: [],
+                weaponRestrictions: [],
+                armorRestrictions: ['metal']
+            }
+        };
+
+        const CLASSES = {
+            Warrior: {armor: 'Plate', lpPerLevel: 4, primarySchool: null, canCast: false, type: 'Fighter'},
+            Ranger: {armor: 'Chain', lpPerLevel: 3, primarySchool: null, canCast: false, type: 'Fighter'},
+            Cavalier: {armor: 'Plate', lpPerLevel: 3, primarySchool: null, canCast: false, type: 'Fighter'},
+            'Bounty Hunter': {armor: 'Studded', lpPerLevel: 2, primarySchool: null, canCast: false, type: 'Rogue'},
+            Assassin: {armor: 'Leather', lpPerLevel: 2, primarySchool: null, canCast: false, type: 'Rogue'},
+            Bard: {armor: 'Chain', lpPerLevel: 2, primarySchool: 'Enchantment', canCast: 'Hybrid', type: 'Hybrid'},
+            Cleric: {armor: 'Chain', lpPerLevel: 3, primarySchool: 'Divine', canCast: 'Straight', type: 'Caster'},
+            'Holy Warrior': {armor: 'Plate', lpPerLevel: 3, primarySchool: 'Divine', canCast: 'Hybrid', type: 'Hybrid'},
+            Healer: {armor: 'Leather', lpPerLevel: 2, primarySchool: 'Divine', canCast: 'Straight', type: 'Caster'},
+            Druid: {armor: 'Leather', lpPerLevel: 2, primarySchool: 'Elementalism', canCast: 'Straight', type: 'Caster'},
+            Monk: {armor: 'None', lpPerLevel: 2, primarySchool: 'Elementalism', canCast: 'Hybrid', type: 'Hybrid'},
+            Sorcerer: {armor: 'None', lpPerLevel: 1, primarySchool: 'Sorcery', canCast: 'Straight', type: 'Caster'},
+            'Dark Mage': {armor: 'Leather', lpPerLevel: 2, primarySchool: 'Dark Arts', canCast: 'Straight', type: 'Caster'},
+            Witch: {armor: 'None', lpPerLevel: 1, primarySchool: 'Enchantment', canCast: 'Straight', type: 'Caster'},
+            Paladin: {armor: 'Plate', lpPerLevel: 3, primarySchool: 'Divine', canCast: 'Hybrid', type: 'Hybrid'}
+        };
+
+        const DEITIES = {
+            Avagon: {
+                title: "The Paladin",
+                clericBenefits: ['All Fighting Skills at WARRIOR cost', 'Plate mail allowed'],
+                clericLimitations: ['No bows/ranged', 'No other magic schools except Divine'],
+                holyWarriorBenefits: ['Resist Fear +1 level (1 purchase free)']
+            },
+            Brodinn: {
+                title: "The Tempest",
+                clericBenefits: ['Any weapon skill at Warrior+10 cost', 'Battle Rage 40pts (override base 45)', 'Rage spell as 5th level Divine'],
+                clericLimitations: ['No other magic schools', 'No poisons/backstab/assassinate'],
+                holyWarriorBenefits: ['Battle Rage 35pts']
+            },
+            Caymlyn: {
+                title: "The Enchantress",
+                clericBenefits: ['1 secondary magic school at 15pts/level (must have equal Divine level)', 'Read Magic, Scroll Craft, Spell Craft at ½ cost'],
+                clericLimitations: ['No 2H weapons/Florentine', 'No armor'],
+                holyWarriorBenefits: ['Read Magic 35pts', 'Chain mail allowed']
+            },
+            Danubu: {
+                title: "Lord of Night",
+                clericBenefits: ['Astrology 20pts (override base)', 'Nightmare treated as L5 Divine', 'Dream Sending treated as L4 Divine', 'Divine +1 level at night'],
+                clericLimitations: ['Divine -1 level during daylight'],
+                holyWarriorBenefits: []
+            },
+            Etyana: {
+                title: "The Nymph",
+                clericBenefits: ['Nature Lore free', 'Elementalism as secondary school at 15pts/level', 'Commune with Nature 30pts'],
+                clericLimitations: ['Leather armor only', 'Wooden weapons/shields only'],
+                holyWarriorBenefits: ['Nature Lore 20pts']
+            },
+            Gheldann: {
+                title: "Keeper of Souls",
+                clericBenefits: ['Speak with Dead, Death, Identify Spirit, Call Dead treated as 1 level lower in cost'],
+                clericLimitations: ['Cannot acquire Raise Dead'],
+                holyWarriorBenefits: ['Banish Undead +1 level']
+            },
+            Kandrell: {
+                title: "Mistress of the Moon",
+                clericBenefits: ['Astrology 20pts', 'Banish works on lycanthropes', 'Enthrall/Silence treated as L6 Divine', 'Divine +1 on full moon'],
+                clericLimitations: ['Round/moon shields only', 'Divine -1 on new moon'],
+                holyWarriorBenefits: ['Regenerate ½ cost']
+            },
+            Kyrriden: {
+                title: "The World-Forger",
+                clericBenefits: ['Weaponsmith at ½ cost', 'Armorsmith at ½ cost', 'Plate mail allowed', 'Any metal weapon (non-Cleric weapons at Warrior+10 cost)'],
+                clericLimitations: ['No wooden weapons', 'No non-metal armor', 'No Dark Arts'],
+                holyWarriorBenefits: ['1 Armorsmith free']
+            },
+            Nivlac: {
+                title: "The Trickster",
+                clericBenefits: ['Luck 15pts', 'Create Poison, Escape Bonds II, Lock Picking I, Lock Picking II at Bounty Hunter cost'],
+                clericLimitations: ['Leather only', 'No shields', 'DI cannot ask deity a question'],
+                holyWarriorBenefits: ['Craftsman 40pts (override base)']
+            },
+            Peryn: {
+                title: "The Hunter",
+                clericBenefits: ['Bow 25pts', 'Nature Lore 15pts', 'Animal Likeness at L3 Elementalism for 50pts', 'Ultimate Enemy at L4 for 50pts'],
+                clericLimitations: ['Wooden shields & studded leather only', 'No Banish Undead'],
+                holyWarriorBenefits: ['Bow 30pts']
+            },
+            Undathos: {
+                title: "The Un-Living",
+                clericBenefits: ['Dark Arts at 15pts/level (must have equal Divine level)', 'Backstab 20pts', 'Assassinate 40pts (requires 5th level + Backstab)'],
+                clericLimitations: ['No armor', 'No healing/defensive on non-Undathos worshippers'],
+                holyWarriorBenefits: ['Chain mail allowed', 'Assassinate 40pts (requires 6th level)']
+            },
+            Voe: {
+                title: "He Who Watches",
+                clericBenefits: ['Sunray treated as L2 Divine', 'Banish +1 level', 'Cast +1 level while sun is out'],
+                clericLimitations: ['Banish -1 on new moon', 'No Dark Arts', 'No stealth (except Info Gathering & Appraise)'],
+                holyWarriorBenefits: ['Resist Dark Arts +1']
+            },
+            Volgen: {
+                title: "The Judge",
+                clericBenefits: ['Parry 20pts', 'Speak with Dead treated as L3 Divine'],
+                clericLimitations: ['Cannot lie'],
+                holyWarriorBenefits: ['One Parry per event (free)']
+            },
+            'Pan-Deific': {
+                title: "Through the aid of the gods I...",
+                clericBenefits: ['Theology at ½ cost'],
+                clericLimitations: [],
+                holyWarriorBenefits: []
+            }
+        };
+
+        const LEVEL_THRESHOLDS = [0, 90, 210, 335, 465, 600, 740, 885, 1035, 1190, 1350, 1515];
+
+        const SKILLS = [
+            {name: 'Critical Attack', category: 'Fighting', code: 'M', costs: {Warrior: 25, Ranger: 30, Cavalier: 30, 'Bounty Hunter': 40, Assassin: 45, Bard: 40, Cleric: 40, 'Holy Warrior': 30, Healer: null, Druid: null, Monk: 35, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: 30}},
+            {name: 'Disarm', category: 'Fighting', code: 'O', costs: {Warrior: 15, Ranger: 20, Cavalier: 20, 'Bounty Hunter': 25, Assassin: 30, Bard: 25, Cleric: 30, 'Holy Warrior': 20, Healer: null, Druid: null, Monk: 25, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: 20}},
+            {name: 'Florentine', category: 'Fighting', code: '1', costs: {Warrior: 15, Ranger: 20, Cavalier: 20, 'Bounty Hunter': 20, Assassin: 25, Bard: 25, Cleric: null, 'Holy Warrior': 20, Healer: null, Druid: null, Monk: 25, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: 20}},
+            {name: 'Parry', category: 'Fighting', code: 'M', costs: {Warrior: 20, Ranger: 25, Cavalier: 20, 'Bounty Hunter': 30, Assassin: 35, Bard: 30, Cleric: 30, 'Holy Warrior': 25, Healer: null, Druid: null, Monk: 25, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: 25}},
+            {name: 'Shield Use', category: 'Fighting', code: '1', costs: {Warrior: 'I', Ranger: 10, Cavalier: 'I', 'Bounty Hunter': 15, Assassin: null, Bard: 15, Cleric: 10, 'Holy Warrior': 'I', Healer: null, Druid: null, Monk: null, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: 'I'}},
+            {name: 'Two-Handed Weapon', category: 'Fighting', code: '1', costs: {Warrior: 'I', Ranger: 15, Cavalier: 'I', 'Bounty Hunter': 20, Assassin: null, Bard: 20, Cleric: 15, 'Holy Warrior': 'I', Healer: null, Druid: null, Monk: null, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: 'I'}},
+            {name: 'Bow', category: 'Fighting', code: '1', costs: {Warrior: 30, Ranger: 15, Cavalier: 35, 'Bounty Hunter': 25, Assassin: 30, Bard: 35, Cleric: null, 'Holy Warrior': 35, Healer: null, Druid: 25, Monk: null, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: 35}},
+            {name: 'Strength', category: 'Fighting', code: 'M', costs: {Warrior: 20, Ranger: 25, Cavalier: 25, 'Bounty Hunter': 30, Assassin: 35, Bard: 30, Cleric: 35, 'Holy Warrior': 25, Healer: null, Druid: null, Monk: 30, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: 25}},
+
+            {name: 'Backstab', category: 'Stealth', code: '1', costs: {Warrior: null, Ranger: null, Cavalier: null, 'Bounty Hunter': 15, Assassin: 10, Bard: 20, Cleric: null, 'Holy Warrior': null, Healer: null, Druid: null, Monk: null, Sorcerer: null, 'Dark Mage': 15, Witch: null, Paladin: null}},
+            {name: 'Assassinate', category: 'Stealth', code: '1', costs: {Warrior: null, Ranger: null, Cavalier: null, 'Bounty Hunter': 30, Assassin: 20, Bard: null, Cleric: null, 'Holy Warrior': null, Healer: null, Druid: null, Monk: null, Sorcerer: null, 'Dark Mage': 30, Witch: null, Paladin: null}},
+            {name: 'Create Poison', category: 'Stealth', code: 'M', costs: {Warrior: null, Ranger: null, Cavalier: null, 'Bounty Hunter': 15, Assassin: 10, Bard: null, Cleric: null, 'Holy Warrior': null, Healer: null, Druid: null, Monk: null, Sorcerer: null, 'Dark Mage': 15, Witch: null, Paladin: null}},
+            {name: 'Escape Bonds I', category: 'Stealth', code: '1', costs: {Warrior: null, Ranger: 20, Cavalier: null, 'Bounty Hunter': 10, Assassin: 10, Bard: 15, Cleric: null, 'Holy Warrior': null, Healer: null, Druid: null, Monk: 15, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: null}},
+            {name: 'Escape Bonds II', category: 'Stealth', code: '1', costs: {Warrior: null, Ranger: null, Cavalier: null, 'Bounty Hunter': 15, Assassin: 15, Bard: null, Cleric: null, 'Holy Warrior': null, Healer: null, Druid: null, Monk: null, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: null}},
+            {name: 'Lock Picking I', category: 'Stealth', code: '1', costs: {Warrior: null, Ranger: null, Cavalier: null, 'Bounty Hunter': 10, Assassin: 15, Bard: 15, Cleric: null, 'Holy Warrior': null, Healer: null, Druid: null, Monk: null, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: null}},
+            {name: 'Lock Picking II', category: 'Stealth', code: '1', costs: {Warrior: null, Ranger: null, Cavalier: null, 'Bounty Hunter': 15, Assassin: 20, Bard: 20, Cleric: null, 'Holy Warrior': null, Healer: null, Druid: null, Monk: null, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: null}},
+            {name: 'Info Gathering', category: 'Stealth', code: '1', costs: {Warrior: null, Ranger: 15, Cavalier: null, 'Bounty Hunter': 10, Assassin: 10, Bard: 10, Cleric: null, 'Holy Warrior': null, Healer: null, Druid: null, Monk: null, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: null}},
+            {name: 'Appraise', category: 'Stealth', code: '1', costs: {Warrior: null, Ranger: null, Cavalier: null, 'Bounty Hunter': 10, Assassin: 15, Bard: 10, Cleric: null, 'Holy Warrior': null, Healer: null, Druid: null, Monk: null, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: null}},
+            {name: 'Disguise', category: 'Stealth', code: '1', costs: {Warrior: null, Ranger: null, Cavalier: null, 'Bounty Hunter': 15, Assassin: 20, Bard: 15, Cleric: null, 'Holy Warrior': null, Healer: null, Druid: null, Monk: null, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: null}},
+            {name: 'Forgery', category: 'Stealth', code: '1', costs: {Warrior: null, Ranger: null, Cavalier: null, 'Bounty Hunter': 20, Assassin: 25, Bard: 20, Cleric: null, 'Holy Warrior': null, Healer: null, Druid: null, Monk: null, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: null}},
+
+            {name: 'Read Magic', category: 'Magic', code: '1', costs: {Warrior: null, Ranger: null, Cavalier: null, 'Bounty Hunter': null, Assassin: null, Bard: 30, Cleric: 20, 'Holy Warrior': 30, Healer: 20, Druid: 20, Monk: 30, Sorcerer: 15, 'Dark Mage': 15, Witch: 15, Paladin: 30}},
+            {name: 'Scroll Craft', category: 'Magic', code: '1', costs: {Warrior: null, Ranger: null, Cavalier: null, 'Bounty Hunter': null, Assassin: null, Bard: 35, Cleric: 25, 'Holy Warrior': null, Healer: 25, Druid: 25, Monk: null, Sorcerer: 20, 'Dark Mage': 20, Witch: 20, Paladin: null}},
+            {name: 'Spell Craft', category: 'Magic', code: '1', costs: {Warrior: null, Ranger: null, Cavalier: null, 'Bounty Hunter': null, Assassin: null, Bard: 40, Cleric: 30, 'Holy Warrior': null, Healer: 30, Druid: 30, Monk: null, Sorcerer: 25, 'Dark Mage': 25, Witch: 25, Paladin: null}},
+            {name: 'Brew Potion', category: 'Magic', code: '1', costs: {Warrior: null, Ranger: null, Cavalier: null, 'Bounty Hunter': null, Assassin: null, Bard: null, Cleric: 30, 'Holy Warrior': null, Healer: 25, Druid: 30, Monk: null, Sorcerer: null, 'Dark Mage': 30, Witch: 25, Paladin: null}},
+            {name: 'Astrology', category: 'Magic', code: '1', costs: {Warrior: null, Ranger: null, Cavalier: null, 'Bounty Hunter': null, Assassin: null, Bard: 25, Cleric: 25, 'Holy Warrior': null, Healer: 25, Druid: 25, Monk: null, Sorcerer: 20, 'Dark Mage': 20, Witch: 20, Paladin: null}},
+            {name: 'Familiar', category: 'Magic', code: '1', costs: {Warrior: null, Ranger: null, Cavalier: null, 'Bounty Hunter': null, Assassin: null, Bard: null, Cleric: null, 'Holy Warrior': null, Healer: null, Druid: 25, Monk: null, Sorcerer: 20, 'Dark Mage': 20, Witch: 15, Paladin: null}},
+
+            {name: 'Nature Lore', category: 'Survival', code: '1', costs: {Warrior: 25, Ranger: 15, Cavalier: 25, 'Bounty Hunter': 20, Assassin: 25, Bard: 20, Cleric: 20, 'Holy Warrior': 25, Healer: 20, Druid: 15, Monk: 20, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: 25}},
+            {name: 'Tracking', category: 'Survival', code: '1', costs: {Warrior: 20, Ranger: 10, Cavalier: 20, 'Bounty Hunter': 15, Assassin: 20, Bard: 20, Cleric: 20, 'Holy Warrior': 20, Healer: null, Druid: 15, Monk: 20, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: 20}},
+            {name: 'Healing', category: 'Survival', code: 'M', costs: {Warrior: 20, Ranger: 20, Cavalier: 20, 'Bounty Hunter': 25, Assassin: null, Bard: 20, Cleric: 15, 'Holy Warrior': 20, Healer: 10, Druid: 15, Monk: 20, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: 20}},
+            {name: 'Regenerate', category: 'Survival', code: '1', costs: {Warrior: 25, Ranger: 25, Cavalier: 25, 'Bounty Hunter': 30, Assassin: 35, Bard: 30, Cleric: 25, 'Holy Warrior': 25, Healer: 25, Druid: 25, Monk: 25, Sorcerer: 30, 'Dark Mage': 30, Witch: 30, Paladin: 25}},
+            {name: 'Health', category: 'Survival', code: 'M', costs: {Warrior: 15, Ranger: 15, Cavalier: 15, 'Bounty Hunter': 20, Assassin: 25, Bard: 20, Cleric: 20, 'Holy Warrior': 15, Healer: 20, Druid: 20, Monk: 20, Sorcerer: 25, 'Dark Mage': 25, Witch: 25, Paladin: 15}},
+            {name: 'Battle Rage', category: 'Survival', code: '1', costs: {Warrior: 35, Ranger: 40, Cavalier: 40, 'Bounty Hunter': 45, Assassin: null, Bard: 45, Cleric: 45, 'Holy Warrior': 40, Healer: null, Druid: null, Monk: null, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: 40}},
+            {name: 'Luck', category: 'Survival', code: 'M', costs: {Warrior: 25, Ranger: 25, Cavalier: 25, 'Bounty Hunter': 20, Assassin: 20, Bard: 20, Cleric: 25, 'Holy Warrior': 25, Healer: 25, Druid: 25, Monk: 25, Sorcerer: 20, 'Dark Mage': 20, Witch: 20, Paladin: 25}},
+            {name: 'Resist Fear', category: 'Survival', code: 'M', costs: {Warrior: 15, Ranger: 20, Cavalier: 15, 'Bounty Hunter': 20, Assassin: 25, Bard: 20, Cleric: 15, 'Holy Warrior': 15, Healer: 20, Druid: 20, Monk: 20, Sorcerer: 25, 'Dark Mage': 25, Witch: 25, Paladin: 15}},
+            {name: 'Resist Poison', category: 'Survival', code: 'M', costs: {Warrior: 20, Ranger: 20, Cavalier: 20, 'Bounty Hunter': 15, Assassin: 15, Bard: 20, Cleric: 20, 'Holy Warrior': 20, Healer: 20, Druid: 15, Monk: 20, Sorcerer: 25, 'Dark Mage': 20, Witch: 25, Paladin: 20}},
+            {name: 'Resist Dark Arts', category: 'Survival', code: 'M', costs: {Warrior: 25, Ranger: 25, Cavalier: 25, 'Bounty Hunter': 30, Assassin: 35, Bard: 25, Cleric: 20, 'Holy Warrior': 20, Healer: 20, Druid: 25, Monk: 25, Sorcerer: 30, 'Dark Mage': null, Witch: 30, Paladin: 20}},
+            {name: 'Resist Charm', category: 'Survival', code: 'M', costs: {Warrior: 20, Ranger: 20, Cavalier: 20, 'Bounty Hunter': 20, Assassin: 25, Bard: 15, Cleric: 15, 'Holy Warrior': 15, Healer: 15, Druid: 20, Monk: 15, Sorcerer: 25, 'Dark Mage': 25, Witch: 15, Paladin: 15}},
+
+            {name: 'Armorsmith Leather', category: 'Craft', code: 'M', costs: {Warrior: 20, Ranger: 25, Cavalier: 25, 'Bounty Hunter': 20, Assassin: 20, Bard: 25, Cleric: 25, 'Holy Warrior': 25, Healer: 25, Druid: 25, Monk: 25, Sorcerer: null, 'Dark Mage': 25, Witch: null, Paladin: 25}},
+            {name: 'Armorsmith Chain', category: 'Craft', code: 'M', costs: {Warrior: 20, Ranger: 25, Cavalier: 25, 'Bounty Hunter': null, Assassin: null, Bard: 25, Cleric: 25, 'Holy Warrior': 25, Healer: null, Druid: null, Monk: null, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: 25}},
+            {name: 'Armorsmith Plate', category: 'Craft', code: 'M', costs: {Warrior: 25, Ranger: null, Cavalier: 30, 'Bounty Hunter': null, Assassin: null, Bard: null, Cleric: null, 'Holy Warrior': 30, Healer: null, Druid: null, Monk: null, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: 30}},
+            {name: 'Armorsmith Metal', category: 'Craft', code: 'M', costs: {Warrior: 25, Ranger: 30, Cavalier: 30, 'Bounty Hunter': null, Assassin: null, Bard: 30, Cleric: 30, 'Holy Warrior': 30, Healer: null, Druid: null, Monk: null, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: 30}},
+            {name: 'Weaponsmith', category: 'Craft', code: 'M', costs: {Warrior: 20, Ranger: 25, Cavalier: 25, 'Bounty Hunter': 25, Assassin: 25, Bard: 25, Cleric: 25, 'Holy Warrior': 25, Healer: null, Druid: null, Monk: null, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: 25}},
+            {name: 'Craftsman', category: 'Craft', code: '1', costs: {Warrior: 30, Ranger: 30, Cavalier: 30, 'Bounty Hunter': 25, Assassin: 25, Bard: 25, Cleric: 30, 'Holy Warrior': 30, Healer: 30, Druid: 30, Monk: 30, Sorcerer: 30, 'Dark Mage': 30, Witch: 30, Paladin: 30}},
+            {name: 'Theology', category: 'Craft', code: '1', costs: {Warrior: null, Ranger: null, Cavalier: null, 'Bounty Hunter': null, Assassin: null, Bard: null, Cleric: 15, 'Holy Warrior': 20, Healer: 20, Druid: null, Monk: null, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: 20}}
+        ];
+
+        const SPELLS = {
+            Divine: {
+                1: ['Cure Light Wounds', 'Detect Undead', 'Bless'],
+                2: ['Cure Serious Wounds', 'Speak with Dead', 'Sunray'],
+                3: ['Cure Critical Wounds', 'Banish Undead', 'Remove Curse'],
+                4: ['Raise Dead', 'Heal', 'Dream Sending'],
+                5: ['Resurrection', 'Divine Intervention', 'Nightmare', 'Rage'],
+                6: ['Mass Heal', 'Holy Word', 'Enthrall', 'Silence'],
+                7: ['Divine Shield', 'Sanctuary'],
+                8: ['Avatar', 'Word of Recall'],
+                9: ['Miracle']
+            },
+            Elementalism: {
+                1: ['Spark', 'Gust', 'Stone Skin'],
+                2: ['Fireball', 'Lightning Bolt', 'Earthquake'],
+                3: ['Wall of Fire', 'Call Lightning', 'Commune with Nature'],
+                4: ['Animal Likeness', 'Ultimate Enemy'],
+                5: ['Elemental Summoning', 'Firestorm'],
+                6: ['Control Weather', 'Tsunami'],
+                7: ['Earthquake', 'Volcanic Eruption'],
+                8: ['Elemental Form'],
+                9: ['Cataclysm']
+            },
+            Sorcery: {
+                1: ['Magic Missile', 'Shield', 'Read Magic'],
+                2: ['Invisibility', 'Detect Magic', 'Levitate'],
+                3: ['Dispel Magic', 'Haste', 'Slow'],
+                4: ['Polymorph', 'Dimension Door'],
+                5: ['Teleport', 'Permanency'],
+                6: ['Disintegrate', 'Globe of Invulnerability'],
+                7: ['Power Word Stun', 'Spell Turning'],
+                8: ['Time Stop', 'Gate'],
+                9: ['Wish']
+            },
+            'Dark Arts': {
+                1: ['Cause Light Wounds', 'Fear', 'Detect Life'],
+                2: ['Cause Serious Wounds', 'Darkness', 'Animate Dead'],
+                3: ['Cause Critical Wounds', 'Vampiric Touch', 'Poison'],
+                4: ['Death', 'Call Dead', 'Identify Spirit'],
+                5: ['Finger of Death', 'Plague'],
+                6: ['Circle of Death', 'Soul Trap'],
+                7: ['Power Word Kill', 'Undead Army'],
+                8: ['Lich Form', 'Death Field'],
+                9: ['Apocalypse']
+            },
+            Enchantment: {
+                1: ['Charm', 'Sleep', 'Light'],
+                2: ['Hold Person', 'Suggestion', 'Detect Lie'],
+                3: ['Confusion', 'Phantasmal Force'],
+                4: ['Dominate', 'Mass Charm'],
+                5: ['Feeblemind', 'Geas'],
+                6: ['Mass Hold', 'Programmed Illusion'],
+                7: ['Power Word Blind', 'Permanent Illusion'],
+                8: ['Mind Blank', 'Mass Suggestion'],
+                9: ['Absolute Command']
+            }
+        };
+
+        const SPELL_ADJACENCY = {
+            Divine: {adjacent: ['Elementalism', 'Enchantment'], opposing: ['Dark Arts', 'Sorcery']},
+            Elementalism: {adjacent: ['Divine', 'Sorcery'], opposing: ['Dark Arts', 'Enchantment']},
+            Sorcery: {adjacent: ['Elementalism', 'Dark Arts'], opposing: ['Divine', 'Enchantment']},
+            'Dark Arts': {adjacent: ['Sorcery', 'Enchantment'], opposing: ['Divine', 'Elementalism']},
+            Enchantment: {adjacent: ['Dark Arts', 'Divine'], opposing: ['Elementalism', 'Sorcery']}
+        };
+
+        const RULES = [
+            {title: 'Level Advancement', text: 'Levels are calculated based on SP spent. Level 1 is 0-89 SP, Level 2 is 90-209 SP, and so on. See the level thresholds in the stat bar.'},
+            {title: 'Life Points (LP)', text: 'Each class grants a base LP per level. Race modifiers can increase or decrease this. Total LP = Class LP/Level × Character Level + Racial Modifiers.'},
+            {title: 'Skill Points (SP)', text: 'You start with a pool of SP to purchase skills and spells. Each skill has a cost based on your class and race. Once spent, SP cannot be recovered—plan carefully!'},
+            {title: 'Skill Codes', text: 'I = Innate/Free (included with class), O = Once per event (can be used only once per event), M = Multiple purchase allowed (can buy multiple times), # = Specific number of purchases allowed (e.g., 1 = can buy once, 2 = can buy twice).'},
+            {title: 'Racial Modifiers', text: 'Races apply cost modifiers to specific skills. For example, Elves get Bow at ½ cost. These modifiers are applied automatically when calculating your final skill costs.'},
+            {title: 'Deity Cost Modifiers', text: 'When your class is Cleric or Holy Warrior, and you have selected a deity, special cost overrides apply to certain skills. These are applied automatically in the skill list. Check the Deities tab for full details on each deity\u0027s bonuses and limitations.'},
+            {title: 'Tower Rule (Spells)', text: 'For each spell school, you must have at least 2 spells at level N before you can purchase any spell at level N+1. Level 1 has no prerequisite. The Spells tab enforces this rule and grays out unavailable levels.'},
+            {title: 'Spell Schools', text: 'There are 5 spell schools: Divine, Elementalism, Sorcery, Dark Arts, and Enchantment. Each school has 9 levels of spells. Schools have adjacent and opposing relationships that affect casting costs.'},
+            {title: 'Spell Costs (Straight Casters)', text: 'Straight casters (Cleric, Healer, Druid, Sorcerer, Dark Mage, Witch) pay: 10 SP per level in their primary school, 25 SP per level in adjacent schools, 50 SP per level in opposing schools.'},
+            {title: 'Spell Costs (Hybrid Casters)', text: 'Hybrid casters (Bard, Holy Warrior, Monk, Paladin) pay: 15 SP per level in their primary school, 35 SP per level in adjacent schools. Hybrid casters CANNOT learn opposing school spells.'},
+            {title: 'Non-Casters', text: 'Non-casters (Warrior, Ranger, Cavalier, Bounty Hunter, Assassin) cannot learn spells unless granted through a deity or racial ability.'},
+            {title: 'Armor Restrictions', text: 'Each class has a permitted armor type (None, Leather, Studded, Chain, Plate). Races may further restrict this (e.g., Elves cannot use iron/steel, Wolven cannot wear metal).'},
+            {title: 'Resistance Levels', text: 'Resistances to Fear, Poison, Charm, Dark Arts, etc. can be purchased as skills and advanced through multiple purchases. Higher levels provide greater protection.'},
+            {title: 'Wild Card Points', text: 'Earned at 20 WC per hour of NPC duty. Can be used to purchase: spells (at normal cost), skills (at normal cost), goods (varies), or attunement (50 WC).'},
+            {title: 'Class Change Rules', text: 'Changing classes during play is possible but costly. Consult your local event organizers for specific rules on class change transitions.'},
+            {title: 'Combat Basics', text: 'Combat uses a live-action ruleset with calls. Critical hits, parries, and shields are all player-purchased abilities that affect combat mechanics.'},
+            {title: 'Clarifications', text: 'If a skill or spell name appears in multiple categories or with deity overrides, the most specific rule applies. Always prioritize Cleric/Holy Warrior deity overrides over base class costs.'},
+            {title: 'Beta Rules (Danubu)', text: 'Danubu worshippers gain Divine +1 level at night and Divine -1 during daylight. This is a beta rule and may change based on event feedback.'}
+        ];
+
+        // ========== STATE MANAGEMENT ==========
+
+        let state = {
+            race: '',
+            class: '',
+            deity: '',
+            spTotal: 90,
+            skills: {},
+            spells: {}
+        };
+
+        function loadState() {
+            const saved = localStorage.getItem('fq_planner');
+            if (saved) {
+                try {
+                    state = JSON.parse(saved);
+                } catch (e) {
+                    console.error('Failed to load state:', e);
+                }
+            }
+        }
+
+        function saveState() {
+            localStorage.setItem('fq_planner', JSON.stringify(state));
+        }
+
+        function updateBuild() {
+            state.race = document.getElementById('raceSelect').value;
+            state.class = document.getElementById('classSelect').value;
+            state.deity = document.getElementById('deitySelect').value;
+            saveState();
+            updateAll();
+        }
+
+        // ========== COST CALCULATIONS ==========
+
+        function getBaseCost(skill, className) {
+            const costs = SKILLS.find(s => s.name === skill)?.costs;
+            if (!costs || costs[className] === null) return null;
+            if (costs[className] === 'I') return 0;
+            return costs[className];
+        }
+
+        function applyRacialMod(cost, skillName, raceName) {
+            if (raceName === 'Elf') {
+                if (skillName === 'Bow') return Math.ceil(cost / 2);
+                if (skillName === 'Health') return cost * 2;
+            } else if (raceName === 'Dwarf') {
+                if (['Armorsmith Leather','Armorsmith Chain','Armorsmith Plate','Armorsmith Metal','Weaponsmith'].some(s => skillName.includes(s))) return Math.ceil(cost / 2);
+                if (skillName === 'Regenerate') return Math.ceil(cost / 2);
+            } else if (raceName === 'Orgreth') {
+                if (skillName === 'Strength') return Math.ceil(cost / 2);
+            } else if (raceName === 'Half-Ogre') {
+                if (skillName === 'Battle Rage') return Math.ceil(cost / 2);
+            }
+            return cost;
+        }
+
+        function getSkillCost(skillName, className, raceName, deityName) {
+            const baseSkill = SKILLS.find(s => s.name === skillName);
+            if (!baseSkill) return null;
+
+            const baseCost = baseSkill.costs[className];
+            if (baseCost === 'I') return 0;
+
+            // Check deity overrides BEFORE null check — some deities grant access to otherwise-unavailable skills
+            if (baseCost === null) {
+                // Deity can unlock skills that are normally N/A for the class
+                if ((className === 'Cleric' || className === 'Holy Warrior') && deityName) {
+                    if (deityName === 'Avagon' && className === 'Cleric') {
+                        if (['Critical Attack','Disarm','Florentine','Parry','Shield Use','Two-Handed Weapon','Strength'].includes(skillName)) {
+                            const wCost = baseSkill.costs.Warrior;
+                            if (wCost !== null && wCost !== 'I') { let c = (wCost === 'I') ? 0 : wCost; return applyRacialMod(c, skillName, raceName); }
+                        }
+                    } else if (deityName === 'Brodinn' && className === 'Cleric') {
+                        if (['Critical Attack','Disarm','Florentine','Parry','Shield Use','Two-Handed Weapon','Strength'].includes(skillName)) {
+                            const wCost = baseSkill.costs.Warrior;
+                            if (wCost !== null) { let c = ((wCost === 'I') ? 0 : wCost) + 10; return applyRacialMod(c, skillName, raceName); }
+                        }
+                    } else if (deityName === 'Nivlac' && className === 'Cleric') {
+                        if (['Create Poison','Escape Bonds II','Lock Picking I','Lock Picking II'].includes(skillName)) {
+                            const bhCost = baseSkill.costs['Bounty Hunter'];
+                            if (bhCost !== null && bhCost !== 'I') return bhCost;
+                        }
+                    } else if (deityName === 'Undathos' && className === 'Cleric') {
+                        if (skillName === 'Backstab') return 20;
+                        if (skillName === 'Assassinate') return 40;
+                    } else if (deityName === 'Undathos' && className === 'Holy Warrior') {
+                        if (skillName === 'Assassinate') return 40;
+                    } else if (deityName === 'Kyrriden' && className === 'Cleric') {
+                        // Kyrriden grants non-Cleric metal weapons at Warrior+10
+                        if (['Critical Attack','Disarm','Florentine','Parry','Strength','Two-Handed Weapon'].includes(skillName)) {
+                            const wCost = baseSkill.costs.Warrior;
+                            if (wCost !== null && wCost !== 'I') { let c = ((wCost === 'I') ? 0 : wCost) + 10; return applyRacialMod(c, skillName, raceName); }
+                        }
+                    } else if (deityName === 'Peryn' && className === 'Cleric') {
+                        if (skillName === 'Bow') return 25;
+                        if (skillName === 'Nature Lore') return 15;
+                    } else if (deityName === 'Peryn' && className === 'Holy Warrior') {
+                        if (skillName === 'Bow') return 30;
+                    }
+                }
+                return null;
+            }
+
+            let cost = baseCost;
+
+            // Apply racial modifiers
+            if (raceName === 'Elf') {
+                if (skillName === 'Bow') cost = Math.ceil(cost / 2);
+                if (skillName === 'Health') cost = cost * 2;
+            } else if (raceName === 'Dwarf') {
+                if (['Armorsmith Leather', 'Armorsmith Chain', 'Armorsmith Plate', 'Armorsmith Metal', 'Weaponsmith'].some(s => skillName.includes(s))) {
+                    cost = Math.ceil(cost / 2);
+                }
+                if (skillName === 'Regenerate') cost = Math.ceil(cost / 2);
+                if (['Read Magic', 'Scroll Craft', 'Spell Craft', 'Brew Potion', 'Astrology', 'Familiar'].includes(skillName)) {
+                    cost = cost * 2;
+                }
+            } else if (raceName === 'Hobbet') {
+                if (['Appraise', 'Escape Bonds I', 'Lock Picking I', 'Lock Picking II', 'Info Gathering', 'Disguise', 'Forgery'].includes(skillName)) {
+                    cost = Math.ceil(cost / 2);
+                }
+            } else if (raceName === 'Orgreth') {
+                if (skillName === 'Strength') cost = Math.ceil(cost / 2);
+                if (['Read Magic', 'Scroll Craft', 'Spell Craft', 'Brew Potion', 'Astrology', 'Familiar'].includes(skillName)) {
+                    cost = cost * 2;
+                }
+            } else if (raceName === 'Half-Ogre') {
+                if (skillName === 'Battle Rage') cost = Math.ceil(cost / 2);
+            } else if (raceName === 'Wolven') {
+                if (skillName === 'Nature Lore') cost = 0;
+                if (skillName === 'Tracking') cost = Math.ceil(cost / 2);
+            }
+
+            // Apply deity modifiers for Cleric and Holy Warrior
+            if ((className === 'Cleric' || className === 'Holy Warrior') && deityName) {
+                const deity = DEITIES[deityName];
+                if (!deity) return cost;
+
+                if (deityName === 'Avagon' && className === 'Cleric') {
+                    if (['Critical Attack', 'Disarm', 'Florentine', 'Parry', 'Shield Use', 'Two-Handed Weapon', 'Bow', 'Strength'].includes(skillName)) {
+                        const warriorCost = SKILLS.find(s => s.name === skillName)?.costs.Warrior;
+                        if (warriorCost !== null && warriorCost !== 'I') cost = warriorCost;
+                    }
+                } else if (deityName === 'Brodinn' && className === 'Cleric') {
+                    if (['Critical Attack', 'Disarm', 'Florentine', 'Parry', 'Shield Use', 'Two-Handed Weapon', 'Bow', 'Strength'].includes(skillName)) {
+                        const warriorCost = SKILLS.find(s => s.name === skillName)?.costs.Warrior || 0;
+                        cost = warriorCost + 10;
+                    }
+                    if (skillName === 'Battle Rage') cost = 40;
+                } else if (deityName === 'Brodinn' && className === 'Holy Warrior') {
+                    if (skillName === 'Battle Rage') cost = 35;
+                } else if (deityName === 'Caymlyn' && className === 'Cleric') {
+                    if (['Read Magic', 'Scroll Craft', 'Spell Craft'].includes(skillName)) cost = Math.ceil(cost / 2);
+                } else if (deityName === 'Caymlyn' && className === 'Holy Warrior') {
+                    if (skillName === 'Read Magic') cost = 35;
+                } else if (deityName === 'Danubu' && className === 'Cleric') {
+                    if (skillName === 'Astrology') cost = 20;
+                } else if (deityName === 'Etyana' && className === 'Cleric') {
+                    if (skillName === 'Nature Lore') cost = 0;
+                } else if (deityName === 'Etyana' && className === 'Holy Warrior') {
+                    if (skillName === 'Nature Lore') cost = 20;
+                } else if (deityName === 'Gheldann' && className === 'Holy Warrior') {
+                } else if (deityName === 'Kandrell' && className === 'Cleric') {
+                    if (skillName === 'Astrology') cost = 20;
+                } else if (deityName === 'Kandrell' && className === 'Holy Warrior') {
+                    if (skillName === 'Regenerate') cost = Math.ceil(cost / 2);
+                } else if (deityName === 'Kyrriden' && className === 'Cleric') {
+                    if (skillName === 'Weaponsmith' || skillName.includes('Armorsmith')) cost = Math.ceil(cost / 2);
+                } else if (deityName === 'Kyrriden' && className === 'Holy Warrior') {
+                } else if (deityName === 'Nivlac' && className === 'Cleric') {
+                    if (skillName === 'Luck') cost = 15;
+                    if (['Create Poison', 'Escape Bonds II', 'Lock Picking I', 'Lock Picking II'].includes(skillName)) {
+                        const bhCost = SKILLS.find(s => s.name === skillName)?.costs['Bounty Hunter'];
+                        if (bhCost !== null) cost = bhCost;
+                    }
+                } else if (deityName === 'Nivlac' && className === 'Holy Warrior') {
+                    if (skillName === 'Craftsman') cost = 40;
+                } else if (deityName === 'Peryn' && className === 'Cleric') {
+                    if (skillName === 'Bow') cost = 25;
+                    if (skillName === 'Nature Lore') cost = 15;
+                } else if (deityName === 'Peryn' && className === 'Holy Warrior') {
+                    if (skillName === 'Bow') cost = 30;
+                } else if (deityName === 'Undathos' && className === 'Cleric') {
+                    if (skillName === 'Backstab') cost = 20;
+                    if (skillName === 'Assassinate') cost = 40;
+                } else if (deityName === 'Undathos' && className === 'Holy Warrior') {
+                    if (skillName === 'Assassinate') cost = 40;
+                } else if (deityName === 'Volgen' && className === 'Cleric') {
+                    if (skillName === 'Parry') cost = 20;
+                } else if (deityName === 'Pan-Deific' && className === 'Cleric') {
+                    if (skillName === 'Theology') cost = Math.ceil(cost / 2);
+                } else if (deityName === 'Pan-Deific' && className === 'Holy Warrior') {
+                    if (skillName === 'Theology') cost = Math.ceil(cost / 2);
+                }
+            }
+
+            return cost;
+        }
+
+        function getSpellCost(school, level, className) {
+            const classInfo = CLASSES[className];
+            if (!classInfo || !classInfo.canCast) return null;
+
+            const isPrimary = school === classInfo.primarySchool;
+            const adj = SPELL_ADJACENCY[school];
+            const isAdjacent = classInfo.primarySchool && adj.adjacent.includes(classInfo.primarySchool);
+            const isOpposing = classInfo.primarySchool && adj.opposing.includes(classInfo.primarySchool);
+
+            if (classInfo.canCast === 'Straight') {
+                if (isPrimary) return 10 * level;
+                if (isAdjacent) return 25 * level;
+                if (isOpposing) return 50 * level;
+                return null;
+            } else if (classInfo.canCast === 'Hybrid') {
+                if (isPrimary) return 15 * level;
+                if (isAdjacent) return 35 * level;
+                return null;
+            }
+            return null;
+        }
+
+        function canLearnSpell(school, level, className, currentSpells) {
+            const classInfo = CLASSES[className];
+            if (!classInfo || !classInfo.canCast) return false;
+
+            const cost = getSpellCost(school, level, className);
+            if (cost === null) return false;
+
+            if (level === 1) return true;
+
+            const spellKey = `${school}-${level - 1}`;
+            const prevCount = (currentSpells[spellKey] || []).length;
+            return prevCount >= 2;
+        }
+
+        // ========== UI FUNCTIONS ==========
+
+        function switchTab(e, tabName) {
+            e.preventDefault();
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+
+            document.getElementById(tabName).classList.add('active');
+            e.target.classList.add('active');
+
+            if (tabName === 'skills') renderSkillsTab();
+            else if (tabName === 'spells') renderSpellsTab();
+            else if (tabName === 'deities') renderDeitiesTab();
+            else if (tabName === 'analysis') renderAnalysisTab();
+            else if (tabName === 'rules') renderRulesTab();
+        }
+
+        function renderRaceBonus() {
+            const race = state.race;
+            const display = document.getElementById('raceBonusDisplay');
+
+            if (!race) {
+                display.innerHTML = '<p>Select a race to view bonuses and limitations.</p>';
+                return;
+            }
+
+            const raceData = RACES[race];
+            let html = `<h4>${race}</h4>`;
+            if (raceData.bonuses.length > 0) {
+                html += '<h5>Bonuses:</h5><ul>';
+                raceData.bonuses.forEach(b => html += `<li>${b}</li>`);
+                html += '</ul>';
+            }
+            if (raceData.resistances.length > 0) {
+                html += '<h5>Resistances:</h5><ul>';
+                raceData.resistances.forEach(r => html += `<li>${r}</li>`);
+                html += '</ul>';
+            }
+            if (raceData.limitations.length > 0) {
+                html += '<h5>Limitations:</h5><ul>';
+                raceData.limitations.forEach(l => html += `<li>${l}</li>`);
+                html += '</ul>';
+            }
+            display.innerHTML = html;
+        }
+
+        function renderDeityBonus() {
+            const deity = state.deity;
+            const className = state.class;
+            const display = document.getElementById('deityBonusDisplay');
+
+            if (!deity) {
+                display.innerHTML = '<p>Select a deity to view bonuses and limitations.</p>';
+                return;
+            }
+
+            const deityData = DEITIES[deity];
+            let html = `<h4>${deity} - ${deityData.title}</h4>`;
+
+            if (className === 'Cleric' && deityData.clericBenefits.length > 0) {
+                html += '<h5 style="color: #a5d6a7;">Cleric Benefits:</h5><ul>';
+                deityData.clericBenefits.forEach(b => html += `<li>${b}</li>`);
+                html += '</ul>';
+            }
+            if (className === 'Cleric' && deityData.clericLimitations.length > 0) {
+                html += '<h5 style="color: #ffab91;">Cleric Limitations:</h5><ul>';
+                deityData.clericLimitations.forEach(l => html += `<li>${l}</li>`);
+                html += '</ul>';
+            }
+            if (className === 'Holy Warrior' && deityData.holyWarriorBenefits.length > 0) {
+                html += '<h5 style="color: #a5d6a7;">Holy Warrior Benefits:</h5><ul>';
+                deityData.holyWarriorBenefits.forEach(b => html += `<li>${b}</li>`);
+                html += '</ul>';
+            }
+
+            if (className !== 'Cleric' && className !== 'Holy Warrior') {
+                html += '<p style="color: #a89968;">Deity benefits only apply to Cleric and Holy Warrior classes.</p>';
+            }
+
+            display.innerHTML = html;
+        }
+
+        function calculateStats() {
+            const spSpent = calculateTotalSPSpent();
+            const spTotal = state.spTotal;
+            let level = 1;
+            for (let i = LEVEL_THRESHOLDS.length - 1; i >= 0; i--) {
+                if (spSpent >= LEVEL_THRESHOLDS[i]) {
+                    level = i + 1;
+                    break;
+                }
+            }
+
+            const classInfo = CLASSES[state.class];
+            let lpPerLevel = classInfo ? classInfo.lpPerLevel : 0;
+            let lpMod = 0;
+
+            if (state.race === 'Hobbet') lpMod = -1;
+            else if (state.race === 'Half-Ogre') lpMod = 3;
+            else if (state.race === 'Orgreth') lpMod = 2;
+
+            const totalLP = lpPerLevel > 0 ? (lpPerLevel + lpMod) * level : 0;
+
+            document.getElementById('spSpent').textContent = spSpent;
+            document.getElementById('spTotal').textContent = spTotal;
+            document.getElementById('levelValue').textContent = level;
+            document.getElementById('lpValue').textContent = totalLP;
+            document.getElementById('skillCount').textContent = Object.keys(state.skills).length;
+
+            document.getElementById('spTotalInput').value = spTotal;
+        }
+
+        document.getElementById('spTotalInput')?.addEventListener('change', function() {
+            state.spTotal = parseInt(this.value) || 90;
+            saveState();
+            updateAll();
+        });
+
+        function calculateTotalSPSpent() {
+            let total = 0;
+            for (const skillName in state.skills) {
+                const qty = state.skills[skillName];
+                const cost = getSkillCost(skillName, state.class, state.race, state.deity);
+                if (cost !== null) {
+                    total += cost * qty;
+                }
+            }
+            for (const spellKey in state.spells) {
+                const qty = state.spells[spellKey];
+                const [school, level] = spellKey.split('-');
+                const cost = getSpellCost(school, parseInt(level), state.class);
+                if (cost !== null) {
+                    total += cost * qty;
+                }
+            }
+            return total;
+        }
+
+        function renderBuildSummary() {
+            const summary = document.getElementById('buildSummary');
+            let html = '';
+
+            html += `<strong>Race:</strong> ${state.race || 'Not Selected'}<br>`;
+            html += `<strong>Class:</strong> ${state.class || 'Not Selected'}<br>`;
+            html += `<strong>Deity:</strong> ${state.deity || 'Not Selected'}<br><br>`;
+
+            const skillsList = Object.keys(state.skills)
+                .filter(name => state.skills[name] > 0)
+                .map(name => `${name} (×${state.skills[name]})`)
+                .join(', ');
+
+            if (skillsList) {
+                html += `<strong>Skills:</strong> ${skillsList}<br><br>`;
+            }
+
+            const spellsList = [];
+            for (const spellKey in state.spells) {
+                if (state.spells[spellKey] > 0) {
+                    const [school, level] = spellKey.split('-');
+                    const spells = SPELLS[school][level];
+                    if (spells) {
+                        spellsList.push(`${school} L${level}: ${spells.slice(0, 2).join(', ')} (×${state.spells[spellKey]})`);
+                    }
+                }
+            }
+
+            if (spellsList.length > 0) {
+                html += `<strong>Spells:</strong><br>`;
+                html += spellsList.join('<br>');
+            }
+
+            summary.innerHTML = html || 'No skills or spells purchased yet.';
+        }
+
+        function renderSkillsTab() {
+            const container = document.getElementById('skillsContainer');
+            const categories = [...new Set(SKILLS.map(s => s.category))];
+
+            let filterHtml = '<div class="filter-bar">';
+            filterHtml += '<button class="filter-btn active" onclick="filterSkillCategory(null, this)">All</button>';
+            categories.forEach(cat => {
+                filterHtml += `<button class="filter-btn" onclick="filterSkillCategory('${cat}', this)">${cat}</button>`;
+            });
+            filterHtml += '</div>';
+
+            let skillsHtml = '';
+            SKILLS.forEach(skill => {
+                const cost = getSkillCost(skill.name, state.class, state.race, state.deity);
+                if (cost === null) return;
+
+                const qty = state.skills[skill.name] || 0;
+                const modified = getSkillCost(skill.name, state.class, state.race, state.deity) !== getBaseCost(skill.name, state.class);
+
+                skillsHtml += `
+                    <div class="skill-row" data-category="${skill.category}">
+                        <div class="skill-name">${skill.name}</div>
+                        <div class="skill-cost">${skill.category}</div>
+                        <div class="skill-cost ${modified ? 'modified' : ''}">${cost}</div>
+                        <div class="skill-cost" style="color: #999;">${skill.code}</div>
+                        <button class="small" onclick="addSkill('${skill.name}')">+</button>
+                        <button class="small danger" onclick="removeSkill('${skill.name}')">-</button>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = filterHtml + skillsHtml;
+        }
+
+        function filterSkillCategory(category, btn) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            document.querySelectorAll('.skill-row').forEach(row => {
+                if (!category || row.dataset.category === category) {
+                    row.style.display = 'grid';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        function addSkill(name) {
+            state.skills[name] = (state.skills[name] || 0) + 1;
+            saveState();
+            updateAll();
+        }
+
+        function removeSkill(name) {
+            if (state.skills[name] > 0) {
+                state.skills[name]--;
+                if (state.skills[name] === 0) delete state.skills[name];
+            }
+            saveState();
+            updateAll();
+        }
+
+        function renderSpellsTab() {
+            const container = document.getElementById('spellsContainer');
+            let html = '';
+
+            for (const [school, levels] of Object.entries(SPELLS)) {
+                html += `<h4 style="margin-top: 30px; color: #d4af37;">${school}</h4>`;
+                for (const level of [1, 2, 3, 4, 5, 6, 7, 8, 9]) {
+                    const spells = levels[level] || [];
+                    const cost = getSpellCost(school, level, state.class);
+                    const canLearn = canLearnSpell(school, level, state.class, state.spells);
+                    const spellKey = `${school}-${level}`;
+                    const qty = state.spells[spellKey] || 0;
+
+                    const disabled = cost === null || (!canLearn && level > 1);
+
+                    html += `<div class="spell-level-group ${disabled ? 'disabled' : ''}" style="${!canLearn && level > 1 ? 'opacity: 0.5; pointer-events: none;' : ''}">`;
+                    html += `<h5>Level ${level}${!canLearn && level > 1 ? ' ⚠️ (Need 2 spells at L' + (level-1) + ')' : ''}</h5>`;
+
+                    spells.forEach(spell => {
+                        html += `<div class="spell-item">`;
+                        html += `<span class="spell-name">${spell}</span>`;
+                        html += `<span class="spell-cost">${cost || 'N/A'}</span>`;
+                        if (cost !== null) {
+                            html += `<button class="small" onclick="addSpell('${school}', ${level})">+</button>`;
+                            html += `<button class="small danger" onclick="removeSpell('${school}', ${level})">-</button>`;
+                        }
+                        html += `</div>`;
+                    });
+                    html += `</div>`;
+                }
+            }
+
+            container.innerHTML = html;
+            checkTowerViolations();
+        }
+
+        function addSpell(school, level) {
+            const key = `${school}-${level}`;
+            state.spells[key] = (state.spells[key] || 0) + 1;
+            saveState();
+            updateAll();
+        }
+
+        function removeSpell(school, level) {
+            const key = `${school}-${level}`;
+            if (state.spells[key] > 0) {
+                state.spells[key]--;
+                if (state.spells[key] === 0) delete state.spells[key];
+            }
+            saveState();
+            updateAll();
+        }
+
+        function checkTowerViolations() {
+            let hasViolation = false;
+
+            for (const school of Object.keys(SPELLS)) {
+                for (let level = 2; level <= 9; level++) {
+                    const key = `${school}-${level}`;
+                    const prevKey = `${school}-${level - 1}`;
+                    const hasSpells = (state.spells[key] || 0) > 0;
+                    const prevCount = (state.spells[prevKey] || 0);
+
+                    if (hasSpells && prevCount < 2) {
+                        hasViolation = true;
+                        break;
+                    }
+                }
+                if (hasViolation) break;
+            }
+
+            const warning = document.getElementById('spellTowerWarning');
+            if (warning) {
+                warning.style.display = hasViolation ? 'block' : 'none';
+            }
+        }
+
+        function renderDeitiesTab() {
+            const container = document.getElementById('deitiesContainer');
+            let html = '';
+
+            for (const [name, data] of Object.entries(DEITIES)) {
+                html += `<div class="deity-info">`;
+                html += `<h4>${name}</h4>`;
+                html += `<p style="color: #a89968; font-style: italic;">${data.title}</p>`;
+
+                if (data.clericBenefits.length > 0) {
+                    html += `<div class="deity-benefits"><h5>Cleric Benefits:</h5><ul>`;
+                    data.clericBenefits.forEach(b => html += `<li>${b}</li>`);
+                    html += `</ul></div>`;
+                }
+
+                if (data.clericLimitations.length > 0) {
+                    html += `<div class="deity-limitations"><h5>Cleric Limitations:</h5><ul>`;
+                    data.clericLimitations.forEach(l => html += `<li>${l}</li>`);
+                    html += `</ul></div>`;
+                }
+
+                if (data.holyWarriorBenefits.length > 0) {
+                    html += `<div class="deity-benefits"><h5>Holy Warrior Benefits:</h5><ul>`;
+                    data.holyWarriorBenefits.forEach(b => html += `<li>${b}</li>`);
+                    html += `</ul></div>`;
+                }
+
+                html += `</div>`;
+            }
+
+            container.innerHTML = html;
+        }
+
+        function renderAnalysisTab() {
+            const container = document.getElementById('analysisContainer');
+            let html = '';
+
+            if (!state.class) {
+                html = '<p class="no-data">Select a class to view analysis.</p>';
+                container.innerHTML = html;
+                return;
+            }
+
+            html += '<h4 style="color: #d4af37;">Cheapest Skills by Category</h4>';
+            html += '<table class="analysis-table"><tr><th>Category</th><th>Cheapest Skill</th><th>Cost</th></tr>';
+
+            const categories = [...new Set(SKILLS.map(s => s.category))];
+            categories.forEach(cat => {
+                const skillsInCat = SKILLS.filter(s => s.category === cat);
+                let cheapest = null;
+                let cheapestCost = Infinity;
+
+                skillsInCat.forEach(skill => {
+                    const cost = getSkillCost(skill.name, state.class, state.race, state.deity);
+                    if (cost !== null && cost < cheapestCost) {
+                        cheapest = skill.name;
+                        cheapestCost = cost;
+                    }
+                });
+
+                if (cheapest) {
+                    html += `<tr><td>${cat}</td><td>${cheapest}</td><td>${cheapestCost}</td></tr>`;
+                }
+            });
+
+            html += '</table>';
+
+            const classInfo = CLASSES[state.class];
+            if (classInfo.canCast) {
+                html += '<h4 style="color: #d4af37; margin-top: 20px;">Spell School Costs</h4>';
+                html += '<table class="analysis-table"><tr><th>School</th><th>Type</th><th>Cost/Level</th></tr>';
+
+                const schools = Object.keys(SPELL_ADJACENCY);
+                schools.forEach(school => {
+                    const primary = getSpellCost(school, 1, state.class);
+                    const secondary = school !== classInfo.primarySchool ? 'Adjacent' : 'Primary';
+                    if (primary !== null) {
+                        html += `<tr><td>${school}</td><td>${secondary}</td><td>${primary}</td></tr>`;
+                    }
+                });
+
+                html += '</table>';
+            }
+
+            container.innerHTML = html;
+        }
+
+        function renderRulesTab() {
+            const container = document.getElementById('rulesContainer');
+            let html = '';
+
+            RULES.forEach((rule, idx) => {
+                html += `
+                    <div class="rule-item show" data-rule="${rule.title.toLowerCase()}">
+                        <h4>${rule.title}</h4>
+                        <p>${rule.text}</p>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function filterRules() {
+            const query = document.getElementById('rulesSearch').value.toLowerCase();
+            document.querySelectorAll('.rule-item').forEach(item => {
+                const title = item.dataset.rule;
+                const content = item.textContent.toLowerCase();
+                item.classList.toggle('show', title.includes(query) || content.includes(query));
+            });
+        }
+
+        // ========== BUILD TEMPLATES ==========
+
+        function loadTemplate(type) {
+            state.skills = {};
+            state.spells = {};
+
+            if (type === 'tank-warrior') {
+                state.race = 'Human';
+                state.class = 'Warrior';
+                state.deity = 'Pan-Deific';
+                state.spTotal = 90;
+                state.skills = {
+                    'Critical Attack': 1,
+                    'Strength': 1,
+                    'Health': 1,
+                    'Resist Fear': 1,
+                    'Parry': 1
+                };
+            } else if (type === 'healer-cleric') {
+                state.race = 'Human';
+                state.class = 'Cleric';
+                state.deity = 'Etyana';
+                state.spTotal = 90;
+                state.skills = {
+                    'Shield Use': 1,
+                    'Resist Fear': 1,
+                    'Healing': 1
+                };
+                state.spells = {
+                    'Divine-1': 1,
+                    'Divine-2': 1
+                };
+            } else if (type === 'assassin') {
+                state.race = 'Human';
+                state.class = 'Assassin';
+                state.deity = 'Pan-Deific';
+                state.spTotal = 90;
+                state.skills = {
+                    'Backstab': 1,
+                    'Create Poison': 1,
+                    'Assassinate': 1,
+                    'Escape Bonds I': 1,
+                    'Critical Attack': 1
+                };
+            } else if (type === 'sorcerer') {
+                state.race = 'Human';
+                state.class = 'Sorcerer';
+                state.deity = 'Pan-Deific';
+                state.spTotal = 90;
+                state.skills = {
+                    'Read Magic': 1
+                };
+                state.spells = {
+                    'Sorcery-1': 2,
+                    'Sorcery-2': 1
+                };
+            } else if (type === 'ranger') {
+                state.race = 'Elf';
+                state.class = 'Ranger';
+                state.deity = 'Pan-Deific';
+                state.spTotal = 90;
+                state.skills = {
+                    'Bow': 1,
+                    'Nature Lore': 1,
+                    'Tracking': 1,
+                    'Health': 1,
+                    'Healing': 1,
+                    'Resist Fear': 1
+                };
+            }
+
+            saveState();
+            document.getElementById('raceSelect').value = state.race;
+            document.getElementById('classSelect').value = state.class;
+            document.getElementById('deitySelect').value = state.deity;
+            updateAll();
+        }
+
+        // ========== EXPORT/IMPORT ==========
+
+        function exportBuild() {
+            const json = JSON.stringify(state, null, 2);
+            navigator.clipboard.writeText(json).then(() => {
+                alert('Build exported to clipboard!');
+            });
+        }
+
+        function importBuild() {
+            const text = document.getElementById('importText').value.trim();
+            try {
+                const imported = JSON.parse(text);
+                state = imported;
+                saveState();
+                document.getElementById('raceSelect').value = state.race || '';
+                document.getElementById('classSelect').value = state.class || '';
+                document.getElementById('deitySelect').value = state.deity || '';
+                document.getElementById('importArea').style.display = 'none';
+                document.getElementById('importText').value = '';
+                updateAll();
+                alert('Build imported successfully!');
+            } catch (e) {
+                alert('Invalid JSON. Please check your build data.');
+            }
+        }
+
+        // ========== MAIN UPDATE FUNCTION ==========
+
+        function updateAll() {
+            calculateStats();
+            renderRaceBonus();
+            renderDeityBonus();
+            renderBuildSummary();
+        }
+
+        // ========== INITIALIZATION ==========
+
+        window.addEventListener('load', function() {
+            loadState();
+            document.getElementById('raceSelect').value = state.race || '';
+            document.getElementById('classSelect').value = state.class || '';
+            document.getElementById('deitySelect').value = state.deity || '';
+            calculateStats();
+            renderRaceBonus();
+            renderDeityBonus();
+            renderBuildSummary();
+        });
+    </script>
+</body>
+</html>
