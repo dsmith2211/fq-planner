@@ -573,6 +573,8 @@
                         </div>
                         <button class="btn" onclick="importFromPaste()">Import from Paste</button>
                     </div>
+
+                    <div id="importSummary" class="import-section hidden"></div>
                 </div>
             </div>
 
@@ -1086,16 +1088,31 @@
             localStorage.setItem('fq_planner', JSON.stringify(state));
         }
 
+        // Skill category filter state (used by renderSkills/setSkillCategory)
+        const skillCategoryFilter = { value: 'All' };
+
+        function updateState(key, value) {
+            state[key] = value;
+            saveState();
+            updateSidePanel();
+        }
+
+        function updateAll() {
+            updateSidePanel();
+            if (state.currentStep === 5) renderSkills();
+            if (state.currentStep === 6) renderSpells();
+        }
+
         function setSPTotal() {
-            state.spTotal = parseInt(document.getElementById('spTotalInput').value) || 90;
+            state.spTotal = parseInt(document.getElementById('spTotal').value) || 90;
             saveState();
             updateAll();
         }
 
         function updateBuild() {
-            state.race = document.getElementById('raceSelect').value;
-            state.class = document.getElementById('classSelect').value;
-            state.deity = document.getElementById('deitySelect').value;
+            state.race = document.getElementById('raceSelect')?.value || state.race;
+            state.class = document.getElementById('classSelect')?.value || state.class;
+            state.deity = document.getElementById('deitySelect')?.value || state.deity;
             saveState();
             updateAll();
         }
@@ -1270,10 +1287,22 @@
             const classInfo = CLASSES[state.class];
             if (!classInfo.canCast) return null;
 
-            const costPerLevel = 10;
-            const baseCostPerLevel = (school === classInfo.primarySchool) ? costPerLevel : (SPELL_ADJACENCY[school]?.adjacent.includes(classInfo.primarySchool) ? costPerLevel * 2.5 : costPerLevel * 5);
+            const isHybrid = classInfo.canCast === 'Hybrid';
+            const isPrimary = school === classInfo.primarySchool;
+            const isAdjacent = SPELL_ADJACENCY[school]?.adjacent.includes(classInfo.primarySchool);
 
-            return Math.round(baseCostPerLevel * level);
+            let costPerLevel;
+            if (isPrimary) {
+                costPerLevel = isHybrid ? 15 : 10;
+            } else if (isAdjacent) {
+                costPerLevel = isHybrid ? 35 : 25;
+            } else {
+                // Opposing school
+                if (isHybrid) return null; // Hybrids cannot learn opposing schools
+                costPerLevel = 50;
+            }
+
+            return costPerLevel * level;
         }
 
         // ========== UI FUNCTIONS ==========
@@ -1349,9 +1378,33 @@
             saveState();
 
             updateStepIndicator();
+            if (stepNum === 1) renderRaces();
+            if (stepNum === 2) renderClasses();
+            if (stepNum === 3) renderDeities();
+            if (stepNum === 4) renderLevelTable();
             if (stepNum === 5) renderSkills();
             if (stepNum === 6) renderSpells();
             if (stepNum === 7) renderCharacterSheet();
+            updateSidePanel();
+        }
+
+        function renderLevelTable() {
+            const tbody = document.getElementById('levelTable');
+            if (!tbody) return;
+            tbody.innerHTML = LEVEL_THRESHOLDS.map((threshold, idx) => `
+                <tr>
+                    <td>${idx + 1}</td>
+                    <td>${LEVEL_THRESHOLDS[idx + 1] ? LEVEL_THRESHOLDS[idx + 1] - threshold : '—'}</td>
+                    <td>${threshold}</td>
+                </tr>
+            `).join('');
+
+            const charEl = document.getElementById('charName');
+            if (charEl) charEl.value = state.charName || '';
+            const playerEl = document.getElementById('playerName');
+            if (playerEl) playerEl.value = state.playerName || '';
+            const spEl = document.getElementById('spTotal');
+            if (spEl) spEl.value = state.spTotal;
         }
 
         function updateStepIndicator() {
@@ -1918,49 +1971,6 @@
         }
 
         function parseCharacterCard(csvData) {
-            const lines = csvData.trim().split('\n');
-            const result = {charName: '', race: '', class: '', deity: 'None', skills: {}, spells: {}};
-
-            for (const line of lines) {
-                const [key, ...valueParts] = line.split(':');
-                const value = valueParts.join(':').trim();
-
-                if (key.toLowerCase().includes('name')) result.charName = value;
-                if (key.toLowerCase().includes('race')) result.race = value;
-                if (key.toLowerCase().includes('class')) result.class = value;
-                if (key.toLowerCase().includes('deity')) result.deity = value;
-            }
-
-            return result;
-        }
-
-        function fuzzyMatchSkill(input) {
-            const matches = SKILLS.map(s => ({
-                name: s.name,
-                distance: levenshteinDistance(input.toLowerCase(), s.name.toLowerCase())
-            })).sort((a, b) => a.distance - b.distance);
-
-            return matches[0]?.distance < 5 ? matches[0].name : null;
-        }
-
-        function levenshteinDistance(s1, s2) {
-            const m = s1.length, n = s2.length;
-            const dp = Array(m + 1).fill(0).map(() => Array(n + 1).fill(0));
-            for (let i = 0; i <= m; i++) dp[i][0] = i;
-            for (let j = 0; j <= n; j++) dp[0][j] = j;
-            for (let i = 1; i <= m; i++) {
-                for (let j = 1; j <= n; j++) {
-                    if (s1[i - 1] === s2[j - 1]) {
-                        dp[i][j] = dp[i - 1][j - 1];
-                    } else {
-                        dp[i][j] = 1 + Math.min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]);
-                    }
-                }
-            }
-            return dp[m][n];
-        }
-
-        function parseCharacterCard(csvData) {
             const lines = csvData.split('\n').filter(line => line.trim());
             const summary = { matched: 0, unmatched: 0, spells: 0, skills: [], unmatched_items: [] };
 
@@ -2177,7 +2187,7 @@
             if (charEl && state.charName) charEl.value = state.charName;
             const playerEl = document.getElementById('playerName');
             if (playerEl && state.playerName) playerEl.value = state.playerName;
-            const spInput = document.getElementById('spTotalInput');
+            const spInput = document.getElementById('spTotal');
             if (spInput) spInput.value = state.spTotal;
 
             if (typeof updateAll === 'function') updateAll();
@@ -2264,10 +2274,9 @@
                 alert('Please paste character data');
                 return;
             }
-            const imported = parseCharacterCard(csvData);
-            Object.assign(state, imported);
+            parseCharacterCard(csvData);
             saveState();
-            showImportSummary(imported);
+            // parseCharacterCard already calls showImportSummary internally
             goToStep(7);
         }
 
@@ -2275,31 +2284,8 @@
 
         window.addEventListener('load', () => {
             loadState();
-            updateStepIndicator();
+            if (!state.currentStep) state.currentStep = 0;
             goToStep(state.currentStep);
-
-            if (state.currentStep === 1) renderRaces();
-            if (state.currentStep === 2) renderClasses();
-            if (state.currentStep === 3) renderDeities();
-            if (state.currentStep === 4) {
-                const tbody = document.getElementById('levelTable');
-                tbody.innerHTML = LEVEL_THRESHOLDS.map((threshold, idx) => `
-                    <tr>
-                        <td>${idx + 1}</td>
-                        <td>${LEVEL_THRESHOLDS[idx + 1] - threshold || '—'}</td>
-                        <td>${threshold}</td>
-                    </tr>
-                `).join('');
-
-                document.getElementById('charName').value = state.charName;
-                document.getElementById('playerName').value = state.playerName;
-                document.getElementById('spTotal').value = state.spTotal;
-            }
-            if (state.currentStep === 5) renderSkills();
-            if (state.currentStep === 6) renderSpells();
-            if (state.currentStep === 7) renderCharacterSheet();
-
-            updateSidePanel();
         });
     </script>
 </body>
