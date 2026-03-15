@@ -458,6 +458,200 @@
             font-size: 0.85em;
             margin: 2px;
         }
+
+        /* Compact skill table */
+        .skill-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85em;
+        }
+        .skill-table th {
+            background: var(--fq-green-dark);
+            color: var(--fq-lime);
+            padding: 8px 6px;
+            text-align: left;
+            font-size: 0.85em;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+        .skill-table td {
+            padding: 6px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            vertical-align: middle;
+        }
+        .skill-table tr:hover {
+            background: rgba(186, 218, 85, 0.08);
+        }
+        .skill-table .cat-tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.8em;
+            font-weight: bold;
+            color: var(--fq-text-dark);
+        }
+        .cat-Fighting { background: #e74c3c; color: white; }
+        .cat-Stealth { background: #8e44ad; color: white; }
+        .cat-Magic { background: #3498db; color: white; }
+        .cat-Survival { background: #27ae60; color: white; }
+        .cat-Craft { background: #e67e22; color: white; }
+        .code-tag {
+            display: inline-block;
+            padding: 1px 6px;
+            border-radius: 3px;
+            font-size: 0.8em;
+            background: rgba(255,255,255,0.15);
+        }
+        .cost-na { color: #666; font-style: italic; }
+        .cost-innate { color: var(--fq-lime); font-weight: bold; }
+        .cost-modified { color: #f39c12; font-weight: bold; }
+        .skill-table .buy-btn {
+            padding: 4px 10px;
+            font-size: 0.8em;
+            margin: 1px;
+            border: none;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+        .skill-table .qty-display {
+            display: inline-block;
+            background: var(--fq-lime);
+            color: var(--fq-text-dark);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 0.85em;
+            margin-right: 4px;
+        }
+        .all-class-costs {
+            font-size: 0.75em;
+            color: var(--fq-olive);
+            margin-top: 2px;
+        }
+        .skill-desc-tooltip {
+            font-size: 0.8em;
+            color: var(--fq-tan);
+            font-style: italic;
+            margin-top: 2px;
+        }
+
+        /* Compact spell table */
+        .spell-school-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--fq-green-dark);
+            padding: 10px 15px;
+            border-radius: 4px;
+            margin-bottom: 2px;
+            cursor: pointer;
+        }
+        .spell-school-header:hover {
+            background: var(--fq-green);
+        }
+        .spell-school-header h3 {
+            margin: 0;
+            color: var(--fq-lime);
+            font-size: 1.1em;
+        }
+        .spell-school-header .school-tag {
+            font-size: 0.85em;
+            color: var(--fq-parchment);
+        }
+        .spell-school-body {
+            display: none;
+            margin-bottom: 15px;
+        }
+        .spell-school-body.expanded {
+            display: block;
+        }
+        .spell-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85em;
+        }
+        .spell-table th {
+            background: rgba(0,0,0,0.3);
+            color: var(--fq-lime);
+            padding: 6px 8px;
+            text-align: left;
+            font-size: 0.85em;
+        }
+        .spell-table td {
+            padding: 5px 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+        .spell-names {
+            font-size: 0.8em;
+            color: var(--fq-tan);
+        }
+        .spell-locked {
+            opacity: 0.4;
+        }
+
+        /* Compact deity cards */
+        .deity-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 12px;
+        }
+        .deity-compact {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--fq-olive);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .deity-compact-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 12px;
+            cursor: pointer;
+            background: var(--fq-green-dark);
+        }
+        .deity-compact-header:hover {
+            background: var(--fq-green);
+        }
+        .deity-compact-header h4 {
+            margin: 0;
+            color: var(--fq-lime);
+            font-size: 1em;
+        }
+        .deity-compact-header .deity-epithet {
+            font-size: 0.8em;
+            color: var(--fq-tan);
+            font-style: italic;
+        }
+        .deity-compact-body {
+            display: none;
+            padding: 10px 12px;
+            font-size: 0.85em;
+        }
+        .deity-compact-body.expanded {
+            display: block;
+        }
+        .deity-compact-body h5 {
+            color: var(--fq-lime);
+            margin: 8px 0 4px;
+            font-size: 0.9em;
+        }
+        .deity-compact-body ul {
+            margin: 0 0 0 16px;
+            padding: 0;
+        }
+        .deity-compact-body li {
+            margin: 2px 0;
+            line-height: 1.4;
+        }
+        .expand-arrow {
+            color: var(--fq-lime);
+            font-size: 0.9em;
+            transition: transform 0.2s;
+        }
+        .expand-arrow.open {
+            transform: rotate(90deg);
+        }
     </style>
 </head>
 <body>
@@ -564,6 +758,14 @@
                 </div>
             </div>
 
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="spTotalInput">Total SP Available</label>
+                    <input type="number" id="spTotalInput" value="90" min="0" max="5000" step="10" onchange="setSPTotal()" style="width: 120px;">
+                    <span style="font-size: 0.85em; color: var(--fq-olive); margin-left: 8px;">Enter your SP or import a character card</span>
+                </div>
+            </div>
+
             <div class="stat-bar">
                 <div class="stat-item">
                     <div class="label">Level</div>
@@ -574,11 +776,15 @@
                     <div class="value" id="spDisplay">0 / 90</div>
                 </div>
                 <div class="stat-item">
+                    <div class="label">SP Remaining</div>
+                    <div class="value" id="spRemainingDisplay">90</div>
+                </div>
+                <div class="stat-item">
                     <div class="label">LP</div>
                     <div class="value" id="lpDisplay">0</div>
                 </div>
                 <div class="stat-item">
-                    <div class="label">Progress</div>
+                    <div class="label">Progress to Next Level</div>
                     <div style="margin-top: 5px;">
                         <div class="progress-bar">
                             <div class="progress-fill" id="progressFill"></div>
@@ -591,18 +797,26 @@
         <!-- TAB 2: SKILLS -->
         <div class="tab-content">
             <h2>Skills</h2>
-            <div class="form-group" style="margin-bottom: 20px;">
-                <label for="skillCategoryFilter">Filter by Category</label>
-                <select id="skillCategoryFilter" onchange="filterSkills()">
-                    <option value="">-- All Skills --</option>
-                    <option value="Fighting">Fighting</option>
-                    <option value="Stealth">Stealth</option>
-                    <option value="Magic">Magic</option>
-                    <option value="Survival">Survival</option>
-                    <option value="Craft">Craft</option>
-                </select>
+            <div class="form-row" style="margin-bottom: 15px; align-items: flex-end;">
+                <div class="form-group" style="flex: 0 0 200px;">
+                    <label for="skillCategoryFilter">Filter Category</label>
+                    <select id="skillCategoryFilter" onchange="filterSkills()">
+                        <option value="">All Skills</option>
+                        <option value="Fighting">Fighting</option>
+                        <option value="Stealth">Stealth</option>
+                        <option value="Magic">Magic</option>
+                        <option value="Survival">Survival</option>
+                        <option value="Craft">Craft</option>
+                    </select>
+                </div>
+                <div class="form-group" style="flex: 0 0 auto;">
+                    <label><input type="checkbox" id="showAllClassCosts" onchange="renderSkills()"> Show all class costs</label>
+                </div>
+                <div class="form-group" style="flex: 0 0 auto;">
+                    <label><input type="checkbox" id="hideUnavailable" onchange="renderSkills()"> Hide N/A skills</label>
+                </div>
             </div>
-            <div id="skillList" class="skill-list"></div>
+            <div id="skillList"></div>
         </div>
 
         <!-- TAB 3: SPELLS -->
@@ -1033,10 +1247,19 @@
             localStorage.setItem('fq_planner', JSON.stringify(state));
         }
 
+        function setSPTotal() {
+            const val = parseInt(document.getElementById('spTotalInput').value) || 90;
+            state.spTotal = Math.max(0, val);
+            saveState();
+            updateAll();
+        }
+
         function updateBuild() {
             state.race = document.getElementById('raceSelect').value;
             state.class = document.getElementById('classSelect').value;
             state.deity = document.getElementById('deitySelect').value;
+            state.charName = document.getElementById('charName')?.value || '';
+            state.playerName = document.getElementById('playerName')?.value || '';
             saveState();
             updateAll();
         }
@@ -1224,10 +1447,7 @@
         }
 
         function calculateLevel() {
-            let totalSP = 0;
-            for (let skill in state.purchasedSkills) {
-                totalSP += state.purchasedSkills[skill].total || 0;
-            }
+            const totalSP = getTotalSPSpent();
             for (let level = 1; level < LEVEL_THRESHOLDS.length; level++) {
                 if (totalSP < LEVEL_THRESHOLDS[level]) return level;
             }
@@ -1245,27 +1465,45 @@
             return baseLP + modifier;
         }
 
+        function getTotalSPSpent() {
+            let total = 0;
+            for (let skill in state.purchasedSkills) {
+                total += state.purchasedSkills[skill].total || 0;
+            }
+            // Add spell costs
+            for (let school in state.purchasedSpells) {
+                for (let level in state.purchasedSpells[school]) {
+                    const count = state.purchasedSpells[school][level] || 0;
+                    const cost = getSpellCost(school, parseInt(level));
+                    if (cost !== null) total += count * cost * parseInt(level);
+                }
+            }
+            return total;
+        }
+
         function updateAll() {
             const level = calculateLevel();
             const lp = calculateLP();
             const spThreshold = LEVEL_THRESHOLDS[level] || 0;
             const spNext = LEVEL_THRESHOLDS[Math.min(level + 1, LEVEL_THRESHOLDS.length - 1)] || LEVEL_THRESHOLDS[LEVEL_THRESHOLDS.length - 1];
-
-            let totalSP = 0;
-            for (let skill in state.purchasedSkills) {
-                totalSP += state.purchasedSkills[skill].total || 0;
-            }
+            const totalSP = getTotalSPSpent();
+            const remaining = state.spTotal - totalSP;
 
             document.getElementById('levelDisplay').textContent = level;
             document.getElementById('lpDisplay').textContent = lp;
             document.getElementById('spDisplay').textContent = totalSP + ' / ' + state.spTotal;
+            const remEl = document.getElementById('spRemainingDisplay');
+            if (remEl) {
+                remEl.textContent = remaining;
+                remEl.style.color = remaining < 0 ? 'var(--fq-rust)' : 'var(--fq-lime)';
+            }
             document.getElementById('sideLevelDisplay').textContent = level;
             document.getElementById('sideLpDisplay').textContent = lp;
-            document.getElementById('sideSPDisplay').textContent = totalSP + ' / ' + state.spTotal;
+            document.getElementById('sideSPDisplay').textContent = totalSP + ' / ' + state.spTotal + ' (' + remaining + ' left)';
 
-            const progress = ((totalSP - spThreshold) / (spNext - spThreshold)) * 100;
-            document.getElementById('progressFill').style.width = Math.min(progress, 100) + '%';
-            document.getElementById('sideProgressFill').style.width = Math.min(progress, 100) + '%';
+            const progress = spNext > spThreshold ? ((totalSP - spThreshold) / (spNext - spThreshold)) * 100 : 100;
+            document.getElementById('progressFill').style.width = Math.min(Math.max(progress, 0), 100) + '%';
+            document.getElementById('sideProgressFill').style.width = Math.min(Math.max(progress, 0), 100) + '%';
 
             updateSidePanel();
             saveState();
@@ -1289,9 +1527,11 @@
                 for (let level in state.purchasedSpells[school]) {
                     const count = state.purchasedSpells[school][level];
                     if (count > 0) {
+                        const cost = getSpellCost(school, parseInt(level));
+                        const totalCost = cost !== null ? count * cost * parseInt(level) : 0;
                         const spellDiv = document.createElement('div');
                         spellDiv.className = 'cart-item';
-                        spellDiv.innerHTML = `<span class="cart-item-name">${school} L${level}</span> <span class="cart-item-qty">×${count}</span>`;
+                        spellDiv.innerHTML = `<span class="cart-item-name">${school} L${level}</span> <span class="cart-item-qty">×${count}</span> <span class="cart-item-cost">${totalCost} SP</span>`;
                         spellsDiv.appendChild(spellDiv);
                     }
                 }
@@ -1300,29 +1540,130 @@
 
         function renderSkills() {
             const filter = document.getElementById('skillCategoryFilter').value;
-            const skillsDiv = document.getElementById('skillList');
-            skillsDiv.innerHTML = '';
+            const showAll = document.getElementById('showAllClassCosts')?.checked;
+            const hideNA = document.getElementById('hideUnavailable')?.checked;
+            const div = document.getElementById('skillList');
 
-            SKILLS.filter(s => !filter || s.category === filter).forEach(skill => {
-                const cost = getSkillCost(skill.name, state.class, state.race, state.deity);
-                if (cost === null) return;
+            const SKILL_DESCRIPTIONS = {
+                'Critical Attack': 'Additional damage on a successful hit. Multiple purchases stack.',
+                'Disarm': 'Force opponent to drop their weapon. Once per event.',
+                'Florentine': 'Wield two weapons simultaneously.',
+                'Parry': 'Block an incoming melee strike. Multiple purchases allowed.',
+                'Shield Use': 'Ability to use a shield in combat.',
+                'Two-Handed Weapon': 'Wield two-handed weapons (greatswords, polearms).',
+                'Bow': 'Use ranged bow weapons in combat.',
+                'Strength': 'Increase melee damage. Multiple purchases stack.',
+                'Backstab': 'Deal extra damage from behind an unaware target.',
+                'Assassinate': 'Instant kill from behind. Requires Backstab.',
+                'Create Poison': 'Craft poisons for weapons or food. Multiple purchases.',
+                'Escape Bonds I': 'Slip free from basic restraints.',
+                'Escape Bonds II': 'Slip free from advanced restraints.',
+                'Lock Picking I': 'Open basic locks.',
+                'Lock Picking II': 'Open advanced locks.',
+                'Info Gathering': 'Gather intelligence and rumors at events.',
+                'Appraise': 'Determine the value of items and treasure.',
+                'Disguise': 'Alter your appearance to avoid recognition.',
+                'Forgery': 'Create fake documents and seals.',
+                'Read Magic': 'Read magical scrolls and inscriptions.',
+                'Scroll Craft': 'Create magical scrolls.',
+                'Spell Craft': 'Create magical items and enchantments.',
+                'Brew Potion': 'Create magical potions.',
+                'Astrology': 'Read the stars for guidance and prophecy.',
+                'Familiar': 'Bond with a magical creature companion.',
+                'Nature Lore': 'Knowledge of plants, animals, and the wild.',
+                'Tracking': 'Follow trails and track creatures.',
+                'Healing': 'Restore lost life points. Multiple purchases stack.',
+                'Regenerate': 'Slowly recover LP over time.',
+                'Health': 'Increase maximum life points. Multiple purchases stack.',
+                'Battle Rage': 'Enter a berserker frenzy for bonus damage.',
+                'Luck': 'Reroll a failed action. Multiple purchases allowed.',
+                'Resist Fear': 'Resist magical fear effects. Levels stack.',
+                'Resist Poison': 'Resist poison effects. Levels stack.',
+                'Resist Dark Arts': 'Resist dark magic. Levels stack.',
+                'Resist Charm': 'Resist charm/enchantment. Levels stack.',
+                'Armorsmith Leather': 'Craft and repair leather armor.',
+                'Armorsmith Chain': 'Craft and repair chain armor.',
+                'Armorsmith Plate': 'Craft and repair plate armor.',
+                'Armorsmith Metal': 'Craft and repair metal shields/helms.',
+                'Weaponsmith': 'Craft and repair weapons.',
+                'Craftsman': 'General crafting ability.',
+                'Theology': 'Knowledge of deities and divine law.'
+            };
 
-                const skillEl = document.createElement('div');
-                skillEl.className = 'skill-item';
-                const bought = state.purchasedSkills[skill.name] || { qty: 0, costPer: cost, total: 0 };
+            const allClasses = Object.keys(CLASSES);
+            let filtered = SKILLS.filter(s => !filter || s.category === filter);
 
-                skillEl.innerHTML = `
-                    <div style="flex: 1;">
-                        <div class="skill-name">${skill.name}</div>
-                        <div style="font-size: 0.8em; color: var(--fq-olive);">Code: ${skill.code}</div>
-                    </div>
-                    <div class="skill-cost">${cost} SP</div>
-                    ${bought.qty > 0 ? `<span class="skill-qty">Qty: ${bought.qty}</span>` : ''}
-                    <button onclick="buySkill('${skill.name}', ${cost})" style="margin: 0 5px;">Buy</button>
-                    ${bought.qty > 0 ? `<button onclick="sellSkill('${skill.name}')">Remove</button>` : ''}
-                `;
-                skillsDiv.appendChild(skillEl);
+            if (hideNA && state.class) {
+                filtered = filtered.filter(s => {
+                    const cost = getSkillCost(s.name, state.class, state.race, state.deity);
+                    return cost !== null;
+                });
+            }
+
+            let html = '<table class="skill-table"><thead><tr>';
+            html += '<th>Skill</th><th>Cat</th><th>Code</th>';
+            if (state.class) html += '<th>Your Cost</th>';
+            if (showAll) {
+                allClasses.forEach(c => {
+                    const abbrev = c.replace('Bounty Hunter','BH').replace('Holy Warrior','HW').replace('Dark Mage','DM');
+                    html += `<th style="font-size:0.7em;writing-mode:vertical-rl;text-orientation:mixed;padding:4px 2px;">${abbrev}</th>`;
+                });
+            }
+            html += '<th>Cart</th></tr></thead><tbody>';
+
+            filtered.forEach(skill => {
+                const cost = state.class ? getSkillCost(skill.name, state.class, state.race, state.deity) : null;
+                const bought = state.purchasedSkills[skill.name];
+                const desc = SKILL_DESCRIPTIONS[skill.name] || '';
+                const codeLabel = skill.code === 'M' ? 'Multi' : skill.code === 'O' ? '1/event' : skill.code === '1' ? 'Once' : skill.code === 'I' ? 'Innate' : skill.code;
+
+                html += '<tr>';
+                html += `<td><strong>${skill.name}</strong>`;
+                if (desc) html += `<div class="skill-desc-tooltip">${desc}</div>`;
+                html += `</td>`;
+                html += `<td><span class="cat-tag cat-${skill.category}">${skill.category}</span></td>`;
+                html += `<td><span class="code-tag">${codeLabel}</span></td>`;
+
+                if (state.class) {
+                    if (cost === null) {
+                        html += '<td class="cost-na">N/A</td>';
+                    } else if (cost === 0) {
+                        html += '<td class="cost-innate">Free</td>';
+                    } else {
+                        const baseCost = skill.costs[state.class];
+                        const isModified = baseCost !== null && baseCost !== 'I' && cost !== baseCost;
+                        html += `<td class="${isModified ? 'cost-modified' : ''}">${cost} SP${isModified ? ' *' : ''}</td>`;
+                    }
+                }
+
+                if (showAll) {
+                    allClasses.forEach(c => {
+                        const raw = skill.costs[c];
+                        if (raw === null) html += '<td class="cost-na" style="text-align:center;font-size:0.8em;">—</td>';
+                        else if (raw === 'I') html += '<td class="cost-innate" style="text-align:center;font-size:0.8em;">I</td>';
+                        else html += `<td style="text-align:center;font-size:0.8em;">${raw}</td>`;
+                    });
+                }
+
+                // Cart column
+                html += '<td style="white-space:nowrap;">';
+                if (cost !== null && cost !== undefined) {
+                    if (bought && bought.qty > 0) {
+                        html += `<span class="qty-display">${bought.qty}</span>`;
+                        if (skill.code === 'M') {
+                            html += `<button class="buy-btn" style="background:var(--fq-btn-green);color:white;" onclick="buySkill('${skill.name.replace(/'/g,"\\'")}', ${cost})">+</button>`;
+                        }
+                        html += `<button class="buy-btn" style="background:var(--fq-rust);color:white;" onclick="sellSkill('${skill.name.replace(/'/g,"\\'")}')">−</button>`;
+                    } else if (cost > 0 || cost === 0) {
+                        html += `<button class="buy-btn" style="background:var(--fq-btn-green);color:white;" onclick="buySkill('${skill.name.replace(/'/g,"\\'")}', ${cost})">Buy</button>`;
+                    }
+                }
+                html += '</td></tr>';
             });
+
+            html += '</tbody></table>';
+            if (showAll) html += '<p style="font-size:0.8em;color:var(--fq-tan);margin-top:8px;">I = Innate/Free, — = Not Available, * = Modified by race/deity</p>';
+            div.innerHTML = html;
         }
 
         function buySkill(skillName, cost) {
@@ -1350,39 +1691,98 @@
         }
 
         function renderSpells() {
-            const spellsDiv = document.getElementById('spellList');
-            spellsDiv.innerHTML = '';
+            const div = document.getElementById('spellList');
 
             if (!state.class || !CLASSES[state.class].canCast) {
-                spellsDiv.innerHTML = '<p style="color: var(--fq-text-dark);">This class cannot learn spells.</p>';
+                div.innerHTML = '<p style="color: var(--fq-tan); padding: 20px;">Select a casting class to view available spells.</p>';
                 return;
             }
 
-            for (let school in SPELLS) {
-                const schoolDiv = document.createElement('div');
-                schoolDiv.style.marginBottom = '30px';
-                schoolDiv.innerHTML = `<h3 style="color: var(--fq-rust); margin-bottom: 15px;">${school}</h3>`;
+            const classData = CLASSES[state.class];
+            const castType = classData.canCast;
+            const primary = classData.primarySchool;
+            const adj = SPELL_ADJACENCY[primary]?.adjacent || [];
+            const opp = SPELL_ADJACENCY[primary]?.opposing || [];
 
-                for (let level = 1; level <= 9; level++) {
-                    const spells = SPELLS[school][level] || [];
-                    const levelDiv = document.createElement('div');
-                    levelDiv.className = 'skill-item';
-                    const boughtCount = (state.purchasedSpells[school] && state.purchasedSpells[school][level]) || 0;
+            let html = '';
+            const schools = Object.keys(SPELLS);
 
-                    const cost = getSpellCost(school, level);
-                    levelDiv.innerHTML = `
-                        <div style="flex: 1;">
-                            <div class="skill-name">Level ${level}</div>
-                            <div style="font-size: 0.85em; color: var(--fq-olive);">${spells.join(', ')}</div>
-                        </div>
-                        <div class="skill-cost">${cost} SP</div>
-                        ${boughtCount > 0 ? `<span class="skill-qty">×${boughtCount}</span>` : ''}
-                        <button onclick="buySpell('${school}', ${level}, ${cost})" style="margin: 0 5px;">Buy</button>
-                        ${boughtCount > 0 ? `<button onclick="sellSpell('${school}', ${level})">-1</button>` : ''}
-                    `;
-                    schoolDiv.appendChild(levelDiv);
+            // Sort: primary first, then adjacent, then opposing
+            const sorted = [primary, ...adj.filter(s => s !== primary), ...opp.filter(s => !adj.includes(s) && s !== primary), ...schools.filter(s => s !== primary && !adj.includes(s) && !opp.includes(s))];
+            const unique = [...new Set(sorted)].filter(s => SPELLS[s]);
+
+            unique.forEach(school => {
+                const cost = getSpellCost(school, 1);
+                const relationship = school === primary ? 'Primary' : adj.includes(school) ? 'Adjacent' : opp.includes(school) ? 'Opposing' : '?';
+                const blocked = cost === null;
+                const costLabel = blocked ? 'Blocked' : `${cost} SP/level`;
+
+                // Count purchased spells in this school
+                let schoolTotal = 0;
+                for (let l = 1; l <= 9; l++) {
+                    schoolTotal += (state.purchasedSpells[school]?.[l]) || 0;
                 }
-                spellsDiv.appendChild(schoolDiv);
+
+                html += `<div class="spell-school-header" onclick="toggleSpellSchool('${school}')">
+                    <h3>${school} <span class="school-tag">(${relationship} — ${costLabel})</span></h3>
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        ${schoolTotal > 0 ? `<span style="background:var(--fq-lime);color:var(--fq-text-dark);padding:2px 8px;border-radius:10px;font-size:0.85em;font-weight:bold;">${schoolTotal} bought</span>` : ''}
+                        <span class="expand-arrow" id="arrow_${school.replace(/\s/g,'_')}">▶</span>
+                    </div>
+                </div>`;
+
+                html += `<div class="spell-school-body" id="spells_${school.replace(/\s/g,'_')}">`;
+                if (blocked) {
+                    html += `<p style="padding:10px;color:var(--fq-rust);font-style:italic;">${castType === 'Hybrid' ? 'Hybrid casters cannot learn opposing school spells.' : 'This school is not available.'}</p>`;
+                } else {
+                    html += '<table class="spell-table"><thead><tr><th>Lvl</th><th>Spells</th><th>Cost</th><th>Tower</th><th>Bought</th><th></th></tr></thead><tbody>';
+                    for (let level = 1; level <= 9; level++) {
+                        const spells = SPELLS[school][level] || [];
+                        const lvlCost = getSpellCost(school, level) * level;
+                        const boughtCount = (state.purchasedSpells[school]?.[level]) || 0;
+
+                        // Tower rule check: need >= 2 at level N-1 to buy level N
+                        let towerOK = true;
+                        let towerMsg = '';
+                        if (level > 1) {
+                            const prevBought = (state.purchasedSpells[school]?.[level-1]) || 0;
+                            towerOK = prevBought >= 2;
+                            towerMsg = towerOK ? 'OK' : `Need ${2 - prevBought} more L${level-1}`;
+                        } else {
+                            towerMsg = 'OK';
+                        }
+
+                        const locked = !towerOK && boughtCount === 0;
+                        html += `<tr class="${locked ? 'spell-locked' : ''}">`;
+                        html += `<td><strong>L${level}</strong></td>`;
+                        html += `<td class="spell-names">${spells.join(', ')}</td>`;
+                        html += `<td>${cost * level} SP</td>`;
+                        html += `<td style="font-size:0.8em;${towerOK ? 'color:var(--fq-lime)' : 'color:var(--fq-rust)'}">${towerMsg}</td>`;
+                        html += `<td>${boughtCount > 0 ? `<span class="qty-display">${boughtCount}</span>` : '—'}</td>`;
+                        html += `<td style="white-space:nowrap;">`;
+                        if (!locked) {
+                            html += `<button class="buy-btn" style="background:var(--fq-btn-green);color:white;" onclick="buySpell('${school}',${level},${cost * level})">+</button>`;
+                            if (boughtCount > 0) {
+                                html += `<button class="buy-btn" style="background:var(--fq-rust);color:white;" onclick="sellSpell('${school}',${level})">−</button>`;
+                            }
+                        }
+                        html += '</td></tr>';
+                    }
+                    html += '</tbody></table>';
+                }
+                html += '</div>';
+            });
+
+            div.innerHTML = html;
+        }
+
+        function toggleSpellSchool(school) {
+            const id = school.replace(/\s/g, '_');
+            const body = document.getElementById('spells_' + id);
+            const arrow = document.getElementById('arrow_' + id);
+            if (body) {
+                body.classList.toggle('expanded');
+                if (arrow) arrow.classList.toggle('open');
             }
         }
 
@@ -1421,30 +1821,49 @@
         }
 
         function renderDeities() {
-            const deityDiv = document.getElementById('deityList');
-            deityDiv.innerHTML = '';
+            const div = document.getElementById('deityList');
+            let html = '<div class="deity-grid">';
 
-            for (let deityName in DEITIES) {
-                const deity = DEITIES[deityName];
-                const card = document.createElement('div');
-                card.className = 'deity-card';
-                card.innerHTML = `
-                    <div class="deity-title">${deityName}</div>
-                    <div class="deity-subtitle">"${deity.title}"</div>
-                    <div class="deity-section">
-                        <h5>Cleric Benefits:</h5>
-                        <ul>${deity.clericBenefits.map(b => `<li>${b}</li>`).join('')}</ul>
-                    </div>
-                    <div class="deity-section">
-                        <h5>Cleric Limitations:</h5>
-                        <ul>${deity.clericLimitations.length > 0 ? deity.clericLimitations.map(l => `<li>${l}</li>`).join('') : '<li>None</li>'}</ul>
-                    </div>
-                    <div class="deity-section">
-                        <h5>Holy Warrior Benefits:</h5>
-                        <ul>${deity.holyWarriorBenefits.length > 0 ? deity.holyWarriorBenefits.map(b => `<li>${b}</li>`).join('') : '<li>None</li>'}</ul>
-                    </div>
-                `;
-                deityDiv.appendChild(card);
+            for (let name in DEITIES) {
+                const d = DEITIES[name];
+                const id = name.replace(/[\s-]/g, '_');
+                const isSelected = state.deity === name;
+
+                html += `<div class="deity-compact" style="${isSelected ? 'border-color:var(--fq-lime);border-width:2px;' : ''}">`;
+                html += `<div class="deity-compact-header" onclick="toggleDeityCard('${id}')">`;
+                html += `<div><h4>${name}${isSelected ? ' ★' : ''}</h4><span class="deity-epithet">${d.title}</span></div>`;
+                html += `<span class="expand-arrow" id="darrow_${id}">▶</span>`;
+                html += '</div>';
+                html += `<div class="deity-compact-body" id="deity_${id}">`;
+                html += '<h5>Cleric Benefits</h5><ul>' + d.clericBenefits.map(b => `<li>${b}</li>`).join('') + '</ul>';
+                if (d.clericLimitations.length > 0) {
+                    html += '<h5 style="color:var(--fq-rust);">Cleric Limitations</h5><ul>' + d.clericLimitations.map(l => `<li style="color:var(--fq-rust);">${l}</li>`).join('') + '</ul>';
+                }
+                if (d.holyWarriorBenefits.length > 0) {
+                    html += '<h5>Holy Warrior Benefits</h5><ul>' + d.holyWarriorBenefits.map(b => `<li>${b}</li>`).join('') + '</ul>';
+                }
+                html += '</div></div>';
+            }
+
+            html += '</div>';
+            div.innerHTML = html;
+
+            // Auto-expand selected deity
+            if (state.deity) {
+                const id = state.deity.replace(/[\s-]/g, '_');
+                const body = document.getElementById('deity_' + id);
+                const arrow = document.getElementById('darrow_' + id);
+                if (body) body.classList.add('expanded');
+                if (arrow) arrow.classList.add('open');
+            }
+        }
+
+        function toggleDeityCard(id) {
+            const body = document.getElementById('deity_' + id);
+            const arrow = document.getElementById('darrow_' + id);
+            if (body) {
+                body.classList.toggle('expanded');
+                if (arrow) arrow.classList.toggle('open');
             }
         }
 
@@ -1567,9 +1986,17 @@
                 });
             });
 
+            // Auto-calculate SP total from imported data
+            let importedSP = 0;
+            for (let s in state.purchasedSkills) importedSP += state.purchasedSkills[s].total || 0;
+            if (importedSP > state.spTotal) {
+                state.spTotal = importedSP;
+                document.getElementById('spTotalInput').value = importedSP;
+            }
+
             updateAll();
             const summaryDiv = document.getElementById('importSummary');
-            summaryDiv.textContent = `Imported ${summary.skills} skills, ${summary.hidden} unmatched.`;
+            summaryDiv.textContent = `Imported ${summary.skills} skills (${importedSP} SP), ${summary.hidden} unmatched. SP Total set to ${state.spTotal}.`;
             summaryDiv.classList.remove('hidden');
         }
 
@@ -1649,6 +2076,13 @@
         // ========== INIT ==========
         window.addEventListener('DOMContentLoaded', () => {
             loadState();
+            // Restore form fields from state
+            if (state.race) document.getElementById('raceSelect').value = state.race;
+            if (state.class) document.getElementById('classSelect').value = state.class;
+            if (state.deity) document.getElementById('deitySelect').value = state.deity;
+            if (state.charName) document.getElementById('charName').value = state.charName;
+            if (state.playerName) document.getElementById('playerName').value = state.playerName;
+            if (state.spTotal) document.getElementById('spTotalInput').value = state.spTotal;
             updateAll();
             renderDeities();
             renderRules();
