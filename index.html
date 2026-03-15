@@ -773,183 +773,224 @@
                 armorRestrictions: []
             },
             Elf: {
-                bonuses: ['Bow costs ½', 'Health costs 2×'],
-                limitations: ['Cannot use iron/steel weapons (silvered/wooden/magical OK)'],
-                resistances: ['+1 level resistance to Charm/Sleep'],
-                weaponRestrictions: ['iron', 'steel'],
+                bonuses: ['Resist Mysticism spells +2 levels', 'Bow at ½ cost (rounded up)', '+10 extra SP for magical skills', 'Elven holy warriors may take bow for 20 SP'],
+                limitations: ['-1 LP to start', 'Cannot use 2-handed weapons (save staff)', 'Health skill costs double'],
+                resistances: [],
+                weaponRestrictions: [],
                 armorRestrictions: []
             },
             Dwarf: {
-                bonuses: ['Smithing skills cost ½', 'Regenerate costs ½'],
-                limitations: ['Magic costs 2×', 'Cannot use bows', 'Cannot use two-handed swords'],
-                resistances: ['+1 level resistance to poison'],
-                weaponRestrictions: ['bow', 'two-handed sword'],
-                armorRestrictions: []
-            },
-            Hobbet: {
-                bonuses: ['Stealth skills cost ½'],
-                limitations: ['Cannot use two-handed weapons', '-1 LP per level'],
-                resistances: ['+1 level resistance to Fear'],
-                weaponRestrictions: ['two-handed'],
+                bonuses: ['Resist magic +2 levels (not Mysticism)', '½ cost (rounded up) for weapon smith, armor smith, regenerate'],
+                limitations: ['Cannot use weapons over 5 feet length', 'Cannot use bow or tower shields', 'All magic skills cost double (except Faith, Banish Undead, Create Holy Water, Divine Intervention)'],
+                resistances: [],
+                weaponRestrictions: [],
                 armorRestrictions: []
             },
             Orgreth: {
-                bonuses: ['Strength costs ½'],
-                limitations: ['Magic costs 2×', 'Cannot learn Read/Write', '+2 LP per level'],
+                bonuses: ['Resist poison +2 levels', '+1 LP to start', '½ cost (rounded up) for Regenerate, Polearm/Spear, Two Handed Edged, Strength'],
+                limitations: ['Cannot take read magic skill', 'Literacy costs double', 'Cannot wear better than studded leather armor'],
                 resistances: [],
                 weaponRestrictions: [],
                 armorRestrictions: []
             },
-            'Half-Ogre': {
-                bonuses: ['Battle Rage costs ½', '+3 LP per level'],
-                limitations: ['Cannot learn magic', 'Cannot use bows'],
-                resistances: [],
-                weaponRestrictions: ['bow'],
-                armorRestrictions: []
-            },
-            Wolven: {
-                bonuses: ['Nature Lore free', 'Tracking costs ½'],
-                limitations: ['Cannot wear metal armor'],
+            'Half Dwarf': {
+                bonuses: ['Resist magic (except mysticism) +1 level'],
+                limitations: ['Magical skills cost double (except those listed under Dwarf)'],
                 resistances: [],
                 weaponRestrictions: [],
-                armorRestrictions: ['metal']
+                armorRestrictions: []
+            },
+            'Half Elf': {
+                bonuses: ['Resist Mysticism spells and control magic +1 level', 'Bow at ½ cost (rounded up)'],
+                limitations: ['Cannot use 2-handed weapons (save staff)'],
+                resistances: [],
+                weaponRestrictions: [],
+                armorRestrictions: []
+            },
+            'Half Orgreth': {
+                bonuses: ['Resist Poison +1 level', '½ cost for Regenerate (rounded up)'],
+                limitations: ['Cannot take Read Magic skill'],
+                resistances: [],
+                weaponRestrictions: [],
+                armorRestrictions: []
             }
         };
 
         const CLASSES = {
-            Warrior: {armor: 'Plate', lpPerLevel: 4, primarySchool: null, canCast: false, type: 'Fighter'},
-            Ranger: {armor: 'Chain', lpPerLevel: 3, primarySchool: null, canCast: false, type: 'Fighter'},
-            Cavalier: {armor: 'Plate', lpPerLevel: 3, primarySchool: null, canCast: false, type: 'Fighter'},
-            'Bounty Hunter': {armor: 'Studded', lpPerLevel: 2, primarySchool: null, canCast: false, type: 'Rogue'},
-            Assassin: {armor: 'Leather', lpPerLevel: 2, primarySchool: null, canCast: false, type: 'Rogue'},
-            Bard: {armor: 'Chain', lpPerLevel: 2, primarySchool: 'Enchantment', canCast: 'Hybrid', type: 'Hybrid'},
-            Cleric: {armor: 'Chain', lpPerLevel: 3, primarySchool: 'Divine', canCast: 'Straight', type: 'Caster'},
-            'Holy Warrior': {armor: 'Plate', lpPerLevel: 3, primarySchool: 'Divine', canCast: 'Hybrid', type: 'Hybrid'},
-            Healer: {armor: 'Leather', lpPerLevel: 2, primarySchool: 'Divine', canCast: 'Straight', type: 'Caster'},
-            Druid: {armor: 'Leather', lpPerLevel: 2, primarySchool: 'Elementalism', canCast: 'Straight', type: 'Caster'},
-            Monk: {armor: 'None', lpPerLevel: 2, primarySchool: 'Elementalism', canCast: 'Hybrid', type: 'Hybrid'},
-            Sorcerer: {armor: 'None', lpPerLevel: 1, primarySchool: 'Sorcery', canCast: 'Straight', type: 'Caster'},
-            'Dark Mage': {armor: 'Leather', lpPerLevel: 2, primarySchool: 'Dark Arts', canCast: 'Straight', type: 'Caster'},
-            Witch: {armor: 'None', lpPerLevel: 1, primarySchool: 'Enchantment', canCast: 'Straight', type: 'Caster'},
-            Paladin: {armor: 'Plate', lpPerLevel: 3, primarySchool: 'Divine', canCast: 'Hybrid', type: 'Hybrid'}
+            // LP Groups (Rulebook p48): Fighter = 1 LP every level from L2; all others = 1 LP every other level from L2
+            // All characters start at 2 LP except Warrior (3 LP)
+            'Holy Warrior': {armor: 'Plate', startLP: 2, lpGroup: 'every', primarySchool: 'Divine', canCast: 'Hybrid', type: 'Fighter'},
+            Ranger: {armor: 'Chain', startLP: 2, lpGroup: 'every', primarySchool: 'Elementalism', canCast: 'Hybrid', type: 'Fighter'},
+            Warrior: {armor: 'Plate', startLP: 3, lpGroup: 'every', primarySchool: null, canCast: false, type: 'Fighter'},
+            'Arcane Warrior': {armor: 'Studded Leather', startLP: 2, lpGroup: 'every', primarySchool: 'Arcane Arts', canCast: 'Hybrid', type: 'Fighter'},
+            'Mystic Warrior': {armor: 'Studded Leather', startLP: 2, lpGroup: 'every', primarySchool: 'Mysticism', canCast: 'Hybrid', type: 'Fighter'},
+            'Bounty Hunter': {armor: 'Chain', startLP: 2, lpGroup: 'every', primarySchool: null, canCast: false, type: 'Fighter'},
+            Cleric: {armor: 'Chain', startLP: 2, lpGroup: 'everyOther', primarySchool: 'Divine', canCast: 'Straight', type: 'Caster'},
+            Druid: {armor: 'Leather', startLP: 2, lpGroup: 'everyOther', primarySchool: 'Elementalism', canCast: 'Straight', type: 'Caster'},
+            Mystic: {armor: 'None', startLP: 2, lpGroup: 'everyOther', primarySchool: 'Mysticism', canCast: 'Straight', type: 'Caster'},
+            Sorcerer: {armor: 'None', startLP: 2, lpGroup: 'everyOther', primarySchool: 'Arcane Arts', canCast: 'Straight', type: 'Caster'},
+            Warlock: {armor: 'None', startLP: 2, lpGroup: 'everyOther', primarySchool: 'Dark Arts', canCast: 'Straight', type: 'Caster'},
+            Assassin: {armor: 'Leather', startLP: 2, lpGroup: 'everyOther', primarySchool: null, canCast: false, type: 'Stealth'},
+            Rogue: {armor: 'Studded Leather', startLP: 2, lpGroup: 'everyOther', primarySchool: null, canCast: false, type: 'Stealth'},
+            Bard: {armor: 'Studded Leather', startLP: 2, lpGroup: 'everyOther', primarySchool: null, canCast: 'Hybrid', type: 'Stealth'},
+            Brigand: {armor: 'Studded Leather', startLP: 2, lpGroup: 'everyOther', primarySchool: null, canCast: false, type: 'Stealth'}
         };
 
-        const LEVEL_THRESHOLDS = [0, 90, 210, 335, 465, 600, 740, 885, 1035, 1190, 1350, 1515];
+        // Rulebook p20: Level 1 = 60 SP total spent, Level 12 = 3435
+        const LEVEL_THRESHOLDS = [60, 110, 210, 335, 485, 685, 935, 1235, 1635, 2135, 2735, 3435];
 
         const SKILLS = [
-            {name: 'Critical Attack', category: 'Fighting', code: 'M', costs: {Warrior: 25, Ranger: 30, Cavalier: 30, 'Bounty Hunter': 40, Assassin: 45, Bard: 40, Cleric: 40, 'Holy Warrior': 30, Healer: null, Druid: null, Monk: 35, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: 30}},
-            {name: 'Disarm', category: 'Fighting', code: 'O', costs: {Warrior: 15, Ranger: 20, Cavalier: 20, 'Bounty Hunter': 25, Assassin: 30, Bard: 25, Cleric: 30, 'Holy Warrior': 20, Healer: null, Druid: null, Monk: 25, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: 20}},
-            {name: 'Florentine', category: 'Fighting', code: '1', costs: {Warrior: 15, Ranger: 20, Cavalier: 20, 'Bounty Hunter': 20, Assassin: 25, Bard: 25, Cleric: null, 'Holy Warrior': 20, Healer: null, Druid: null, Monk: 25, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: 20}},
-            {name: 'Parry', category: 'Fighting', code: 'M', costs: {Warrior: 20, Ranger: 25, Cavalier: 20, 'Bounty Hunter': 30, Assassin: 35, Bard: 30, Cleric: 30, 'Holy Warrior': 25, Healer: null, Druid: null, Monk: 25, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: 25}},
-            {name: 'Shield Use', category: 'Fighting', code: '1', costs: {Warrior: 'I', Ranger: 10, Cavalier: 'I', 'Bounty Hunter': 15, Assassin: null, Bard: 15, Cleric: 10, 'Holy Warrior': 'I', Healer: null, Druid: null, Monk: null, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: 'I'}},
-            {name: 'Two-Handed Weapon', category: 'Fighting', code: '1', costs: {Warrior: 'I', Ranger: 15, Cavalier: 'I', 'Bounty Hunter': 20, Assassin: null, Bard: 20, Cleric: 15, 'Holy Warrior': 'I', Healer: null, Druid: null, Monk: null, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: 'I'}},
-            {name: 'Bow', category: 'Fighting', code: '1', costs: {Warrior: 30, Ranger: 15, Cavalier: 35, 'Bounty Hunter': 25, Assassin: 30, Bard: 35, Cleric: null, 'Holy Warrior': 35, Healer: null, Druid: 25, Monk: null, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: 35}},
-            {name: 'Strength', category: 'Fighting', code: 'M', costs: {Warrior: 20, Ranger: 25, Cavalier: 25, 'Bounty Hunter': 30, Assassin: 35, Bard: 30, Cleric: 35, 'Holy Warrior': 25, Healer: null, Druid: null, Monk: 30, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: 25}},
+            // FIGHTING SKILLS (p21)
+            {name: 'Awareness', category: 'Fighting', codes: 'I O', prereq: 'Toughness', costs: {'Arcane Warrior': null, 'Assassin': null, 'Bard': null, 'Bounty Hunter': null, 'Brigand': null, 'Cleric': null, 'Druid': null, 'Holy Warrior': null, 'Mystic': null, 'Mystic Warrior': null, 'Ranger': null, 'Rogue': null, 'Sorcerer': null, 'Warlock': null, 'Warrior': 50}},
+            {name: 'Battle Rage', category: 'Fighting', codes: 'O', prereq: 'None', costs: {'Arcane Warrior': 50, 'Assassin': null, 'Bard': null, 'Bounty Hunter': null, 'Brigand': null, 'Cleric': null, 'Druid': null, 'Holy Warrior': 50, 'Mystic': null, 'Mystic Warrior': 50, 'Ranger': 50, 'Rogue': null, 'Sorcerer': null, 'Warlock': null, 'Warrior': 40}},
+            {name: 'Critical Attack', category: 'Fighting', codes: 'I #', prereq: '3rd Level', costs: {'Arcane Warrior': 35, 'Assassin': 50, 'Bard': 40, 'Bounty Hunter': 50, 'Brigand': 40, 'Cleric': null, 'Druid': null, 'Holy Warrior': 35, 'Mystic': null, 'Mystic Warrior': 35, 'Ranger': 35, 'Rogue': 50, 'Sorcerer': null, 'Warlock': null, 'Warrior': 25}},
+            {name: 'Disarm', category: 'Fighting', codes: 'I #', prereq: '2nd Level', costs: {'Arcane Warrior': 20, 'Assassin': 40, 'Bard': 25, 'Bounty Hunter': 40, 'Brigand': 30, 'Cleric': 45, 'Druid': null, 'Holy Warrior': 20, 'Mystic': null, 'Mystic Warrior': 20, 'Ranger': 20, 'Rogue': 40, 'Sorcerer': null, 'Warlock': null, 'Warrior': 15}},
+            {name: 'Florentine', category: 'Fighting', codes: 'I O', prereq: 'Weapon', costs: {'Arcane Warrior': 25, 'Assassin': 30, 'Bard': 25, 'Bounty Hunter': 30, 'Brigand': 25, 'Cleric': 30, 'Druid': null, 'Holy Warrior': 20, 'Mystic': 40, 'Mystic Warrior': 25, 'Ranger': 20, 'Rogue': 30, 'Sorcerer': null, 'Warlock': null, 'Warrior': 20}},
+            {name: 'Lethal Strike', category: 'Fighting', codes: 'I #', prereq: '7th Level', costs: {'Arcane Warrior': 50, 'Assassin': null, 'Bard': 50, 'Bounty Hunter': null, 'Brigand': null, 'Cleric': null, 'Druid': null, 'Holy Warrior': 50, 'Mystic': null, 'Mystic Warrior': 50, 'Ranger': 50, 'Rogue': null, 'Sorcerer': null, 'Warlock': null, 'Warrior': 40}},
+            {name: 'Parry', category: 'Fighting', codes: 'I #', prereq: 'Weapon', costs: {'Arcane Warrior': 30, 'Assassin': 40, 'Bard': 30, 'Bounty Hunter': 40, 'Brigand': 40, 'Cleric': 40, 'Druid': 50, 'Holy Warrior': 30, 'Mystic': 50, 'Mystic Warrior': 30, 'Ranger': 30, 'Rogue': 40, 'Sorcerer': 50, 'Warlock': 50, 'Warrior': 25}},
+            {name: 'Sever', category: 'Fighting', codes: 'I #', prereq: '4th Level', costs: {'Arcane Warrior': 40, 'Assassin': null, 'Bard': 40, 'Bounty Hunter': null, 'Brigand': 50, 'Cleric': null, 'Druid': null, 'Holy Warrior': 40, 'Mystic': null, 'Mystic Warrior': 40, 'Ranger': 40, 'Rogue': null, 'Sorcerer': null, 'Warlock': null, 'Warrior': 35}},
+            {name: 'Strength', category: 'Fighting', codes: 'I #', prereq: 'None', costs: {'Arcane Warrior': null, 'Assassin': null, 'Bard': 40, 'Bounty Hunter': null, 'Brigand': 40, 'Cleric': null, 'Druid': null, 'Holy Warrior': null, 'Mystic': null, 'Mystic Warrior': null, 'Ranger': null, 'Rogue': null, 'Sorcerer': null, 'Warlock': null, 'Warrior': 35}},
+            {name: 'Toughness', category: 'Fighting', codes: 'O', prereq: 'None', costs: {'Arcane Warrior': 40, 'Assassin': 40, 'Bard': 40, 'Bounty Hunter': 40, 'Brigand': 40, 'Cleric': 50, 'Druid': 50, 'Holy Warrior': 35, 'Mystic': 50, 'Mystic Warrior': 40, 'Ranger': 35, 'Rogue': 40, 'Sorcerer': 50, 'Warlock': 50, 'Warrior': 30}},
+            {name: 'Trip', category: 'Fighting', codes: 'I #', prereq: 'Weapon', costs: {'Arcane Warrior': 25, 'Assassin': 30, 'Bard': 25, 'Bounty Hunter': 40, 'Brigand': 25, 'Cleric': 40, 'Druid': null, 'Holy Warrior': 25, 'Mystic': 50, 'Mystic Warrior': 25, 'Ranger': 25, 'Rogue': 30, 'Sorcerer': 30, 'Warlock': 30, 'Warrior': 20}},
+            {name: 'Two Weapon Combo I', category: 'Fighting', codes: 'O', prereq: 'Florentine', costs: {'Arcane Warrior': 25, 'Assassin': 30, 'Bard': 25, 'Bounty Hunter': 40, 'Brigand': 25, 'Cleric': 40, 'Druid': null, 'Holy Warrior': 25, 'Mystic': 50, 'Mystic Warrior': 25, 'Ranger': 25, 'Rogue': 30, 'Sorcerer': null, 'Warlock': null, 'Warrior': 20}},
+            {name: 'Two Weapon Combo II', category: 'Fighting', codes: 'O', prereq: '2 Wpn Combo I', costs: {'Arcane Warrior': 25, 'Assassin': 30, 'Bard': 25, 'Bounty Hunter': 40, 'Brigand': 25, 'Cleric': 40, 'Druid': null, 'Holy Warrior': 25, 'Mystic': 50, 'Mystic Warrior': 25, 'Ranger': 25, 'Rogue': 30, 'Sorcerer': null, 'Warlock': null, 'Warrior': 20}},
+            {name: 'Ultimate Enemy', category: 'Fighting', codes: 'O', prereq: '5th Level', costs: {'Arcane Warrior': 50, 'Assassin': null, 'Bard': 50, 'Bounty Hunter': null, 'Brigand': null, 'Cleric': null, 'Druid': null, 'Holy Warrior': 50, 'Mystic': null, 'Mystic Warrior': 50, 'Ranger': 50, 'Rogue': null, 'Sorcerer': null, 'Warlock': null, 'Warrior': 40}},
 
-            {name: 'Backstab', category: 'Stealth', code: '1', costs: {Warrior: null, Ranger: null, Cavalier: null, 'Bounty Hunter': 15, Assassin: 10, Bard: 20, Cleric: null, 'Holy Warrior': null, Healer: null, Druid: null, Monk: null, Sorcerer: null, 'Dark Mage': 15, Witch: null, Paladin: null}},
-            {name: 'Assassinate', category: 'Stealth', code: '1', costs: {Warrior: null, Ranger: null, Cavalier: null, 'Bounty Hunter': 30, Assassin: 20, Bard: null, Cleric: null, 'Holy Warrior': null, Healer: null, Druid: null, Monk: null, Sorcerer: null, 'Dark Mage': 30, Witch: null, Paladin: null}},
-            {name: 'Create Poison', category: 'Stealth', code: 'M', costs: {Warrior: null, Ranger: null, Cavalier: null, 'Bounty Hunter': 15, Assassin: 10, Bard: null, Cleric: null, 'Holy Warrior': null, Healer: null, Druid: null, Monk: null, Sorcerer: null, 'Dark Mage': 15, Witch: null, Paladin: null}},
-            {name: 'Escape Bonds I', category: 'Stealth', code: '1', costs: {Warrior: null, Ranger: 20, Cavalier: null, 'Bounty Hunter': 10, Assassin: 10, Bard: 15, Cleric: null, 'Holy Warrior': null, Healer: null, Druid: null, Monk: 15, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: null}},
-            {name: 'Escape Bonds II', category: 'Stealth', code: '1', costs: {Warrior: null, Ranger: null, Cavalier: null, 'Bounty Hunter': 15, Assassin: 15, Bard: null, Cleric: null, 'Holy Warrior': null, Healer: null, Druid: null, Monk: null, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: null}},
-            {name: 'Lock Picking I', category: 'Stealth', code: '1', costs: {Warrior: null, Ranger: null, Cavalier: null, 'Bounty Hunter': 10, Assassin: 15, Bard: 15, Cleric: null, 'Holy Warrior': null, Healer: null, Druid: null, Monk: null, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: null}},
-            {name: 'Lock Picking II', category: 'Stealth', code: '1', costs: {Warrior: null, Ranger: null, Cavalier: null, 'Bounty Hunter': 15, Assassin: 20, Bard: 20, Cleric: null, 'Holy Warrior': null, Healer: null, Druid: null, Monk: null, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: null}},
-            {name: 'Info Gathering', category: 'Stealth', code: '1', costs: {Warrior: null, Ranger: 15, Cavalier: null, 'Bounty Hunter': 10, Assassin: 10, Bard: 10, Cleric: null, 'Holy Warrior': null, Healer: null, Druid: null, Monk: null, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: null}},
-            {name: 'Appraise', category: 'Stealth', code: '1', costs: {Warrior: null, Ranger: null, Cavalier: null, 'Bounty Hunter': 10, Assassin: 15, Bard: 10, Cleric: null, 'Holy Warrior': null, Healer: null, Druid: null, Monk: null, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: null}},
-            {name: 'Disguise', category: 'Stealth', code: '1', costs: {Warrior: null, Ranger: null, Cavalier: null, 'Bounty Hunter': 15, Assassin: 20, Bard: 15, Cleric: null, 'Holy Warrior': null, Healer: null, Druid: null, Monk: null, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: null}},
-            {name: 'Forgery', category: 'Stealth', code: '1', costs: {Warrior: null, Ranger: null, Cavalier: null, 'Bounty Hunter': 20, Assassin: 25, Bard: 20, Cleric: null, 'Holy Warrior': null, Healer: null, Druid: null, Monk: null, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: null}},
+            // WEAPON SKILLS (p22)
+            {name: 'Bow', category: 'Weapon', codes: 'I O', prereq: 'None', costs: {'Arcane Warrior': 40, 'Assassin': 40, 'Bard': 30, 'Bounty Hunter': null, 'Brigand': 35, 'Cleric': null, 'Druid': null, 'Holy Warrior': null, 'Mystic': null, 'Mystic Warrior': 40, 'Ranger': 20, 'Rogue': 40, 'Sorcerer': null, 'Warlock': null, 'Warrior': 20}},
+            {name: 'One Handed Blunt', category: 'Weapon', codes: 'I O', prereq: 'None', costs: {'Arcane Warrior': 25, 'Assassin': 30, 'Bard': 25, 'Bounty Hunter': 30, 'Brigand': 25, 'Cleric': 30, 'Druid': 30, 'Holy Warrior': 25, 'Mystic': 50, 'Mystic Warrior': 25, 'Ranger': 25, 'Rogue': 30, 'Sorcerer': 50, 'Warlock': 50, 'Warrior': 20}},
+            {name: 'One Handed Edged', category: 'Weapon', codes: 'I O', prereq: 'None', costs: {'Arcane Warrior': 25, 'Assassin': 30, 'Bard': 25, 'Bounty Hunter': 30, 'Brigand': 25, 'Cleric': 30, 'Druid': 50, 'Holy Warrior': 25, 'Mystic': 50, 'Mystic Warrior': 25, 'Ranger': 25, 'Rogue': 30, 'Sorcerer': 50, 'Warlock': 50, 'Warrior': 20}},
+            {name: 'Polearm/Spear', category: 'Weapon', codes: 'I O', prereq: 'None', costs: {'Arcane Warrior': null, 'Assassin': 50, 'Bard': 35, 'Bounty Hunter': null, 'Brigand': 45, 'Cleric': null, 'Druid': null, 'Holy Warrior': 35, 'Mystic': null, 'Mystic Warrior': 40, 'Ranger': 40, 'Rogue': 50, 'Sorcerer': null, 'Warlock': null, 'Warrior': 30}},
+            {name: 'Small Weapon', category: 'Weapon', codes: 'I O', prereq: 'None', costs: {'Arcane Warrior': 15, 'Assassin': 15, 'Bard': 10, 'Bounty Hunter': 15, 'Brigand': 10, 'Cleric': 15, 'Druid': 15, 'Holy Warrior': 15, 'Mystic': 15, 'Mystic Warrior': 15, 'Ranger': 15, 'Rogue': 15, 'Sorcerer': 15, 'Warlock': 15, 'Warrior': 10}},
+            {name: 'Shield Buckler', category: 'Weapon', codes: 'I O', prereq: 'None', costs: {'Arcane Warrior': 20, 'Assassin': 30, 'Bard': 25, 'Bounty Hunter': 35, 'Brigand': 25, 'Cleric': 30, 'Druid': 35, 'Holy Warrior': 20, 'Mystic': 50, 'Mystic Warrior': 20, 'Ranger': 20, 'Rogue': 30, 'Sorcerer': 50, 'Warlock': 50, 'Warrior': 15}},
+            {name: 'Shield Normal', category: 'Weapon', codes: 'I O', prereq: 'None', costs: {'Arcane Warrior': 25, 'Assassin': 40, 'Bard': 25, 'Bounty Hunter': null, 'Brigand': 30, 'Cleric': 30, 'Druid': 40, 'Holy Warrior': 20, 'Mystic': null, 'Mystic Warrior': 20, 'Ranger': 25, 'Rogue': 40, 'Sorcerer': null, 'Warlock': null, 'Warrior': 20}},
+            {name: 'Shield Tower', category: 'Weapon', codes: 'I O', prereq: 'None', costs: {'Arcane Warrior': 40, 'Assassin': null, 'Bard': 25, 'Bounty Hunter': null, 'Brigand': 50, 'Cleric': 40, 'Druid': null, 'Holy Warrior': 20, 'Mystic': null, 'Mystic Warrior': 25, 'Ranger': 30, 'Rogue': null, 'Sorcerer': null, 'Warlock': null, 'Warrior': 20}},
+            {name: 'Staff', category: 'Weapon', codes: 'I O', prereq: 'None', costs: {'Arcane Warrior': 25, 'Assassin': 35, 'Bard': 25, 'Bounty Hunter': 30, 'Brigand': 30, 'Cleric': 30, 'Druid': 30, 'Holy Warrior': 25, 'Mystic': 30, 'Mystic Warrior': 25, 'Ranger': 25, 'Rogue': 35, 'Sorcerer': 30, 'Warlock': 30, 'Warrior': 20}},
+            {name: 'Two Handed Blunt', category: 'Weapon', codes: 'I O', prereq: 'None', costs: {'Arcane Warrior': 50, 'Assassin': 45, 'Bard': 30, 'Bounty Hunter': null, 'Brigand': 35, 'Cleric': 50, 'Druid': null, 'Holy Warrior': 30, 'Mystic': null, 'Mystic Warrior': 50, 'Ranger': 40, 'Rogue': 40, 'Sorcerer': null, 'Warlock': null, 'Warrior': 20}},
+            {name: 'Two Handed Edged', category: 'Weapon', codes: 'I O', prereq: 'None', costs: {'Arcane Warrior': 50, 'Assassin': 45, 'Bard': 30, 'Bounty Hunter': null, 'Brigand': 35, 'Cleric': 50, 'Druid': null, 'Holy Warrior': 30, 'Mystic': null, 'Mystic Warrior': 50, 'Ranger': 40, 'Rogue': 40, 'Sorcerer': null, 'Warlock': null, 'Warrior': 20}},
+            {name: 'Thrown Weapon', category: 'Weapon', codes: 'I M', prereq: 'None', costs: {'Arcane Warrior': 30, 'Assassin': 20, 'Bard': 30, 'Bounty Hunter': 25, 'Brigand': 20, 'Cleric': 35, 'Druid': 35, 'Holy Warrior': null, 'Mystic': 35, 'Mystic Warrior': 30, 'Ranger': 30, 'Rogue': 20, 'Sorcerer': 35, 'Warlock': 35, 'Warrior': 20}},
 
-            {name: 'Read Magic', category: 'Magic', code: '1', costs: {Warrior: null, Ranger: null, Cavalier: null, 'Bounty Hunter': null, Assassin: null, Bard: 30, Cleric: 20, 'Holy Warrior': 30, Healer: 20, Druid: 20, Monk: 30, Sorcerer: 15, 'Dark Mage': 15, Witch: 15, Paladin: 30}},
-            {name: 'Scroll Craft', category: 'Magic', code: '1', costs: {Warrior: null, Ranger: null, Cavalier: null, 'Bounty Hunter': null, Assassin: null, Bard: 35, Cleric: 25, 'Holy Warrior': null, Healer: 25, Druid: 25, Monk: null, Sorcerer: 20, 'Dark Mage': 20, Witch: 20, Paladin: null}},
-            {name: 'Spell Craft', category: 'Magic', code: '1', costs: {Warrior: null, Ranger: null, Cavalier: null, 'Bounty Hunter': null, Assassin: null, Bard: 40, Cleric: 30, 'Holy Warrior': null, Healer: 30, Druid: 30, Monk: null, Sorcerer: 25, 'Dark Mage': 25, Witch: 25, Paladin: null}},
-            {name: 'Brew Potion', category: 'Magic', code: '1', costs: {Warrior: null, Ranger: null, Cavalier: null, 'Bounty Hunter': null, Assassin: null, Bard: null, Cleric: 30, 'Holy Warrior': null, Healer: 25, Druid: 30, Monk: null, Sorcerer: null, 'Dark Mage': 30, Witch: 25, Paladin: null}},
-            {name: 'Astrology', category: 'Magic', code: '1', costs: {Warrior: null, Ranger: null, Cavalier: null, 'Bounty Hunter': null, Assassin: null, Bard: 25, Cleric: 25, 'Holy Warrior': null, Healer: 25, Druid: 25, Monk: null, Sorcerer: 20, 'Dark Mage': 20, Witch: 20, Paladin: null}},
-            {name: 'Familiar', category: 'Magic', code: '1', costs: {Warrior: null, Ranger: null, Cavalier: null, 'Bounty Hunter': null, Assassin: null, Bard: null, Cleric: null, 'Holy Warrior': null, Healer: null, Druid: 25, Monk: null, Sorcerer: 20, 'Dark Mage': 20, Witch: 15, Paladin: null}},
+            // MAGICAL SKILLS (p23)
+            {name: 'Alchemy', category: 'Magical', codes: 'I M', prereq: 'Potion Lore', costs: {'Arcane Warrior': 30, 'Assassin': null, 'Bard': null, 'Bounty Hunter': 30, 'Brigand': null, 'Cleric': 15, 'Druid': 15, 'Holy Warrior': 30, 'Mystic': 15, 'Mystic Warrior': 30, 'Ranger': 30, 'Rogue': null, 'Sorcerer': 15, 'Warlock': 15, 'Warrior': null}},
+            {name: 'Animal Likeness', category: 'Magical', codes: 'O', prereq: '3rd Level', costs: {'Arcane Warrior': null, 'Assassin': null, 'Bard': null, 'Bounty Hunter': null, 'Brigand': null, 'Cleric': null, 'Druid': 40, 'Holy Warrior': null, 'Mystic': null, 'Mystic Warrior': null, 'Ranger': 50, 'Rogue': null, 'Sorcerer': null, 'Warlock': null, 'Warrior': null}},
+            {name: 'Astrology', category: 'Magical', codes: 'I O', prereq: 'None', costs: {'Arcane Warrior': 45, 'Assassin': 50, 'Bard': 50, 'Bounty Hunter': 35, 'Brigand': 50, 'Cleric': 35, 'Druid': 30, 'Holy Warrior': 50, 'Mystic': 25, 'Mystic Warrior': 40, 'Ranger': 45, 'Rogue': 50, 'Sorcerer': 30, 'Warlock': 30, 'Warrior': 50}},
+            {name: 'Banish Undead', category: 'Magical', codes: 'O', prereq: 'None', costs: {'Arcane Warrior': null, 'Assassin': null, 'Bard': null, 'Bounty Hunter': null, 'Brigand': null, 'Cleric': 20, 'Druid': null, 'Holy Warrior': 30, 'Mystic': null, 'Mystic Warrior': null, 'Ranger': null, 'Rogue': null, 'Sorcerer': null, 'Warlock': null, 'Warrior': null}},
+            {name: 'Commune with Nature', category: 'Magical', codes: 'I O', prereq: 'None', costs: {'Arcane Warrior': 50, 'Assassin': null, 'Bard': null, 'Bounty Hunter': 50, 'Brigand': null, 'Cleric': 40, 'Druid': 20, 'Holy Warrior': 50, 'Mystic': 50, 'Mystic Warrior': null, 'Ranger': 20, 'Rogue': null, 'Sorcerer': 40, 'Warlock': 40, 'Warrior': null}},
+            {name: 'Create Holy Water', category: 'Magical', codes: 'I M', prereq: '3rd Level', costs: {'Arcane Warrior': null, 'Assassin': null, 'Bard': null, 'Bounty Hunter': null, 'Brigand': null, 'Cleric': 20, 'Druid': null, 'Holy Warrior': 30, 'Mystic': null, 'Mystic Warrior': null, 'Ranger': null, 'Rogue': null, 'Sorcerer': null, 'Warlock': null, 'Warrior': null}},
+            {name: 'Divine Intervention', category: 'Magical', codes: 'O', prereq: '6th Level', costs: {'Arcane Warrior': null, 'Assassin': null, 'Bard': null, 'Bounty Hunter': null, 'Brigand': null, 'Cleric': 40, 'Druid': null, 'Holy Warrior': 50, 'Mystic': null, 'Mystic Warrior': null, 'Ranger': null, 'Rogue': null, 'Sorcerer': null, 'Warlock': null, 'Warrior': null}},
+            {name: 'Faith', category: 'Magical', codes: 'I O', prereq: 'None', costs: {'Arcane Warrior': 35, 'Assassin': null, 'Bard': null, 'Bounty Hunter': 35, 'Brigand': null, 'Cleric': 10, 'Druid': 10, 'Holy Warrior': 30, 'Mystic': 35, 'Mystic Warrior': 35, 'Ranger': null, 'Rogue': 30, 'Sorcerer': 30, 'Warlock': null, 'Warrior': null}},
+            {name: 'Healing Elixir', category: 'Magical', codes: 'I M', prereq: 'Nature Lore', costs: {'Arcane Warrior': 50, 'Assassin': 50, 'Bard': 50, 'Bounty Hunter': 50, 'Brigand': 50, 'Cleric': 35, 'Druid': 25, 'Holy Warrior': 50, 'Mystic': 50, 'Mystic Warrior': 50, 'Ranger': 30, 'Rogue': 50, 'Sorcerer': 50, 'Warlock': 50, 'Warrior': 50}},
+            {name: 'Meditate', category: 'Magical', codes: 'I O', prereq: 'None', costs: {'Arcane Warrior': null, 'Assassin': null, 'Bard': null, 'Bounty Hunter': 50, 'Brigand': null, 'Cleric': 40, 'Druid': 50, 'Holy Warrior': 50, 'Mystic': 10, 'Mystic Warrior': 10, 'Ranger': null, 'Rogue': null, 'Sorcerer': 40, 'Warlock': 40, 'Warrior': null}},
+            {name: 'Potion Craft', category: 'Magical', codes: 'O', prereq: '6th Level & Alchemy', costs: {'Arcane Warrior': 80, 'Assassin': null, 'Bard': null, 'Bounty Hunter': null, 'Brigand': null, 'Cleric': 70, 'Druid': 60, 'Holy Warrior': 90, 'Mystic': 70, 'Mystic Warrior': 90, 'Ranger': 80, 'Rogue': null, 'Sorcerer': 60, 'Warlock': 60, 'Warrior': null}},
+            {name: 'Potion Lore', category: 'Magical', codes: 'I M', prereq: 'None', costs: {'Arcane Warrior': 30, 'Assassin': 50, 'Bard': 50, 'Bounty Hunter': 30, 'Brigand': 50, 'Cleric': 30, 'Druid': 30, 'Holy Warrior': 30, 'Mystic': 30, 'Mystic Warrior': 30, 'Ranger': 50, 'Rogue': 30, 'Sorcerer': 30, 'Warlock': 30, 'Warrior': 50}},
+            {name: 'Read Magic', category: 'Magical', codes: 'I O', prereq: 'Literacy', costs: {'Arcane Warrior': 10, 'Assassin': 50, 'Bard': 50, 'Bounty Hunter': 40, 'Brigand': 50, 'Cleric': 50, 'Druid': 20, 'Holy Warrior': 50, 'Mystic': 50, 'Mystic Warrior': 50, 'Ranger': 50, 'Rogue': 10, 'Sorcerer': 10, 'Warlock': 50, 'Warrior': 50}},
+            {name: 'Scroll Craft', category: 'Magical', codes: 'I #', prereq: '4th Level & Read Magic', costs: {'Arcane Warrior': 10, 'Assassin': null, 'Bard': null, 'Bounty Hunter': 15, 'Brigand': null, 'Cleric': 15, 'Druid': 15, 'Holy Warrior': 25, 'Mystic': 25, 'Mystic Warrior': 20, 'Ranger': 25, 'Rogue': null, 'Sorcerer': 10, 'Warlock': 10, 'Warrior': null}},
+            {name: 'Spell Craft', category: 'Magical', codes: 'O', prereq: '7th Level & Scroll Craft', costs: {'Arcane Warrior': null, 'Assassin': null, 'Bard': null, 'Bounty Hunter': null, 'Brigand': null, 'Cleric': 50, 'Druid': 50, 'Holy Warrior': null, 'Mystic': 50, 'Mystic Warrior': null, 'Ranger': null, 'Rogue': null, 'Sorcerer': 50, 'Warlock': 50, 'Warrior': null}},
 
-            {name: 'Nature Lore', category: 'Survival', code: '1', costs: {Warrior: 25, Ranger: 15, Cavalier: 25, 'Bounty Hunter': 20, Assassin: 25, Bard: 20, Cleric: 20, 'Holy Warrior': 25, Healer: 20, Druid: 15, Monk: 20, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: 25}},
-            {name: 'Tracking', category: 'Survival', code: '1', costs: {Warrior: 20, Ranger: 10, Cavalier: 20, 'Bounty Hunter': 15, Assassin: 20, Bard: 20, Cleric: 20, 'Holy Warrior': 20, Healer: null, Druid: 15, Monk: 20, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: 20}},
-            {name: 'Healing', category: 'Survival', code: 'M', costs: {Warrior: 20, Ranger: 20, Cavalier: 20, 'Bounty Hunter': 25, Assassin: null, Bard: 20, Cleric: 15, 'Holy Warrior': 20, Healer: 10, Druid: 15, Monk: 20, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: 20}},
-            {name: 'Regenerate', category: 'Survival', code: '1', costs: {Warrior: 25, Ranger: 25, Cavalier: 25, 'Bounty Hunter': 30, Assassin: 35, Bard: 30, Cleric: 25, 'Holy Warrior': 25, Healer: 25, Druid: 25, Monk: 25, Sorcerer: 30, 'Dark Mage': 30, Witch: 30, Paladin: 25}},
-            {name: 'Health', category: 'Survival', code: 'M', costs: {Warrior: 15, Ranger: 15, Cavalier: 15, 'Bounty Hunter': 20, Assassin: 25, Bard: 20, Cleric: 20, 'Holy Warrior': 15, Healer: 20, Druid: 20, Monk: 20, Sorcerer: 25, 'Dark Mage': 25, Witch: 25, Paladin: 15}},
-            {name: 'Battle Rage', category: 'Survival', code: '1', costs: {Warrior: 35, Ranger: 40, Cavalier: 40, 'Bounty Hunter': 45, Assassin: null, Bard: 45, Cleric: 45, 'Holy Warrior': 40, Healer: null, Druid: null, Monk: null, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: 40}},
-            {name: 'Luck', category: 'Survival', code: 'M', costs: {Warrior: 25, Ranger: 25, Cavalier: 25, 'Bounty Hunter': 20, Assassin: 20, Bard: 20, Cleric: 25, 'Holy Warrior': 25, Healer: 25, Druid: 25, Monk: 25, Sorcerer: 20, 'Dark Mage': 20, Witch: 20, Paladin: 25}},
-            {name: 'Resist Fear', category: 'Survival', code: 'M', costs: {Warrior: 15, Ranger: 20, Cavalier: 15, 'Bounty Hunter': 20, Assassin: 25, Bard: 20, Cleric: 15, 'Holy Warrior': 15, Healer: 20, Druid: 20, Monk: 20, Sorcerer: 25, 'Dark Mage': 25, Witch: 25, Paladin: 15}},
-            {name: 'Resist Poison', category: 'Survival', code: 'M', costs: {Warrior: 20, Ranger: 20, Cavalier: 20, 'Bounty Hunter': 15, Assassin: 15, Bard: 20, Cleric: 20, 'Holy Warrior': 20, Healer: 20, Druid: 15, Monk: 20, Sorcerer: 25, 'Dark Mage': 20, Witch: 25, Paladin: 20}},
-            {name: 'Resist Dark Arts', category: 'Survival', code: 'M', costs: {Warrior: 25, Ranger: 25, Cavalier: 25, 'Bounty Hunter': 30, Assassin: 35, Bard: 25, Cleric: 20, 'Holy Warrior': 20, Healer: 20, Druid: 25, Monk: 25, Sorcerer: 30, 'Dark Mage': null, Witch: 30, Paladin: 20}},
-            {name: 'Resist Charm', category: 'Survival', code: 'M', costs: {Warrior: 20, Ranger: 20, Cavalier: 20, 'Bounty Hunter': 20, Assassin: 25, Bard: 15, Cleric: 15, 'Holy Warrior': 15, Healer: 15, Druid: 20, Monk: 15, Sorcerer: 25, 'Dark Mage': 25, Witch: 15, Paladin: 15}},
+            // STEALTH SKILLS (p24)
+            {name: 'Appraise', category: 'Stealth', codes: 'I O', prereq: 'None', costs: {'Arcane Warrior': 40, 'Assassin': 30, 'Bard': 35, 'Bounty Hunter': 25, 'Brigand': 25, 'Cleric': 40, 'Druid': 40, 'Holy Warrior': 40, 'Mystic': 40, 'Mystic Warrior': 40, 'Ranger': 40, 'Rogue': 20, 'Sorcerer': 40, 'Warlock': 40, 'Warrior': 40}},
+            {name: 'Assassinate', category: 'Stealth', codes: 'I #', prereq: '6th Level & Backstab x3', costs: {'Arcane Warrior': null, 'Assassin': 40, 'Bard': 50, 'Bounty Hunter': 50, 'Brigand': 50, 'Cleric': null, 'Druid': null, 'Holy Warrior': null, 'Mystic': null, 'Mystic Warrior': null, 'Ranger': 50, 'Rogue': null, 'Sorcerer': null, 'Warlock': null, 'Warrior': null}},
+            {name: 'Avoid Traps', category: 'Stealth', codes: 'I #', prereq: 'None', costs: {'Arcane Warrior': 50, 'Assassin': 35, 'Bard': 45, 'Bounty Hunter': 40, 'Brigand': 35, 'Cleric': 50, 'Druid': 50, 'Holy Warrior': 50, 'Mystic': 50, 'Mystic Warrior': 50, 'Ranger': 50, 'Rogue': 25, 'Sorcerer': 50, 'Warlock': 50, 'Warrior': 50}},
+            {name: 'Backstab', category: 'Stealth', codes: 'I #', prereq: 'Edged Weapon', costs: {'Arcane Warrior': null, 'Assassin': 10, 'Bard': 30, 'Bounty Hunter': 20, 'Brigand': 20, 'Cleric': null, 'Druid': null, 'Holy Warrior': null, 'Mystic': null, 'Mystic Warrior': null, 'Ranger': null, 'Rogue': 15, 'Sorcerer': null, 'Warlock': null, 'Warrior': null}},
+            {name: 'Create Poison', category: 'Stealth', codes: 'I M', prereq: 'Poison Lore', costs: {'Arcane Warrior': null, 'Assassin': 20, 'Bard': 40, 'Bounty Hunter': 50, 'Brigand': 35, 'Cleric': null, 'Druid': 50, 'Holy Warrior': null, 'Mystic': null, 'Mystic Warrior': null, 'Ranger': 50, 'Rogue': 30, 'Sorcerer': null, 'Warlock': 50, 'Warrior': null}},
+            {name: 'Escape Bonds I', category: 'Stealth', codes: 'I M', prereq: 'None', costs: {'Arcane Warrior': 50, 'Assassin': 30, 'Bard': 40, 'Bounty Hunter': 30, 'Brigand': 30, 'Cleric': 50, 'Druid': 50, 'Holy Warrior': 50, 'Mystic': 50, 'Mystic Warrior': 50, 'Ranger': 50, 'Rogue': 20, 'Sorcerer': 50, 'Warlock': 50, 'Warrior': 50}},
+            {name: 'Escape Bonds II', category: 'Stealth', codes: 'I M', prereq: 'Escape Bonds I', costs: {'Arcane Warrior': null, 'Assassin': 35, 'Bard': 40, 'Bounty Hunter': 35, 'Brigand': 35, 'Cleric': null, 'Druid': null, 'Holy Warrior': null, 'Mystic': null, 'Mystic Warrior': null, 'Ranger': null, 'Rogue': 30, 'Sorcerer': null, 'Warlock': null, 'Warrior': 50}},
+            {name: 'Escape Bonds III', category: 'Stealth', codes: 'I M', prereq: 'Escape Bonds II', costs: {'Arcane Warrior': null, 'Assassin': 40, 'Bard': 40, 'Bounty Hunter': 40, 'Brigand': 40, 'Cleric': null, 'Druid': null, 'Holy Warrior': null, 'Mystic': null, 'Mystic Warrior': null, 'Ranger': null, 'Rogue': 40, 'Sorcerer': null, 'Warlock': null, 'Warrior': null}},
+            {name: 'Evade', category: 'Stealth', codes: 'I #', prereq: '7th Level', costs: {'Arcane Warrior': null, 'Assassin': null, 'Bard': null, 'Bounty Hunter': null, 'Brigand': 50, 'Cleric': null, 'Druid': null, 'Holy Warrior': null, 'Mystic': null, 'Mystic Warrior': null, 'Ranger': null, 'Rogue': 45, 'Sorcerer': null, 'Warlock': null, 'Warrior': null}},
+            {name: 'Information Gathering', category: 'Stealth', codes: 'I O', prereq: 'Rumors', costs: {'Arcane Warrior': 40, 'Assassin': 25, 'Bard': 20, 'Bounty Hunter': 30, 'Brigand': 30, 'Cleric': 40, 'Druid': 40, 'Holy Warrior': 40, 'Mystic': 40, 'Mystic Warrior': 40, 'Ranger': 40, 'Rogue': 25, 'Sorcerer': 40, 'Warlock': 40, 'Warrior': 40}},
+            {name: 'Lock Picking I', category: 'Stealth', codes: 'I O', prereq: 'None', costs: {'Arcane Warrior': 50, 'Assassin': 25, 'Bard': 45, 'Bounty Hunter': 45, 'Brigand': 30, 'Cleric': null, 'Druid': null, 'Holy Warrior': null, 'Mystic': 50, 'Mystic Warrior': null, 'Ranger': null, 'Rogue': 20, 'Sorcerer': null, 'Warlock': null, 'Warrior': 50}},
+            {name: 'Lock Picking II', category: 'Stealth', codes: 'I O', prereq: '3rd Level & Lock Picking I', costs: {'Arcane Warrior': null, 'Assassin': 50, 'Bard': 90, 'Bounty Hunter': 90, 'Brigand': 60, 'Cleric': null, 'Druid': null, 'Holy Warrior': null, 'Mystic': null, 'Mystic Warrior': null, 'Ranger': null, 'Rogue': 40, 'Sorcerer': null, 'Warlock': null, 'Warrior': null}},
+            {name: 'Lock Picking III', category: 'Stealth', codes: 'I O', prereq: '5th Level & Lock Picking II', costs: {'Arcane Warrior': null, 'Assassin': 75, 'Bard': 135, 'Bounty Hunter': 135, 'Brigand': 90, 'Cleric': null, 'Druid': null, 'Holy Warrior': null, 'Mystic': null, 'Mystic Warrior': null, 'Ranger': null, 'Rogue': 60, 'Sorcerer': null, 'Warlock': null, 'Warrior': null}},
+            {name: 'Magic Lock Picking', category: 'Stealth', codes: 'I O', prereq: '7th Level & Lock Picking III', costs: {'Arcane Warrior': null, 'Assassin': 100, 'Bard': null, 'Bounty Hunter': null, 'Brigand': 135, 'Cleric': null, 'Druid': null, 'Holy Warrior': null, 'Mystic': null, 'Mystic Warrior': null, 'Ranger': null, 'Rogue': 80, 'Sorcerer': null, 'Warlock': null, 'Warrior': null}},
+            {name: 'Poison Lore', category: 'Stealth', codes: 'I #', prereq: 'None', costs: {'Arcane Warrior': 50, 'Assassin': 10, 'Bard': 40, 'Bounty Hunter': 30, 'Brigand': 30, 'Cleric': 50, 'Druid': 50, 'Holy Warrior': 50, 'Mystic': 50, 'Mystic Warrior': 50, 'Ranger': 50, 'Rogue': 20, 'Sorcerer': 50, 'Warlock': 25, 'Warrior': 50}},
+            {name: 'Set Traps', category: 'Stealth', codes: 'I #', prereq: 'None', costs: {'Arcane Warrior': null, 'Assassin': 25, 'Bard': 35, 'Bounty Hunter': 30, 'Brigand': 25, 'Cleric': null, 'Druid': null, 'Holy Warrior': null, 'Mystic': null, 'Mystic Warrior': null, 'Ranger': null, 'Rogue': 15, 'Sorcerer': null, 'Warlock': null, 'Warrior': null}},
+            {name: 'Specialty Poison', category: 'Stealth', codes: 'I O', prereq: 'Create Poison x3', costs: {'Arcane Warrior': null, 'Assassin': 50, 'Bard': null, 'Bounty Hunter': null, 'Brigand': null, 'Cleric': null, 'Druid': null, 'Holy Warrior': null, 'Mystic': null, 'Mystic Warrior': null, 'Ranger': null, 'Rogue': null, 'Sorcerer': null, 'Warlock': null, 'Warrior': null}},
+            {name: 'Waylay', category: 'Stealth', codes: 'I O', prereq: 'None', costs: {'Arcane Warrior': 50, 'Assassin': 25, 'Bard': 40, 'Bounty Hunter': 35, 'Brigand': 30, 'Cleric': 50, 'Druid': 50, 'Holy Warrior': 40, 'Mystic': 50, 'Mystic Warrior': 50, 'Ranger': 40, 'Rogue': 20, 'Sorcerer': 50, 'Warlock': 50, 'Warrior': 40}},
 
-            {name: 'Armorsmith Leather', category: 'Craft', code: 'M', costs: {Warrior: 20, Ranger: 25, Cavalier: 25, 'Bounty Hunter': 20, Assassin: 20, Bard: 25, Cleric: 25, 'Holy Warrior': 25, Healer: 25, Druid: 25, Monk: 25, Sorcerer: null, 'Dark Mage': 25, Witch: null, Paladin: 25}},
-            {name: 'Armorsmith Chain', category: 'Craft', code: 'M', costs: {Warrior: 20, Ranger: 25, Cavalier: 25, 'Bounty Hunter': null, Assassin: null, Bard: 25, Cleric: 25, 'Holy Warrior': 25, Healer: null, Druid: null, Monk: null, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: 25}},
-            {name: 'Armorsmith Plate', category: 'Craft', code: 'M', costs: {Warrior: 25, Ranger: null, Cavalier: 30, 'Bounty Hunter': null, Assassin: null, Bard: null, Cleric: null, 'Holy Warrior': 30, Healer: null, Druid: null, Monk: null, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: 30}},
-            {name: 'Armorsmith Metal', category: 'Craft', code: 'M', costs: {Warrior: 25, Ranger: 30, Cavalier: 30, 'Bounty Hunter': null, Assassin: null, Bard: 30, Cleric: 30, 'Holy Warrior': 30, Healer: null, Druid: null, Monk: null, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: 30}},
-            {name: 'Weaponsmith', category: 'Craft', code: 'M', costs: {Warrior: 20, Ranger: 25, Cavalier: 25, 'Bounty Hunter': 25, Assassin: 25, Bard: 25, Cleric: 25, 'Holy Warrior': 25, Healer: null, Druid: null, Monk: null, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: 25}},
-            {name: 'Craftsman', category: 'Craft', code: '1', costs: {Warrior: 30, Ranger: 30, Cavalier: 30, 'Bounty Hunter': 25, Assassin: 25, Bard: 25, Cleric: 30, 'Holy Warrior': 30, Healer: 30, Druid: 30, Monk: 30, Sorcerer: 30, 'Dark Mage': 30, Witch: 30, Paladin: 30}},
-            {name: 'Theology', category: 'Craft', code: '1', costs: {Warrior: null, Ranger: null, Cavalier: null, 'Bounty Hunter': null, Assassin: null, Bard: null, Cleric: 15, 'Holy Warrior': 20, Healer: 20, Druid: null, Monk: null, Sorcerer: null, 'Dark Mage': null, Witch: null, Paladin: 20}}
+            // GENERAL SKILLS (p25)
+            {name: 'Armorsmith Leather', category: 'General', codes: 'I #', prereq: 'None', costs: {'Arcane Warrior': 35, 'Assassin': 40, 'Bard': 30, 'Bounty Hunter': 45, 'Brigand': 35, 'Cleric': 40, 'Druid': 35, 'Holy Warrior': 25, 'Mystic': 50, 'Mystic Warrior': 35, 'Ranger': 20, 'Rogue': 40, 'Sorcerer': 50, 'Warlock': 50, 'Warrior': 20}},
+            {name: 'Armorsmith Metal', category: 'General', codes: 'I #', prereq: 'None', costs: {'Arcane Warrior': 40, 'Assassin': 45, 'Bard': 40, 'Bounty Hunter': 50, 'Brigand': 45, 'Cleric': 40, 'Druid': 50, 'Holy Warrior': 25, 'Mystic': 50, 'Mystic Warrior': 40, 'Ranger': 40, 'Rogue': 45, 'Sorcerer': 50, 'Warlock': 50, 'Warrior': 20}},
+            {name: 'Craftsman', category: 'General', codes: 'I #', prereq: 'None', costs: {'Arcane Warrior': 30, 'Assassin': 25, 'Bard': 30, 'Bounty Hunter': 20, 'Brigand': 30, 'Cleric': 30, 'Druid': 30, 'Holy Warrior': 30, 'Mystic': 30, 'Mystic Warrior': 30, 'Ranger': 30, 'Rogue': 25, 'Sorcerer': 30, 'Warlock': 30, 'Warrior': 30}},
+            {name: 'Health', category: 'General', codes: 'O', prereq: 'None', costs: {'Arcane Warrior': 40, 'Assassin': 40, 'Bard': 40, 'Bounty Hunter': 40, 'Brigand': 40, 'Cleric': 40, 'Druid': 40, 'Holy Warrior': 40, 'Mystic': 40, 'Mystic Warrior': 40, 'Ranger': 40, 'Rogue': 40, 'Sorcerer': 40, 'Warlock': 40, 'Warrior': 40}},
+            {name: 'Instruct', category: 'General', codes: 'M', prereq: 'None', costs: {'Arcane Warrior': 10, 'Assassin': 10, 'Bard': 10, 'Bounty Hunter': 10, 'Brigand': 10, 'Cleric': 10, 'Druid': 10, 'Holy Warrior': 10, 'Mystic': 10, 'Mystic Warrior': 10, 'Ranger': 10, 'Rogue': 10, 'Sorcerer': 10, 'Warlock': 10, 'Warrior': 10}},
+            {name: 'Legend Lore', category: 'General', codes: 'O', prereq: 'None', costs: {'Arcane Warrior': 35, 'Assassin': 40, 'Bard': 40, 'Bounty Hunter': 10, 'Brigand': 50, 'Cleric': 40, 'Druid': 40, 'Holy Warrior': 30, 'Mystic': 40, 'Mystic Warrior': 40, 'Ranger': 30, 'Rogue': 40, 'Sorcerer': 40, 'Warlock': 40, 'Warrior': 50}},
+            {name: 'Literacy', category: 'General', codes: 'I M', prereq: 'None', costs: {'Arcane Warrior': 10, 'Assassin': 30, 'Bard': 30, 'Bounty Hunter': 10, 'Brigand': 30, 'Cleric': 20, 'Druid': 35, 'Holy Warrior': 20, 'Mystic': 30, 'Mystic Warrior': 30, 'Ranger': 35, 'Rogue': 30, 'Sorcerer': 10, 'Warlock': 10, 'Warrior': 30}},
+            {name: 'Luck', category: 'General', codes: 'O', prereq: 'None', costs: {'Arcane Warrior': 35, 'Assassin': 35, 'Bard': 35, 'Bounty Hunter': 35, 'Brigand': 35, 'Cleric': 25, 'Druid': 35, 'Holy Warrior': 25, 'Mystic': 35, 'Mystic Warrior': 35, 'Ranger': 35, 'Rogue': 35, 'Sorcerer': 35, 'Warlock': 35, 'Warrior': 35}},
+            {name: 'Nature Lore', category: 'General', codes: 'I O', prereq: 'None', costs: {'Arcane Warrior': 40, 'Assassin': 50, 'Bard': 40, 'Bounty Hunter': 25, 'Brigand': 40, 'Cleric': 25, 'Druid': 15, 'Holy Warrior': 40, 'Mystic': 40, 'Mystic Warrior': 40, 'Ranger': 20, 'Rogue': 50, 'Sorcerer': 30, 'Warlock': 20, 'Warrior': 40}},
+            {name: 'Regenerate', category: 'General', codes: '#', prereq: 'None', costs: {'Arcane Warrior': 35, 'Assassin': 40, 'Bard': 30, 'Bounty Hunter': 40, 'Brigand': 35, 'Cleric': 40, 'Druid': 40, 'Holy Warrior': 35, 'Mystic': 40, 'Mystic Warrior': 35, 'Ranger': 35, 'Rogue': 40, 'Sorcerer': 40, 'Warlock': 40, 'Warrior': 25}},
+            {name: 'Resist', category: 'General', codes: '#', prereq: 'None', costs: {'Arcane Warrior': 40, 'Assassin': 40, 'Bard': 40, 'Bounty Hunter': 40, 'Brigand': 40, 'Cleric': 40, 'Druid': 40, 'Holy Warrior': 40, 'Mystic': 40, 'Mystic Warrior': 40, 'Ranger': 40, 'Rogue': 40, 'Sorcerer': 40, 'Warlock': 40, 'Warrior': 40}},
+            {name: 'Rumors', category: 'General', codes: 'I M', prereq: 'None', costs: {'Arcane Warrior': 20, 'Assassin': 15, 'Bard': 10, 'Bounty Hunter': 10, 'Brigand': 20, 'Cleric': 25, 'Druid': 30, 'Holy Warrior': 20, 'Mystic': 25, 'Mystic Warrior': 20, 'Ranger': 25, 'Rogue': 15, 'Sorcerer': 25, 'Warlock': 25, 'Warrior': 20}},
+            {name: 'Tend Wounds', category: 'General', codes: 'I O', prereq: 'None', costs: {'Arcane Warrior': 40, 'Assassin': 50, 'Bard': 30, 'Bounty Hunter': 40, 'Brigand': 40, 'Cleric': 20, 'Druid': 25, 'Holy Warrior': 25, 'Mystic': 40, 'Mystic Warrior': 40, 'Ranger': 20, 'Rogue': 50, 'Sorcerer': 40, 'Warlock': 40, 'Warrior': 30}},
+            {name: 'Theology', category: 'General', codes: 'I O', prereq: 'None', costs: {'Arcane Warrior': 35, 'Assassin': 40, 'Bard': 40, 'Bounty Hunter': 20, 'Brigand': 40, 'Cleric': 10, 'Druid': 30, 'Holy Warrior': 20, 'Mystic': 30, 'Mystic Warrior': 35, 'Ranger': 35, 'Rogue': 40, 'Sorcerer': 30, 'Warlock': 30, 'Warrior': 35}},
+            {name: 'Weapon Craft Metal', category: 'General', codes: 'I #', prereq: 'None', costs: {'Arcane Warrior': 30, 'Assassin': 50, 'Bard': 30, 'Bounty Hunter': 50, 'Brigand': 40, 'Cleric': 40, 'Druid': 50, 'Holy Warrior': 20, 'Mystic': 50, 'Mystic Warrior': 30, 'Ranger': 50, 'Rogue': 50, 'Sorcerer': 50, 'Warlock': 50, 'Warrior': 20}},
+            {name: 'Weapon Craft Wood', category: 'General', codes: 'I #', prereq: 'None', costs: {'Arcane Warrior': 30, 'Assassin': 50, 'Bard': 30, 'Bounty Hunter': 50, 'Brigand': 40, 'Cleric': 40, 'Druid': 50, 'Holy Warrior': 20, 'Mystic': 50, 'Mystic Warrior': 30, 'Ranger': 15, 'Rogue': 50, 'Sorcerer': 50, 'Warlock': 50, 'Warrior': 20}},
+            {name: 'Wear Armor', category: 'General', codes: 'O', prereq: 'None', costs: {'Arcane Warrior': 30, 'Assassin': 30, 'Bard': 25, 'Bounty Hunter': 30, 'Brigand': 25, 'Cleric': 30, 'Druid': 30, 'Holy Warrior': null, 'Mystic': 35, 'Mystic Warrior': 30, 'Ranger': 25, 'Rogue': 30, 'Sorcerer': 35, 'Warlock': 35, 'Warrior': null}}
         ];
 
         const SPELLS = {
-            Divine: {
-                1: ['Cure Light Wounds', 'Detect Undead', 'Bless'],
-                2: ['Cure Serious Wounds', 'Speak with Dead', 'Sunray'],
-                3: ['Cure Critical Wounds', 'Banish Undead', 'Remove Curse'],
-                4: ['Raise Dead', 'Heal', 'Dream Sending'],
-                5: ['Resurrection', 'Divine Intervention', 'Nightmare', 'Rage'],
-                6: ['Mass Heal', 'Holy Word', 'Enthrall', 'Silence'],
-                7: ['Divine Shield', 'Sanctuary'],
-                8: ['Avatar', 'Word of Recall'],
-                9: ['Miracle']
-            },
-            Elementalism: {
-                1: ['Spark', 'Gust', 'Stone Skin'],
-                2: ['Fireball', 'Lightning Bolt', 'Earthquake'],
-                3: ['Wall of Fire', 'Call Lightning', 'Commune with Nature'],
-                4: ['Animal Likeness', 'Ultimate Enemy'],
-                5: ['Elemental Summoning', 'Firestorm'],
-                6: ['Control Weather', 'Tsunami'],
-                7: ['Earthquake', 'Volcanic Eruption'],
-                8: ['Elemental Form'],
-                9: ['Cataclysm']
-            },
-            Sorcery: {
-                1: ['Magic Missile', 'Shield', 'Read Magic'],
-                2: ['Invisibility', 'Detect Magic', 'Levitate'],
-                3: ['Dispel Magic', 'Haste', 'Slow'],
-                4: ['Polymorph', 'Dimension Door'],
-                5: ['Teleport', 'Permanency'],
-                6: ['Disintegrate', 'Globe of Invulnerability'],
-                7: ['Power Word Stun', 'Spell Turning'],
-                8: ['Time Stop', 'Gate'],
-                9: ['Wish']
+            'Arcane Arts': {
+                1: ['Detect Magic', 'Light', 'Magic Arrow', 'Protect', 'Trip'],
+                2: ['Awaken', 'Detect Control', 'Divert', 'Drop', 'Identify Spirit', 'Magic Spear', 'P.W.- Agony'],
+                3: ['Armor', 'Break Control', 'Snare', 'Spin', 'Stun'],
+                4: ['Arcane Blast', 'Communicate', 'Enchant Weapon', 'Forget', 'Shun'],
+                5: ['Arcane Bonds', 'Magic Lock/Key', 'Raise Power I', 'Release', 'Silence'],
+                6: ['Dispel Magic', 'Prot. F/Missiles', 'Resist Magic', 'Sleep'],
+                7: ['Bestow Magic', 'Enthrall', 'Glyphs', 'Paralyze', 'Spell Immunity'],
+                8: ['Raise Power II', 'Spell Turning', 'Warding', 'Wrath'],
+                9: ['Circle of Power', 'Imprisonment', 'Mass Sleep', 'P.W.- Death']
             },
             'Dark Arts': {
-                1: ['Cause Light Wounds', 'Fear', 'Detect Life'],
-                2: ['Cause Serious Wounds', 'Darkness', 'Animate Dead'],
-                3: ['Cause Critical Wounds', 'Vampiric Touch', 'Poison'],
-                4: ['Death', 'Call Dead', 'Identify Spirit'],
-                5: ['Finger of Death', 'Plague'],
-                6: ['Circle of Death', 'Soul Trap'],
-                7: ['Power Word Kill', 'Undead Army'],
-                8: ['Lich Form', 'Death Field'],
-                9: ['Apocalypse']
+                1: ['Agony', 'Cause Wounds I', 'Light', 'Protect', 'Sneeze'],
+                2: ['Detect Magic', 'Divert', 'Drop', 'Identify Spirit', 'Raise Power I', 'Snare'],
+                3: ['Cause Wounds II', 'Control Undead', 'Fear', 'Prot. F/Undead', 'Speak W/Dead'],
+                4: ['Break Limb', 'Call Dead', 'Command', 'Repel Undead', 'Resist Magic'],
+                5: ['Cause Wounds III', 'Prot. F/Healing', 'Raise Power II', 'Reduce Power', 'Silence'],
+                6: ['Bestow Wizardry/UD', 'Enthrall', 'Poison', 'Prot./Banishment', 'Remove Curse'],
+                7: ['Animate Dead', 'Cause Disease', 'Mask of Death', 'Vampiric Drain'],
+                8: ['Dispel Magic', 'Enslave Undead', 'Harm', 'Imprisonment', 'Nightmare'],
+                9: ['Curse', 'Death', 'Mass Agony', 'Mass Sleep']
             },
-            Enchantment: {
-                1: ['Charm', 'Sleep', 'Light'],
-                2: ['Hold Person', 'Suggestion', 'Detect Lie'],
-                3: ['Confusion', 'Phantasmal Force'],
-                4: ['Dominate', 'Mass Charm'],
-                5: ['Feeblemind', 'Geas'],
-                6: ['Mass Hold', 'Programmed Illusion'],
-                7: ['Power Word Blind', 'Permanent Illusion'],
-                8: ['Mind Blank', 'Mass Suggestion'],
-                9: ['Absolute Command']
+            Divine: {
+                1: ['Blessing', 'Detect Magic', 'Detect Poison', 'Disarm', 'Light'],
+                2: ['Awaken', 'Heal Wounds I', 'Identify Spirit', 'Protect', 'Snare'],
+                3: ['Call Dead', 'Diagnose', 'Fearlessness', 'Heal Wounds II', 'Shun'],
+                4: ['Calm', 'Life Enhancement', 'Preserve Spirit', 'Purify Blood', 'Speak W/Dead', 'Strength'],
+                5: ['Cure Disease', 'Heal Wounds III', 'Purify Food/Drink', 'Raise Power I', 'Silence'],
+                6: ['Command', 'Destroy Undead', 'Sleep', 'Spell Immunity'],
+                7: ['Dispel Magic', 'Prot F/Undead', 'Remove Curse', 'Wrath'],
+                8: ['Bestow Magic', 'Heal Wounds IV', 'Imprisonment', 'Paralyze'],
+                9: ['Circle of Power', 'Death', 'Mass Sleep', 'Raise Dead']
+            },
+            Elementalism: {
+                1: ['Detect Poison', 'Light', 'Magic Arrow', 'Sneeze', 'Trip'],
+                2: ['Detect Magic', 'Disarm', 'Protect', 'Snare', 'Sunray'],
+                3: ['Communicate', 'Earthquake', 'Flame Arrow', 'Spin'],
+                4: ['Gust of Wind', 'Ice Arrow', 'Resist Element', 'Stone Skin'],
+                5: ['Elemental Weapon', 'Freeze Limb', 'Purify Blood', 'Purify Food/Drink', 'Silence'],
+                6: ['Hail Storm', 'Lightning Bolt', 'Prot. F/Missiles', 'Raise Power I', 'Strength'],
+                7: ['Freeze Person', 'Glyphs', 'Heat Metal', 'Sleep', 'Spell Immunity'],
+                8: ['Hurricane', 'Raise Power II', 'Scorch', 'Spell Turning'],
+                9: ['Curse', 'Imprisonment', 'Petrification']
+            },
+            Mysticism: {
+                1: ['Awaken', 'Mystic Bolt', 'Protect', 'Sneeze', 'Trip'],
+                2: ['Agony', 'Detect Control', 'Divert', 'Itching'],
+                3: ['Break Control', 'Communicate', 'Fear', 'Raise Power I', 'Self Healing'],
+                4: ['Calm', 'Fearlessness', 'Forget', 'Mind Blast', 'Shun'],
+                5: ['Dream Sending', 'Enthrall', 'Nightmare', 'Silence', 'Sleep'],
+                6: ['Command', 'Mind Mask', 'Rage', 'Raise Power II', 'Vertigo'],
+                7: ['Amnesia', 'Feeblemind', 'Freedom', 'Weakness'],
+                8: ['Mask of Death', 'Mind Morph', 'Mind Slave', 'Paralyze'],
+                9: ['Channel Magic', 'Iron Will', 'Mass Fear', 'Mind Over Body']
             }
         };
 
         const SPELL_ADJACENCY = {
-            Divine: {adjacent: ['Elementalism', 'Enchantment'], opposing: ['Dark Arts', 'Sorcery']},
-            Elementalism: {adjacent: ['Divine', 'Sorcery'], opposing: ['Dark Arts', 'Enchantment']},
-            Sorcery: {adjacent: ['Elementalism', 'Dark Arts'], opposing: ['Divine', 'Enchantment']},
-            'Dark Arts': {adjacent: ['Sorcery', 'Enchantment'], opposing: ['Divine', 'Elementalism']},
-            Enchantment: {adjacent: ['Dark Arts', 'Divine'], opposing: ['Elementalism', 'Sorcery']}
+            'Arcane Arts': {adjacent: ['Mysticism', 'Elementalism'], opposing: ['Dark Arts']},
+            'Dark Arts': {adjacent: ['Mysticism', 'Elementalism'], opposing: ['Arcane Arts']},
+            Elementalism: {adjacent: ['Arcane Arts', 'Dark Arts'], opposing: ['Mysticism']},
+            Mysticism: {adjacent: ['Arcane Arts', 'Dark Arts'], opposing: ['Elementalism']},
+            Divine: {adjacent: [], opposing: []}
         };
 
         const DEITIES = {
@@ -1003,9 +1044,9 @@
             },
             Nivlac: {
                 title: "The Trickster",
-                clericBenefits: ['Luck 15pts', 'Create Poison, Escape Bonds II, Lock Picking I, Lock Picking II at Bounty Hunter cost'],
-                clericLimitations: ['Leather only', 'No shields', 'DI cannot ask deity a question'],
-                holyWarriorBenefits: ['Craftsman 40pts (override base)']
+                clericBenefits: ['May purchase Luck for 15pts', 'May purchase Create Poison, Escape Bonds II, Lock Picking I, Lock Picking II at Bounty Hunter cost'],
+                clericLimitations: ['Can wear only leather armor', 'Cannot use shields', 'DI cannot ask deity a question', 'Craftsman costs 40pts'],
+                holyWarriorBenefits: ['Following code of Chivalry is the holy warrior\'s choice', 'Craftsman costs 40pts']
             },
             Peryn: {
                 title: "The Hunter",
@@ -1040,17 +1081,17 @@
         };
 
         const RULES = [
-            {title: 'Level Advancement', text: 'Levels are calculated based on SP spent. Level 1 is 0-89 SP, Level 2 is 90-209 SP, and so on. See the level thresholds in the stat bar.'},
-            {title: 'Life Points (LP)', text: 'Each class grants a base LP per level. Race modifiers can increase or decrease this. Total LP = Class LP/Level × Character Level + Racial Modifiers.'},
+            {title: 'Level Advancement', text: 'Levels are based on total SP spent. Level 1 requires 60 SP, Level 2 requires 110 SP, and so on up to Level 12 at 3435 SP. New characters start with 90 SP (Character Points).'},
+            {title: 'Life Points (LP)', text: 'All characters start at 2 LP (Warriors start at 3). At Level 2, all classes gain +1 LP. After that, Fighting classes (Arcane Warrior, Bounty Hunter, Holy Warrior, Mystic Warrior, Ranger, Warrior) gain 1 LP every level. All other classes gain 1 LP every other level. Deaths reduce LP by 1.'},
             {title: 'Skill Points (SP)', text: 'You start with a pool of SP to purchase skills and spells. Each skill has a cost based on your class and race. Once spent, SP cannot be recovered—plan carefully!'},
             {title: 'Skill Codes', text: 'I = Innate/Free (included with class), O = Once per event (can be used only once per event), M = Multiple purchase allowed (can buy multiple times, capped at 5 unless specified), 1 = Can buy once.'},
             {title: 'Racial Modifiers', text: 'Races apply cost modifiers to specific skills. For example, Elves get Bow at ½ cost. These modifiers are applied automatically when calculating your final skill costs.'},
             {title: 'Deity Cost Modifiers', text: 'When your class is Cleric or Holy Warrior, and you have selected a deity, special cost overrides apply to certain skills. These are applied automatically in the skill list.'},
             {title: 'Tower Rule (Spells)', text: 'For each spell school, you must have at least 2 spells at level N before you can purchase any spell at level N+1. Level 1 has no prerequisite. The Spells tab enforces this rule and grays out unavailable levels.'},
-            {title: 'Spell Schools', text: 'There are 5 spell schools: Divine, Elementalism, Sorcery, Dark Arts, and Enchantment. Each school has 9 levels of spells. Schools have adjacent and opposing relationships that affect casting costs.'},
-            {title: 'Spell Costs (Straight Casters)', text: 'Straight casters (Cleric, Healer, Druid, Sorcerer, Dark Mage, Witch) pay: 10 SP per level in their primary school, 25 SP per level in adjacent schools, 50 SP per level in opposing schools.'},
-            {title: 'Spell Costs (Hybrid Casters)', text: 'Hybrid casters (Bard, Holy Warrior, Monk, Paladin) pay: 15 SP per level in their primary school, 35 SP per level in adjacent schools. Hybrid casters CANNOT learn opposing school spells.'},
-            {title: 'Non-Casters', text: 'Non-casters (Warrior, Ranger, Cavalier, Bounty Hunter, Assassin) cannot learn spells unless granted through a deity or racial ability.'},
+            {title: 'Spell Schools', text: 'There are 5 spell schools: Divine, Arcane Arts, Dark Arts, Elementalism, and Mysticism. Each school has 9 levels of spells. Schools have adjacent and opposing relationships that affect casting costs.'},
+            {title: 'Spell Costs (Straight Casters)', text: 'Straight casters (Cleric, Druid, Mystic, Sorcerer, Warlock) pay: 10 SP per level in their primary school, 25 SP per level in adjacent schools, 50 SP per level in opposing schools. Straight casters cannot buy Divine unless they are Clerics.'},
+            {title: 'Spell Costs (Hybrid Casters)', text: 'Hybrid casters (Arcane Warrior, Bard, Mystic Warrior, Ranger, Holy Warrior) pay: 15 SP per level in their primary school, 35 SP per level in any other school. Hybrid casters CANNOT learn opposing school spells. Holy Warriors may buy Divine at 35 SP/level.'},
+            {title: 'Non-Casters', text: 'Non-casters (Warrior, Bounty Hunter, Assassin, Rogue, Brigand) cannot learn spells unless granted through a deity or racial ability.'},
             {title: 'Armor Restrictions', text: 'Each class has a permitted armor type (None, Leather, Studded, Chain, Plate). Races may further restrict this (e.g., Elves cannot use iron/steel, Wolven cannot wear metal).'},
             {title: 'Resistance Levels', text: 'Resistances to Fear, Poison, Charm, Dark Arts, etc. can be purchased as skills and advanced through multiple purchases. Higher levels provide greater protection.'},
             {title: 'Wild Card Points', text: 'Earned at 20 WC per hour of NPC duty. Can be used to purchase: spells (at normal cost), skills (at normal cost), goods (varies), or attunement (50 WC).'},
@@ -1068,6 +1109,7 @@
             charName: '',
             playerName: '',
             spTotal: 90,
+            deaths: 0,
             skills: {},      // {skillName: count}
             spells: {},      // {school: {level: count}}
             customCosts: {}  // {skillName: costPer} for imported skills not in SKILLS database
@@ -1325,20 +1367,34 @@
             for (let i = LEVEL_THRESHOLDS.length - 1; i >= 0; i--) {
                 if (spSpent >= LEVEL_THRESHOLDS[i]) return i + 1;
             }
-            return 1;
+            return 0; // Below 60 SP = not yet Level 1
         }
 
         function calculateLP() {
+            // Rulebook p48: All start at 2 LP (Warrior 3 LP).
+            // At Level 2, ALL classes gain +1 LP.
+            // After that: Fighting classes gain 1 LP every level; all others gain 1 LP every other level.
             if (!state.class) return 0;
             const classInfo = CLASSES[state.class];
             const level = calculateLevel();
-            let lpPerLevel = classInfo.lpPerLevel;
+            if (level <= 0) return classInfo.startLP;
+            if (level === 1) return classInfo.startLP;
 
-            if (state.race === 'Hobbet') lpPerLevel -= 1;
-            if (state.race === 'Orgreth') lpPerLevel += 2;
-            if (state.race === 'Half-Ogre') lpPerLevel += 3;
+            // Everyone gets +1 at Level 2
+            let lp = classInfo.startLP + 1;
 
-            return lpPerLevel * level;
+            if (classInfo.lpGroup === 'every') {
+                // Fighting classes: +1 LP at every level from 3 onward
+                lp += Math.max(0, level - 2);
+            } else {
+                // Every other level from 3 onward: gain at 4, 6, 8, 10, 12...
+                lp += Math.floor(Math.max(0, level - 2) / 2);
+            }
+
+            // Subtract deaths if tracked
+            lp -= (state.deaths || 0);
+
+            return Math.max(0, lp);
         }
 
         function getTotalSPSpent() {
@@ -1487,7 +1543,7 @@
                     <span class="card-badge">${classData.type}</span>
                     <div class="card-details">
                         <div><strong>Armor:</strong> ${classData.armor}</div>
-                        <div><strong>LP/Level:</strong> ${classData.lpPerLevel}</div>
+                        <div><strong>LP Gain:</strong> ${classData.lpGroup === 'every' ? 'Every Level' : 'Every Other Level'}</div>
                         <div><strong>Casting:</strong> ${spellInfo}</div>
                     </div>
                 `;
@@ -1506,8 +1562,8 @@
         }
 
         function getRestrictedClasses(raceName) {
-            if (raceName === 'Half-Ogre') {
-                return ['Bard', 'Cleric', 'Holy Warrior', 'Healer', 'Druid', 'Monk', 'Sorcerer', 'Dark Mage', 'Witch', 'Paladin'];
+            if (raceName === 'Half Orgreth') {
+                return ['Bard', 'Cleric', 'Holy Warrior', 'Druid', 'Mystic', 'Sorcerer', 'Warlock'];
             }
             return [];
         }
@@ -1732,7 +1788,7 @@
                 </div>
                 <div class="char-field">
                     <label>Life Points</label>
-                    <value>${lp}</value>
+                    <value>${lp}${state.deaths ? ` (${state.deaths} death${state.deaths > 1 ? 's' : ''})` : ''}</value>
                 </div>
                 <div class="char-field">
                     <label>Skill Points</label>
@@ -1837,7 +1893,7 @@
                 html += `
                     <ul class="sheet-list">
                         <li><strong>Armor Allowed:</strong> ${classInfo.armor}</li>
-                        <li><strong>LP per Level:</strong> ${classInfo.lpPerLevel}</li>
+                        <li><strong>LP Progression:</strong> ${classInfo.lpGroup === 'every' ? '1 LP Every Level' : '1 LP Every Other Level'}</li>
                         ${classInfo.canCast ? `<li><strong>Casting:</strong> ${classInfo.canCast}</li><li><strong>Primary School:</strong> ${classInfo.primarySchool}</li>` : '<li><strong>Casting:</strong> Non-caster</li>'}
                     </ul>
                 `;
@@ -1854,7 +1910,7 @@
                         <h2>Deity Benefits (${state.deity})</h2>
                         <h3>${deity.title}</h3>
                 `;
-                if (state.class === 'Cleric' || state.class === 'Healer') {
+                if (state.class === 'Cleric') {
                     html += `<h3>Cleric Benefits</h3><ul class="sheet-list">`;
                     for (const benefit of deity.clericBenefits) {
                         html += `<li>${benefit}</li>`;
@@ -1865,7 +1921,7 @@
                         html += `<li>${limit}</li>`;
                     }
                     html += '</ul>';
-                } else if (state.class === 'Holy Warrior' || state.class === 'Paladin') {
+                } else if (state.class === 'Holy Warrior') {
                     html += `<h3>Holy Warrior Benefits</h3><ul class="sheet-list">`;
                     for (const benefit of deity.holyWarriorBenefits) {
                         html += `<li>${benefit}</li>`;
@@ -1922,6 +1978,7 @@
             state.charName = '';
             state.playerName = '';
             state.spTotal = 90;
+            state.deaths = 0;
             state.skills = {};
             state.spells = {};
             state.currentStep = 0;
@@ -1980,10 +2037,10 @@
             state.customCosts = {};
 
             // Spell pattern: "Div SpLv 3 (x2)" or "Div SpLv 3 x2"
-            const SPELL_PATTERN = /^(Div|Elem|Sorc|Dark|Ench)\s*SpLv\s*(\d+)\s*\(?x(\d+)\)?$/i;
+            const SPELL_PATTERN = /^(Div|Elem|Arc|Dark|Mys)\s*SpLv\s*(\d+)\s*\(?x(\d+)\)?$/i;
             const SPELL_SCHOOL_MAP = {
-                'div': 'Divine', 'elem': 'Elementalism', 'sorc': 'Sorcery',
-                'dark': 'Dark Arts', 'ench': 'Enchantment'
+                'div': 'Divine', 'elem': 'Elementalism', 'arc': 'Arcane Arts',
+                'dark': 'Dark Arts', 'mys': 'Mysticism'
             };
 
             // Alias map: card name → database skill name (null = skip entirely)
@@ -2060,6 +2117,11 @@
                     if (cell === 'total points') {
                         const v = parseInt(next1) || parseInt(next2);
                         if (v > 0) state.spTotal = v;
+                    }
+                    // Deaths: parse death count from card
+                    if (cell === 'deaths') {
+                        const v = parseInt(next1) || parseInt(next2);
+                        if (v >= 0) state.deaths = v;
                     }
                 }
             }
