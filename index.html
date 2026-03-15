@@ -1092,7 +1092,7 @@
             {title: 'Spell Costs (Straight Casters)', text: 'Straight casters (Cleric, Druid, Mystic, Sorcerer, Warlock) pay: 10 SP per level in their primary school, 25 SP per level in adjacent schools, 50 SP per level in opposing schools. Straight casters cannot buy Divine unless they are Clerics.'},
             {title: 'Spell Costs (Hybrid Casters)', text: 'Hybrid casters (Arcane Warrior, Bard, Mystic Warrior, Ranger, Holy Warrior) pay: 15 SP per level in their primary school, 35 SP per level in any other school. Hybrid casters CANNOT learn opposing school spells. Holy Warriors may buy Divine at 35 SP/level.'},
             {title: 'Non-Casters', text: 'Non-casters (Warrior, Bounty Hunter, Assassin, Rogue, Brigand) cannot learn spells unless granted through a deity or racial ability.'},
-            {title: 'Armor Restrictions', text: 'Each class has a permitted armor type (None, Leather, Studded, Chain, Plate). Races may further restrict this (e.g., Elves cannot use iron/steel, Wolven cannot wear metal).'},
+            {title: 'Armor Restrictions', text: 'Each class has a permitted armor type (None, Leather, Studded, Chain, Plate). Races may further restrict this (e.g., Orgreth cannot wear better than Studded Leather).'},
             {title: 'Resistance Levels', text: 'Resistances to Fear, Poison, Charm, Dark Arts, etc. can be purchased as skills and advanced through multiple purchases. Higher levels provide greater protection.'},
             {title: 'Wild Card Points', text: 'Earned at 20 WC per hour of NPC duty. Can be used to purchase: spells (at normal cost), skills (at normal cost), goods (varies), or attunement (50 WC).'},
             {title: 'Class Change Rules', text: 'Changing classes during play is possible but costly. Consult your local event organizers for specific rules on class change transitions.'},
@@ -1169,16 +1169,17 @@
         }
 
         function applyRacialMod(cost, skillName, raceName) {
-            if (raceName === 'Elf') {
+            // Rulebook p12-14: Racial skill cost modifiers
+            if (raceName === 'Elf' || raceName === 'Half Elf') {
                 if (skillName === 'Bow') return Math.ceil(cost / 2);
-                if (skillName === 'Health') return cost * 2;
-            } else if (raceName === 'Dwarf') {
-                if (['Armorsmith Leather','Armorsmith Chain','Armorsmith Plate','Armorsmith Metal','Weaponsmith'].some(s => skillName.includes(s))) return Math.ceil(cost / 2);
+                if (raceName === 'Elf' && skillName === 'Health') return cost * 2;
+            } else if (raceName === 'Dwarf' || raceName === 'Half Dwarf') {
+                if (['Armorsmith, Leather','Armorsmith, Metal','Weapon Craft, Metal','Weapon Craft, Wood'].some(s => skillName === s)) return Math.ceil(cost / 2);
                 if (skillName === 'Regenerate') return Math.ceil(cost / 2);
             } else if (raceName === 'Orgreth') {
-                if (skillName === 'Strength') return Math.ceil(cost / 2);
-            } else if (raceName === 'Half-Ogre') {
-                if (skillName === 'Battle Rage') return Math.ceil(cost / 2);
+                if (['Regenerate','Polearm/Spear','Two Handed Edged','Strength'].includes(skillName)) return Math.ceil(cost / 2);
+            } else if (raceName === 'Half Orgreth') {
+                if (skillName === 'Regenerate') return Math.ceil(cost / 2);
             }
             return cost;
         }
@@ -1230,32 +1231,46 @@
 
             let cost = baseCost;
 
-            // Apply racial modifiers
+            // Racial skill RESTRICTIONS (Rulebook p12-14) — return null if race can't take skill
+            if ((raceName === 'Orgreth' || raceName === 'Half Orgreth') && skillName === 'Read Magic') return null;
+            if (raceName === 'Dwarf' && (skillName === 'Bow' || skillName === 'Shield, Tower')) return null;
+            if ((raceName === 'Elf' || raceName === 'Half Elf') &&
+                ['Two Handed Blunt', 'Two Handed Edged', 'Polearm/Spear'].includes(skillName)) return null;
+
+            // Apply racial cost modifiers (Rulebook p12-14)
             if (raceName === 'Elf') {
                 if (skillName === 'Bow') cost = Math.ceil(cost / 2);
                 if (skillName === 'Health') cost = cost * 2;
+            } else if (raceName === 'Half Elf') {
+                if (skillName === 'Bow') cost = Math.ceil(cost / 2);
             } else if (raceName === 'Dwarf') {
-                if (['Armorsmith Leather', 'Armorsmith Chain', 'Armorsmith Plate', 'Armorsmith Metal', 'Weaponsmith'].some(s => skillName.includes(s))) {
+                // 1/2 cost for weaponsmith, armorsmith, regenerate
+                if (['Armorsmith, Leather', 'Armorsmith, Metal', 'Weapon Craft, Metal', 'Weapon Craft, Wood'].includes(skillName)) {
                     cost = Math.ceil(cost / 2);
                 }
                 if (skillName === 'Regenerate') cost = Math.ceil(cost / 2);
-                if (['Read Magic', 'Scroll Craft', 'Spell Craft', 'Brew Potion', 'Astrology', 'Familiar'].includes(skillName)) {
+                // All magical skills cost double (except Faith, Banish Undead, Create Holy Water, Divine Intervention)
+                const magicalSkill = SKILLS.find(s => s.name === skillName);
+                if (magicalSkill && magicalSkill.category === 'Magical' &&
+                    !['Faith', 'Banish Undead', 'Create Holy Water', 'Divine Intervention'].includes(skillName)) {
                     cost = cost * 2;
                 }
-            } else if (raceName === 'Hobbet') {
-                if (['Appraise', 'Escape Bonds I', 'Lock Picking I', 'Lock Picking II', 'Info Gathering', 'Disguise', 'Forgery'].includes(skillName)) {
-                    cost = Math.ceil(cost / 2);
+            } else if (raceName === 'Half Dwarf') {
+                // Magical skills cost double (except those listed under Dwarf exceptions)
+                const magicalSkill = SKILLS.find(s => s.name === skillName);
+                if (magicalSkill && magicalSkill.category === 'Magical' &&
+                    !['Faith', 'Banish Undead', 'Create Holy Water', 'Divine Intervention'].includes(skillName)) {
+                    cost = cost * 2;
                 }
             } else if (raceName === 'Orgreth') {
-                if (skillName === 'Strength') cost = Math.ceil(cost / 2);
-                if (['Read Magic', 'Scroll Craft', 'Spell Craft', 'Brew Potion', 'Astrology', 'Familiar'].includes(skillName)) {
-                    cost = cost * 2;
+                // 1/2 cost for Regenerate, Polearm/Spear, Two Handed Edged, Strength
+                if (['Regenerate', 'Polearm/Spear', 'Two Handed Edged', 'Strength'].includes(skillName)) {
+                    cost = Math.ceil(cost / 2);
                 }
-            } else if (raceName === 'Half-Ogre') {
-                if (skillName === 'Battle Rage') cost = Math.ceil(cost / 2);
-            } else if (raceName === 'Wolven') {
-                if (skillName === 'Nature Lore') cost = 0;
-                if (skillName === 'Tracking') cost = Math.ceil(cost / 2);
+                // Literacy costs double
+                if (skillName === 'Literacy') cost = cost * 2;
+            } else if (raceName === 'Half Orgreth') {
+                if (skillName === 'Regenerate') cost = Math.ceil(cost / 2);
             }
 
             // Apply deity modifiers for Cleric and Holy Warrior
