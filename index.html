@@ -580,6 +580,7 @@
             <button class="tab-button" onclick="switchTab('rules')">Rules</button>
             <button class="tab-button" onclick="switchTab('qa')">Q&A</button>
             <button class="tab-button" onclick="switchTab('plot-writer')">Plot Writer</button>
+            <button class="tab-button" onclick="switchTab('feedback')" style="margin-left: auto;">Feedback</button>
         </div>
 
         <!-- TAB 1: BUILD -->
@@ -845,6 +846,89 @@
                     <div class="privacy-notice" style="background: rgba(255,255,255,0.1); border-left-color: var(--fq-lime); color: var(--fq-text);">
                         <strong>Privacy Notice:</strong> Character data imported here is stored ONLY in your browser. It is never transmitted, shared, or stored centrally.
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 10: FEEDBACK & COMMUNITY BOARD -->
+        <div id="feedback" class="tab-content">
+            <div class="section">
+                <h2>Community Feedback & Issue Tracker</h2>
+                <p style="color: var(--fq-tan); margin-bottom: 20px;">Help improve the FQ Character Planner! Submit feedback, report bugs, or request features. Safe changes are reviewed and implemented automatically overnight. Changes that affect game mechanics require manual review against the rulebook.</p>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px;">
+                    <div class="card" style="background: var(--fq-parchment); color: var(--fq-text-dark); padding: 20px;">
+                        <h3 style="color: var(--fq-green); margin-bottom: 15px;">Submit Feedback</h3>
+                        <div class="form-group">
+                            <label style="color: var(--fq-text-dark);">Category</label>
+                            <select id="feedbackCategory" style="width:100%;padding:8px;border-radius:4px;border:1px solid var(--fq-olive);background:#fff;color:var(--fq-text-dark);">
+                                <option value="bug">Bug Report — Something isn't working right</option>
+                                <option value="data">Data Correction — Wrong cost, missing skill, typo</option>
+                                <option value="feature">Feature Request — New functionality</option>
+                                <option value="ui">UI/UX — Layout, colors, usability</option>
+                                <option value="rules">Rules Question — Unclear or missing rule</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label style="color: var(--fq-text-dark);">Summary (short title)</label>
+                            <input type="text" id="feedbackTitle" placeholder="e.g., Assassin Backstab cost seems wrong" style="width:100%;padding:8px;border-radius:4px;border:1px solid var(--fq-olive);">
+                        </div>
+                        <div class="form-group">
+                            <label style="color: var(--fq-text-dark);">Details</label>
+                            <textarea id="feedbackBody" rows="5" placeholder="Describe the issue, what you expected, and what happened instead. Include your race/class/deity if relevant." style="width:100%;padding:8px;border-radius:4px;border:1px solid var(--fq-olive);resize:vertical;"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label style="color: var(--fq-text-dark);">Your Name (optional, for credit)</label>
+                            <input type="text" id="feedbackName" placeholder="Character name or player name" style="width:100%;padding:8px;border-radius:4px;border:1px solid var(--fq-olive);">
+                        </div>
+                        <div style="display: flex; gap: 10px; margin-top: 10px;">
+                            <button onclick="submitFeedbackGitHub()" style="flex:1;">Submit via GitHub</button>
+                            <button onclick="copyFeedbackToClipboard()" style="flex:1; background: var(--fq-olive);">Copy for Discord/FB</button>
+                        </div>
+                        <p style="font-size: 0.8em; color: var(--fq-olive); margin-top: 8px;">"Submit via GitHub" opens a pre-filled issue on our tracker (requires a GitHub account). "Copy" formats your feedback for pasting anywhere.</p>
+                    </div>
+
+                    <div class="card" style="background: var(--fq-parchment); color: var(--fq-text-dark); padding: 20px;">
+                        <h3 style="color: var(--fq-green); margin-bottom: 15px;">How Feedback Works</h3>
+                        <div style="line-height: 1.8;">
+                            <p><span style="color: var(--fq-green); font-weight: bold;">1.</span> You submit feedback here or on our GitHub tracker</p>
+                            <p><span style="color: var(--fq-green); font-weight: bold;">2.</span> Every night, an automated system reviews new submissions</p>
+                            <p><span style="color: var(--fq-green); font-weight: bold;">3.</span> <strong>Safe changes</strong> (typos, UI fixes, missing data, cost corrections per rulebook) are implemented automatically</p>
+                            <p><span style="color: var(--fq-rust); font-weight: bold;">4.</span> <strong>Mechanics changes</strong> (anything that changes how rules work) are flagged for manual review against the FQ rulebook</p>
+                            <p><span style="color: var(--fq-green); font-weight: bold;">5.</span> Fixed issues appear in the tracker below with the date resolved</p>
+                        </div>
+                        <div style="margin-top: 15px; padding: 10px; background: rgba(0,0,0,0.05); border-radius: 4px;">
+                            <strong>Auto-implementable:</strong> Typos, wrong costs, missing skills, UI improvements, display bugs, missing spell names, wrong class restrictions<br>
+                            <strong style="color: var(--fq-rust);">Requires review:</strong> New rules interpretations, homebrew additions, mechanic changes, balance adjustments
+                        </div>
+                    </div>
+                </div>
+
+                <h3 style="margin-bottom: 15px;">Issue Tracker</h3>
+                <p style="color: var(--fq-tan); margin-bottom: 10px;">Live status of reported issues. Updated nightly.</p>
+                <div style="margin-bottom: 10px;">
+                    <button onclick="loadIssueTracker()" style="background: var(--fq-green);">Refresh Issue Tracker</button>
+                    <span id="issueTrackerStatus" style="margin-left: 10px; color: var(--fq-tan); font-size: 0.9em;"></span>
+                </div>
+                <div id="issueTrackerBoard" style="margin-top: 10px;">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="background: var(--fq-green-dark); color: var(--fq-parchment);">
+                                <th style="padding: 10px; text-align: left;">Status</th>
+                                <th style="padding: 10px; text-align: left;">Category</th>
+                                <th style="padding: 10px; text-align: left;">Issue</th>
+                                <th style="padding: 10px; text-align: left;">Reported</th>
+                                <th style="padding: 10px; text-align: left;">Resolved</th>
+                            </tr>
+                        </thead>
+                        <tbody id="issueTrackerBody">
+                            <tr><td colspan="5" style="padding: 20px; text-align: center; color: var(--fq-tan);">Click "Refresh Issue Tracker" to load current issues from GitHub.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="privacy-notice" style="margin-top: 20px;">
+                    <strong>Privacy:</strong> Feedback submitted via GitHub is public on our issue tracker. No personal game data (builds, SP totals) is included in submissions. The "Copy" option lets you share feedback privately via any channel you prefer.
                 </div>
             </div>
         </div>
@@ -1914,6 +1998,167 @@
             document.getElementById('deitySelect').value = state.deity;
             document.getElementById('characterSheetUrl').value = state.characterSheetUrl;
         });
+
+        // ========== FEEDBACK & COMMUNITY BOARD ==========
+
+        function submitFeedbackGitHub() {
+            const category = document.getElementById('feedbackCategory').value;
+            const title = document.getElementById('feedbackTitle').value.trim();
+            const body = document.getElementById('feedbackBody').value.trim();
+            const name = document.getElementById('feedbackName').value.trim();
+
+            if (!title) { alert('Please provide a summary of your feedback.'); return; }
+            if (!body) { alert('Please provide some details about the issue.'); return; }
+
+            const categoryLabels = {
+                bug: 'bug', data: 'data-correction', feature: 'feature-request',
+                ui: 'ui-ux', rules: 'rules-question'
+            };
+            const categoryNames = {
+                bug: 'Bug Report', data: 'Data Correction', feature: 'Feature Request',
+                ui: 'UI/UX', rules: 'Rules Question'
+            };
+
+            const issueTitle = '[' + categoryNames[category] + '] ' + title;
+            const issueBody = '**Category:** ' + categoryNames[category] + '\n'
+                + '**Reported by:** ' + (name || 'Anonymous') + '\n'
+                + '**Date:** ' + new Date().toISOString().split('T')[0] + '\n\n'
+                + '## Description\n' + body + '\n\n'
+                + '---\n*Submitted via FQ Character Planner feedback form*';
+
+            const url = 'https://github.com/dsmith2211/fq-planner/issues/new'
+                + '?title=' + encodeURIComponent(issueTitle)
+                + '&body=' + encodeURIComponent(issueBody)
+                + '&labels=' + encodeURIComponent(categoryLabels[category] + ',community-feedback');
+
+            window.open(url, '_blank');
+
+            // Also store locally for tracking
+            const localFeedback = JSON.parse(localStorage.getItem('fq_planner_feedback') || '[]');
+            localFeedback.push({
+                category: category, title: title, body: body, name: name,
+                date: new Date().toISOString(), status: 'submitted'
+            });
+            localStorage.setItem('fq_planner_feedback', JSON.stringify(localFeedback));
+
+            // Clear form
+            document.getElementById('feedbackTitle').value = '';
+            document.getElementById('feedbackBody').value = '';
+            document.getElementById('feedbackName').value = '';
+            alert('GitHub issue page opened in a new tab. Please click "Submit new issue" there to complete your submission. Thank you!');
+        }
+
+        function copyFeedbackToClipboard() {
+            const category = document.getElementById('feedbackCategory').value;
+            const title = document.getElementById('feedbackTitle').value.trim();
+            const body = document.getElementById('feedbackBody').value.trim();
+            const name = document.getElementById('feedbackName').value.trim();
+
+            if (!title || !body) { alert('Please fill in summary and details first.'); return; }
+
+            const categoryNames = {
+                bug: 'Bug Report', data: 'Data Correction', feature: 'Feature Request',
+                ui: 'UI/UX', rules: 'Rules Question'
+            };
+
+            const text = 'FQ Character Planner Feedback\n'
+                + '========================\n'
+                + 'Category: ' + categoryNames[category] + '\n'
+                + 'Summary: ' + title + '\n'
+                + 'From: ' + (name || 'Anonymous') + '\n'
+                + 'Date: ' + new Date().toLocaleDateString() + '\n\n'
+                + 'Details:\n' + body + '\n\n'
+                + 'Planner: https://dsmith2211.github.io/fq-planner/';
+
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Feedback copied to clipboard! Paste it in Discord, Facebook, or wherever you prefer.');
+            });
+        }
+
+        function loadIssueTracker() {
+            const statusEl = document.getElementById('issueTrackerStatus');
+            const bodyEl = document.getElementById('issueTrackerBody');
+            statusEl.textContent = 'Loading issues...';
+
+            // Fetch open AND closed issues from GitHub API (public repo, no auth needed)
+            Promise.all([
+                fetch('https://api.github.com/repos/dsmith2211/fq-planner/issues?state=open&labels=community-feedback&per_page=50').then(r => r.json()),
+                fetch('https://api.github.com/repos/dsmith2211/fq-planner/issues?state=closed&labels=community-feedback&per_page=50').then(r => r.json())
+            ]).then(([openIssues, closedIssues]) => {
+                const allIssues = [];
+
+                // Process open issues
+                (Array.isArray(openIssues) ? openIssues : []).forEach(issue => {
+                    const labels = issue.labels.map(l => l.name);
+                    let status = 'Open';
+                    let statusColor = 'var(--fq-lime)';
+                    let statusIcon = 'NEW';
+                    if (labels.includes('in-progress')) { status = 'In Progress'; statusColor = '#BADA55'; statusIcon = 'WIP'; }
+                    if (labels.includes('needs-review')) { status = 'Needs Review'; statusColor = 'var(--fq-rust)'; statusIcon = 'REVIEW'; }
+                    if (labels.includes('wont-fix')) { status = 'Won\'t Fix'; statusColor = '#888'; statusIcon = 'DECLINED'; }
+
+                    let category = 'General';
+                    if (labels.includes('bug')) category = 'Bug';
+                    if (labels.includes('data-correction')) category = 'Data';
+                    if (labels.includes('feature-request')) category = 'Feature';
+                    if (labels.includes('ui-ux')) category = 'UI/UX';
+                    if (labels.includes('rules-question')) category = 'Rules';
+
+                    allIssues.push({
+                        status, statusColor, statusIcon, category,
+                        title: issue.title.replace(/^\[.*?\]\s*/, ''),
+                        reported: new Date(issue.created_at).toLocaleDateString(),
+                        resolved: null,
+                        url: issue.html_url
+                    });
+                });
+
+                // Process closed issues
+                (Array.isArray(closedIssues) ? closedIssues : []).forEach(issue => {
+                    let category = 'General';
+                    const labels = issue.labels.map(l => l.name);
+                    if (labels.includes('bug')) category = 'Bug';
+                    if (labels.includes('data-correction')) category = 'Data';
+                    if (labels.includes('feature-request')) category = 'Feature';
+                    if (labels.includes('ui-ux')) category = 'UI/UX';
+                    if (labels.includes('rules-question')) category = 'Rules';
+
+                    allIssues.push({
+                        status: 'Fixed', statusColor: 'var(--fq-green)', statusIcon: 'FIXED', category,
+                        title: issue.title.replace(/^\[.*?\]\s*/, ''),
+                        reported: new Date(issue.created_at).toLocaleDateString(),
+                        resolved: new Date(issue.closed_at).toLocaleDateString(),
+                        url: issue.html_url
+                    });
+                });
+
+                // Sort: open first, then by date
+                allIssues.sort((a, b) => {
+                    if (a.status !== 'Fixed' && b.status === 'Fixed') return -1;
+                    if (a.status === 'Fixed' && b.status !== 'Fixed') return 1;
+                    return 0;
+                });
+
+                if (allIssues.length === 0) {
+                    bodyEl.innerHTML = '<tr><td colspan="5" style="padding: 20px; text-align: center; color: var(--fq-tan);">No community feedback submitted yet. Be the first!</td></tr>';
+                } else {
+                    bodyEl.innerHTML = allIssues.map(issue =>
+                        '<tr style="border-bottom: 1px solid var(--fq-olive);">'
+                        + '<td style="padding: 8px;"><span style="background:' + issue.statusColor + '; color: #000; padding: 2px 8px; border-radius: 3px; font-size: 0.8em; font-weight: bold;">' + issue.statusIcon + '</span></td>'
+                        + '<td style="padding: 8px; color: var(--fq-tan);">' + issue.category + '</td>'
+                        + '<td style="padding: 8px;"><a href="' + issue.url + '" target="_blank" style="color: var(--fq-lime); text-decoration: none;">' + issue.title + '</a></td>'
+                        + '<td style="padding: 8px; color: var(--fq-tan); font-size: 0.9em;">' + issue.reported + '</td>'
+                        + '<td style="padding: 8px; color: ' + (issue.resolved ? 'var(--fq-green)' : 'var(--fq-tan)') + '; font-size: 0.9em;">' + (issue.resolved || '—') + '</td>'
+                        + '</tr>'
+                    ).join('');
+                }
+
+                statusEl.textContent = 'Loaded ' + allIssues.length + ' issues. Last refreshed: ' + new Date().toLocaleTimeString();
+            }).catch(err => {
+                statusEl.textContent = 'Could not load issues. GitHub API may be rate-limited. Try again in a minute.';
+                console.error('Issue tracker error:', err);
+            });
+        }
     </script>
 </body>
 </html>
