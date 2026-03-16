@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ask the Rulebook — Fantasy Quest</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0f0f1a;
+      --surface: #1a1a2e;
+      --surface2: #16213e;
+      --accent: #e94560;
+      --gold: #c9a84c;
+      --text: #e8e8f0;
+      --muted: #8888aa;
+      --border: #2a2a4a;
+      --radius: 8px;
+      --green: #4caf7d;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--surface2);
+      border-bottom: 2px solid var(--gold);
+      padding: 1.25rem 2rem;
+    }
+    header h1 { font-size: 1.4rem; color: var(--gold); }
+    header .subtitle { color: var(--muted); font-size: 0.82rem; margin-top: 2px; }
+
+    /* ── Server status banner ── */
+    #server-status {
+      padding: 0.5rem 2rem;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .status-ok   { background: #1a2e1a; color: var(--green); border-bottom: 1px solid #2a4a2a; }
+    .status-err  { background: #2e1a1a; color: #f08080; border-bottom: 1px solid #4a2a2a; }
+    .status-warn { background: #2e2a1a; color: var(--gold); border-bottom: 1px solid #4a3a1a; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
+
+    /* ── Search box ── */
+    .search-wrap {
+      max-width: 800px;
+      margin: 2rem auto 0;
+      padding: 0 1.5rem;
+      width: 100%;
+    }
+    .search-row {
+      display: flex;
+      gap: 0.75rem;
+    }
+    #query-input {
+      flex: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-size: 1rem;
+      padding: 0.75rem 1.25rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    #query-input:focus { border-color: var(--gold); }
+    #search-btn {
+      background: var(--gold);
+      color: #0f0f1a;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+      font-weight: 700;
+      padding: 0 1.5rem;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      white-space: nowrap;
+    }
+    #search-btn:hover:not(:disabled) { opacity: 0.85; }
+    #search-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* ── Suggestions ── */
+    .suggestions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+    .suggest-pill {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      color: var(--muted);
+      font-size: 0.75rem;
+      padding: 3px 12px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .suggest-pill:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* ── Results ── */
+    #results-wrap {
+      max-width: 800px;
+      margin: 1.5rem auto 2rem;
+      padding: 0 1.5rem;
+      width: 100%;
+      flex: 1;
+    }
+    #results-header {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 0.75rem;
+      min-height: 1.2em;
+    }
+    .result-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.1rem 1.25rem;
+      margin-bottom: 0.75rem;
+      transition: border-color 0.2s;
+    }
+    .result-card:hover { border-color: var(--gold); }
+    .result-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 0.6rem;
+      flex-wrap: wrap;
+    }
+    .result-source {
+      font-size: 0.75rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .source-badge {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1px 7px;
+      font-size: 0.7rem;
+      color: var(--gold);
+    }
+    .score-bar-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-shrink: 0;
+    }
+    .score-label { font-size: 0.7rem; color: var(--muted); }
+    .score-bar {
+      width: 60px;
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .score-fill {
+      height: 100%;
+      border-radius: 2px;
+      background: var(--green);
+    }
+    .result-text {
+      font-size: 0.88rem;
+      color: #ccc;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .result-text mark {
+      background: rgba(201,168,76,0.25);
+      color: var(--gold);
+      border-radius: 2px;
+      padding: 0 2px;
+    }
+    .pdf-link-row {
+      margin-top: 0.6rem;
+    }
+    .pdf-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.74rem;
+      color: var(--accent);
+      text-decoration: none;
+      border: 1px solid var(--accent);
+      border-radius: 4px;
+      padding: 2px 8px;
+    }
+    .pdf-link:hover { background: var(--accent); color: #fff; }
+
+    /* ── States ── */
+    #empty-state {
+      text-align: center;
+      padding: 4rem 1rem;
+      color: var(--muted);
+    }
+    #empty-state .icon { font-size: 3rem; margin-bottom: 0.75rem; }
+    #loading { display: none; text-align: center; padding: 2rem; color: var(--muted); font-size: 0.9rem; }
+    .spinner {
+      display: inline-block;
+      width: 20px; height: 20px;
+      border: 2px solid var(--border);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin-right: 0.5rem;
+      vertical-align: middle;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Top-k control ── */
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .controls label { font-size: 0.78rem; color: var(--muted); display: flex; align-items: center; gap: 0.4rem; }
+    .controls select {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 0.78rem;
+    }
+
+    /* ── No-server banner ── */
+    #offline-banner {
+      display: none;
+      background: #2e2a1a;
+      border: 1px solid var(--gold);
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+      margin-bottom: 1rem;
+      font-size: 0.83rem;
+      color: var(--gold);
+      line-height: 1.7;
+    }
+    #offline-banner code {
+      background: var(--bg);
+      padding: 1px 6px;
+      border-radius: 3px;
+      font-size: 0.8rem;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      color: var(--muted);
+      font-size: 0.75rem;
+      border-top: 1px solid var(--border);
+      margin-top: auto;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>⚔️ Ask the Rulebook</h1>
+  <div class="subtitle">Retrieval search — Fantasy Quest Rule Book Edition 6.1 (2018). No AI generation — returns matching rule passages only.</div>
+</header>
+
+<div id="server-status" class="status-warn">
+  <div class="dot"></div>
+  <span id="status-text">Checking search server...</span>
+</div>
+
+<div class="search-wrap">
+  <div id="offline-banner">
+    <strong>🖥 Local server required</strong><br>
+    This search uses a local Chroma vector database. To run it:<br><br>
+    1. <code>pip install chromadb sentence-transformers pymupdf</code><br>
+    2. <code>python pipeline/embed.py</code> &nbsp;← build the index<br>
+    3. <code>python pipeline/search_server.py</code> &nbsp;← start the server<br>
+    4. Then reload this page.<br><br>
+    On GitHub Pages this search is unavailable — the browse interface at
+    <a href="browse.html" style="color:var(--gold)">browse.html</a> works offline.
+  </div>
+
+  <div class="search-row">
+    <input type="search" id="query-input" placeholder="Ask a rule question… e.g. how do I cast a spell?" autocomplete="off" autocorrect="off" spellcheck="false">
+    <button id="search-btn" disabled>Search</button>
+  </div>
+  <div class="controls">
+    <label>Results: <select id="top-k-select">
+      <option value="5">5</option>
+      <option value="8" selected>8</option>
+      <option value="12">12</option>
+      <option value="20">20</option>
+    </select></label>
+  </div>
+  <div class="suggestions">
+    <span class="suggest-pill" data-q="how do I cast a spell">how do I cast a spell</span>
+    <span class="suggest-pill" data-q="what are the races">what are the races</span>
+    <span class="suggest-pill" data-q="how does death work">how does death work</span>
+    <span class="suggest-pill" data-q="armor class points">armor class points</span>
+    <span class="suggest-pill" data-q="life points by class">life points by class</span>
+    <span class="suggest-pill" data-q="skill point cost">skill point cost</span>
+    <span class="suggest-pill" data-q="command words">command words</span>
+    <span class="suggest-pill" data-q="necromancy spells">necromancy spells</span>
+    <span class="suggest-pill" data-q="two weapon fighting">two weapon fighting</span>
+    <span class="suggest-pill" data-q="dwarf limitations">dwarf limitations</span>
+  </div>
+</div>
+
+<div id="results-wrap">
+  <div id="results-header"></div>
+  <div id="offline-msg"></div>
+  <div id="loading"><span class="spinner"></span> Searching…</div>
+  <div id="results-list"></div>
+  <div id="empty-state">
+    <div class="icon">📜</div>
+    <div>Ask a rules question above to search the rulebook.</div>
+  </div>
+</div>
+
+<footer>
+  Retrieval-only search · No LLM in response path ·
+  Source: <a href="https://www.fantasyquestlarp.com/rulebook" target="_blank" style="color:var(--gold)">Fantasy Quest Rule Book Ed. 6.1 (2018)</a>
+</footer>
+
+<script>
+  const SEARCH_API = 'http://127.0.0.1:8765';
+  const queryInput = document.getElementById('query-input');
+  const searchBtn  = document.getElementById('search-btn');
+  const topKSelect = document.getElementById('top-k-select');
+  const resultsList= document.getElementById('results-list');
+  const resultsHdr = document.getElementById('results-header');
+  const emptyState = document.getElementById('empty-state');
+  const loading    = document.getElementById('loading');
+  const statusEl   = document.getElementById('server-status');
+  const statusText = document.getElementById('status-text');
+  const offlineBanner = document.getElementById('offline-banner');
+
+  let serverOnline = false;
+  let lastQuery = '';
+
+  // ── Check server health ──────────────────────────────────────────────────
+  async function checkHealth() {
+    try {
+      const r = await fetch(`${SEARCH_API}/health`, { signal: AbortSignal.timeout(3000) });
+      const j = await r.json();
+      if (j.status === 'ok') {
+        serverOnline = true;
+        statusEl.className = 'status-ok';
+        statusText.textContent = `Search server online · ${j.count.toLocaleString()} chunks indexed · model: ${j.model}`;
+        searchBtn.disabled = false;
+        offlineBanner.style.display = 'none';
+        return;
+      }
+    } catch (_) {}
+    serverOnline = false;
+    statusEl.className = 'status-err';
+    statusText.textContent = 'Search server offline — see instructions below';
+    searchBtn.disabled = true;
+    offlineBanner.style.display = 'block';
+    emptyState.style.display = 'none';
+  }
+
+  // ── Highlight query terms ─────────────────────────────────────────────────
+  function highlight(text, query) {
+    const terms = query.split(/\s+/).filter(t => t.length > 2);
+    let out = text.replace(/[<>&"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
+    terms.forEach(term => {
+      const re = new RegExp(`(${term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi');
+      out = out.replace(re, '<mark>$1</mark>');
+    });
+    return out;
+  }
+
+  // ── Render results ────────────────────────────────────────────────────────
+  function renderResults(data) {
+    const { query, results } = data;
+    resultsList.innerHTML = '';
+    emptyState.style.display = 'none';
+
+    if (!results || results.length === 0) {
+      resultsHdr.textContent = `No results for "${query}"`;
+      emptyState.style.display = 'block';
+      emptyState.querySelector('.icon').textContent = '🔍';
+      emptyState.querySelector('div:last-child').textContent = 'No matching passages found. Try different keywords.';
+      return;
+    }
+
+    resultsHdr.textContent = `${results.length} passage${results.length !== 1 ? 's' : ''} matched for "${query}"`;
+
+    results.forEach((hit, i) => {
+      const score = hit.score;
+      const pct = Math.round(score * 100);
+      const barWidth = Math.max(4, Math.min(100, pct));
+      const barColor = pct >= 70 ? 'var(--green)' : pct >= 40 ? 'var(--gold)' : 'var(--accent)';
+      const pageStr = hit.page > 0 ? ` · page ${hit.page}` : '';
+      const pdfName = hit.source_pdf || '';
+      const pdfLabel = pdfName.replace(/_/g,' ').replace(/\.pdf$/i,'');
+      const pdfUrl = `${hit.pdf_url}`;
+      const hiText = highlight(hit.text, query);
+
+      const card = document.createElement('div');
+      card.className = 'result-card';
+      card.innerHTML = `
+        <div class="result-top">
+          <div class="result-source">
+            <span class="source-badge">${pdfLabel}</span>
+            <span>${pageStr}</span>
+          </div>
+          <div class="score-bar-wrap">
+            <span class="score-label">${pct}%</span>
+            <div class="score-bar"><div class="score-fill" style="width:${barWidth}%;background:${barColor}"></div></div>
+          </div>
+        </div>
+        <div class="result-text">${hiText}</div>
+        <div class="pdf-link-row">
+          <a class="pdf-link" href="${pdfUrl}" target="_blank" rel="noopener">📄 Open source PDF${pageStr}</a>
+        </div>`;
+      resultsList.appendChild(card);
+    });
+  }
+
+  // ── Perform search ─────────────────────────────────────────────────────────
+  async function doSearch() {
+    const q = queryInput.value.trim();
+    if (!q || !serverOnline) return;
+    if (q === lastQuery) return;
+    lastQuery = q;
+
+    const n = parseInt(topKSelect.value, 10);
+    loading.style.display = 'block';
+    resultsList.innerHTML = '';
+    resultsHdr.textContent = '';
+    emptyState.style.display = 'none';
+    searchBtn.disabled = true;
+
+    try {
+      const url = `${SEARCH_API}/search?q=${encodeURIComponent(q)}&n=${n}`;
+      const r = await fetch(url, { signal: AbortSignal.timeout(15000) });
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      const data = await r.json();
+      renderResults(data);
+    } catch (err) {
+      resultsHdr.textContent = `Search error: ${err.message}`;
+      emptyState.style.display = 'none';
+    } finally {
+      loading.style.display = 'none';
+      searchBtn.disabled = false;
+    }
+  }
+
+  // ── Event listeners ────────────────────────────────────────────────────────
+  searchBtn.addEventListener('click', () => { lastQuery = ''; doSearch(); });
+
+  queryInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter') { lastQuery = ''; doSearch(); }
+  });
+
+  document.querySelectorAll('.suggest-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      queryInput.value = pill.dataset.q;
+      lastQuery = '';
+      doSearch();
+    });
+  });
+
+  // ── Init ───────────────────────────────────────────────────────────────────
+  checkHealth();
+</script>
+</body>
+</html>

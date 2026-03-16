@@ -1,0 +1,69 @@
+name: Build & Deploy to GitHub Pages
+
+# Triggers: push to main (when PDFs, pipeline scripts, or HTML files change)
+# or manual dispatch from the Actions tab
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'data/pdfs/**'
+      - 'pipeline/**'
+      - '*.html'
+  workflow_dispatch:
+
+permissions:
+  contents: write   # commit generated files back
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      # ── Python: extract PDFs → JSON + browse.html ───────────────────────
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: Install Python deps
+        run: pip install pymupdf
+
+      - name: Extract PDFs → data/extracted/
+        run: python pipeline/extract_pdfs.py
+
+      - name: Generate browse.html (repo root)
+        run: python pipeline/generate_browse.py --out browse.html
+
+      # ── Commit generated files back to main ────────────────────────────
+      - name: Commit generated files
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/extracted/ browse.html
+          if git diff --cached --quiet; then
+            echo "Nothing to commit."
+          else
+            git commit -m "build: update extracted JSON + browse.html [skip ci]"
+            git push
+          fi
+
+      # ── Deploy entire repo root to gh-pages branch ─────────────────────
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: .
+          publish_branch: gh-pages
+          # Exclude pipeline/build scripts and other non-web assets
+          exclude_assets: '.github,pipeline,node_modules,.git'

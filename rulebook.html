@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FQ Rulebook — Fantasy Quest Ed. 6.1</title>
+  <link href="https://fonts.googleapis.com/css2?family=Calistoga&family=Libre+Baskerville:ital@0;1&display=swap" rel="stylesheet">
+  <style>
+    body { margin: 0; padding: 0; box-sizing: border-box; }
+    #root { min-height: 100vh; }
+    #loading-screen {
+      position: fixed; inset: 0;
+      background: linear-gradient(135deg, #0d0d0a, #1a1a14);
+      color: #BADA55;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      font-family: 'Libre Baskerville', serif;
+      z-index: 9999;
+      transition: opacity 0.4s;
+    }
+    #loading-screen.fade { opacity: 0; pointer-events: none; }
+    #loading-screen h2 { font-family: 'Calistoga', cursive; font-size: 1.6rem; color: #c9a84c; margin-bottom: 1rem; }
+    .ld-bar { width: 200px; height: 4px; background: #2a2a1a; border-radius: 2px; overflow: hidden; margin-top: 1rem; }
+    .ld-fill { height: 100%; background: #BADA55; border-radius: 2px; animation: ldpulse 1.5s ease-in-out infinite; }
+    @keyframes ldpulse { 0%,100%{width:20%} 50%{width:90%} }
+  </style>
+</head>
+<body>
+  <div id="loading-screen">
+    <h2>⚔️ Fantasy Quest Rulebook</h2>
+    <div>Loading rules engine…</div>
+    <div class="ld-bar"><div class="ld-fill"></div></div>
+  </div>
+  <div id="root"></div>
+
+  <!-- React + ReactDOM from CDN -->
+  <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <!-- Babel standalone for JSX in-browser transpilation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+
+  <script type="text/babel">
+    const { useState, useMemo } = React;
+import { useState, useMemo } from "react";
+
+// ─────────────────────────────────────────────────────────────────────────────
+// STATIC DATASET — every value sourced from Fantasy Quest Rule Book Ed. 6.1 (2018)
+// Source PDFs: fantasyquestlarp.com/rulebook (downloaded 2026-03-16)
+// ─────────────────────────────────────────────────────────────────────────────
+const DATA_DATE = "2026-03-16";
+const RULEBOOK_VERSION = "Edition 6.1 — 2018";
+
+const RACES = [
+  {
+    name: "Dwarf",
+    description:
+      "A hardy race that tends to live in or near mountainous regions. Generally short in stature but tall in pride. Clannish and treat most other dwarves with a brother-like respect.",
+    costumeReq: "Males: max 5'7\", real or fake beard. Females: max 5'2\", braids on both sides of face.",
+    bonuses: [
+      "Resist magic +2 levels (excludes Mysticism spells)",
+      "½ cost (rounded up) for Weapon Smith, Armor Smith, and Regenerate skills",
+    ],
+    limitations: [
+      "Cannot use weapons over 5' in length",
+      "Cannot use bow or tower shields",
+      "All magic skills cost double (except Faith, Banish Undead, Create Holy Water, Divine Intervention)",
+    ],
+  },
+  {
+    name: "Elf",
+    description:
+      "A sylvan race descended from the Faerie. Generally forest dwellers, sometimes urban adventurers. Slender, graceful, and adept at magic.",
+    costumeReq: "Must wear pointed ears; cannot have facial hair.",
+    bonuses: [
+      "Resist Mysticism spells +2 levels",
+      "May take Bow skill at ½ cost (rounded up)",
+      "Receive 10 extra skill points to spend on magical skills (added to starting total)",
+      "Elven Holy Warriors may take Bow for 20 skill points",
+    ],
+    limitations: [
+      "−1 Life Point to start",
+      "Cannot use two-handed weapons (save staff)",
+      "Health skill costs double",
+    ],
+  },
+  {
+    name: "Human",
+    description:
+      "Much the same as in the real world; from a variety of backgrounds. The most common and widely accepted race of the realm.",
+    costumeReq: "No requirements.",
+    bonuses: ["No special restrictions or bonuses — pure flexibility"],
+    limitations: ["None"],
+  },
+  {
+    name: "Orgreth",
+    description:
+      "A proud warrior race. Uneducated in civilized ways but not stupid. Tribal, with unmatched bravery. Clans include Spear, Claw, Blade, Arrow, and Stone.",
+    costumeReq: "Single horn from forehead; may have dark tan skin and tribal face paint.",
+    bonuses: [
+      "Resist poison +2 levels",
+      "+1 Life Point to start",
+      "½ cost (rounded up) for: Regenerate, Polearm/Spear, Two-Handed Edged, Strength",
+    ],
+    limitations: [
+      "Cannot take Read Magic skill",
+      "Literacy skill costs double",
+      "Cannot wear better than Studded Leather armor (Class 2 max)",
+    ],
+  },
+  {
+    name: "Half-Dwarf",
+    description:
+      "Half Human, half Dwarf. Usually role-played more toward the non-human side.",
+    costumeReq: "Must wear beard; males max 5'9\", females max 5'4\".",
+    bonuses: ["Resist magic (except Mysticism) at +1 level"],
+    limitations: ["Magical skills cost double (except those listed under Dwarf)"],
+  },
+  {
+    name: "Half-Elf",
+    description:
+      "Half Human, half Elf. Half-Elves are not uncommon in Eastguard.",
+    costumeReq: "Must wear pointed ears.",
+    bonuses: [
+      "Resist Mysticism spells and control magic at +1 level",
+      "Bow skill at ½ cost (rounded up)",
+    ],
+    limitations: [
+      "Cannot use 2-handed weapons (save staff)",
+    ],
+  },
+  {
+    name: "Half-Orgreth",
+    description:
+      "Half Human, half Orgreth. Rarer in modern times. Most often found among Orgreth themselves.",
+    costumeReq: "Must have horn; tan skin optional.",
+    bonuses: [
+      "Resist Poison at +1 level",
+      "½ cost for Regenerate skill (rounded up)",
+    ],
+    limitations: [
+      "Cannot take Read Magic skill",
+    ],
+  },
+];
+
+const CLASSES = [
+  {
+    name: "Holy Warrior",
+    category: "Fighting",
+    startingLP: 2,
+    lpProgression: "1 LP every level",
+    armorMax: "Class 4 (any)",
+    canCastSpells: true,
+    spellSchools: ["Divine (via Faith skill)"],
+    description:
+      "Divine warriors who follow a code of chivalry and honor. May be loyal to a deity and/or lord. Not required to join an order. Honor is central even for 'evil' Holy Warriors. Can learn to use almost any weapon and wear any armor.",
+    exampleBuild: "1-Handed Edged (25), Tower Shield (20), Faith (10), two 1st-level Divine spells (30), 5 pts remaining",
+    notes: "Class does not grant noble status. Cannot be called Sir/Dame until title is earned in-game.",
+  },
+  {
+    name: "Ranger",
+    category: "Fighting",
+    startingLP: 2,
+    lpProgression: "1 LP every level",
+    armorMax: "Class 3 (Chain mail)",
+    canCastSpells: true,
+    spellSchools: ["Elementalism"],
+    description:
+      "Woodsmen adept at hunting, tracking, and the ways of nature. Sworn to protect forests and their creatures. Neutral in views. Skilled with many weapons and may practice Elementalism.",
+    exampleBuild: "Bow (20), 1-Handed Blunt (25), Florentine (20), Two-Weapon Combo I (25) OR Staff (25), Commune with Nature (20), three 1st-level Elementalism spells (45)",
+  },
+  {
+    name: "Warrior",
+    category: "Fighting",
+    startingLP: 3,
+    lpProgression: "1 LP every level",
+    armorMax: "Class 4 (any)",
+    canCastSpells: false,
+    spellSchools: ["Scrolls only"],
+    description:
+      "Strength, agility, and fighting prowess. Most versatile fighter. Can master all weapons and fighting skills. Some stealth arts accessible at higher cost. May not cast spells (scrolls excepted). All Fighting skills may be taken one level earlier than the prerequisite states.",
+    exampleBuild: "2-Handed Edged (20), Disarm (15), Trip (20), Buckler Shield (15), Weapon Craft Metal (20)",
+    notes: "Warriors start at 3 LP instead of 2 LP.",
+  },
+  {
+    name: "Arcane Warrior",
+    category: "Fighting",
+    startingLP: 2,
+    lpProgression: "1 LP every level",
+    armorMax: "Class 2 (Studded leather)",
+    canCastSpells: true,
+    spellSchools: ["Arcane Arts"],
+    description:
+      "Merges the Arcane Arts with warrior skills — as taught by the elves of old. Can purchase powerful arcane magic skills and buy weapon skills inexpensively. Weak at first; formidable in the long run.",
+    exampleBuild: "1-Handed Edged (25), Literacy (10), Read Magic (10), three 1st-level Arcane Arts spells (45)",
+  },
+  {
+    name: "Mystic Warrior",
+    category: "Fighting",
+    startingLP: 2,
+    lpProgression: "1 LP every level",
+    armorMax: "Class 2 (Studded leather)",
+    canCastSpells: true,
+    spellSchools: ["Mysticism"],
+    description:
+      "Combines mental powers of a Mystic with physical skills of a Warrior. Gains Mysticism spells while purchasing fighting skills at lower cost than a straight Mystic.",
+    exampleBuild: "1-Handed Edged (25), Trip (25), Parry (30), Meditation (10)",
+  },
+  {
+    name: "Bounty Hunter",
+    category: "Fighting",
+    startingLP: 2,
+    lpProgression: "1 LP every level",
+    armorMax: "Class 3 (Chain mail)",
+    canCastSpells: false,
+    spellSchools: ["Scrolls only"],
+    description:
+      "Combination class of Warrior and Rogue. Skilled in weapons and fighting but also versed in stealth. A well-rounded character class.",
+    exampleBuild: "1-Handed Edged (25), Florentine (25), Rumors (10), Backstab (30) OR Staff (25), two Rumors (20), Info Gathering (20), Disarm (25)",
+  },
+  {
+    name: "Cleric",
+    category: "Spell Casting",
+    startingLP: 2,
+    lpProgression: "1 LP every other level",
+    armorMax: "Class 3 (Chain mail)",
+    canCastSpells: true,
+    spellSchools: ["Divine Magic", "Other schools at 25 pts/level"],
+    description:
+      "Devout worshippers of a particular deity. Casts Divine Magic — usually non-harmful spells for healing, defense, protection, and combating undead. May receive additional benefits/limitations from chosen deity.",
+    exampleBuild: "1-Handed Blunt (30), Faith (10), three 1st-level Divine spells (30), one 2nd-level Divine spell (20) OR Faith (10), Banish Undead (20), six 1st-level Divine spells (60)",
+  },
+  {
+    name: "Druid",
+    category: "Spell Casting",
+    startingLP: 2,
+    lpProgression: "1 LP every other level",
+    armorMax: "Class 1 (Leather)",
+    canCastSpells: true,
+    spellSchools: ["Elementalism"],
+    description:
+      "Elementalist spell caster, one with nature. Calm demeanor with very potent spell capability. Neutral in views. Friends to Rangers, forest animals, and other woodland creatures.",
+    exampleBuild: "Staff (30), Commune with Nature (20), two 1st-level Elementalism spells (20), Nature Lore (15), 5 pts remaining",
+  },
+  {
+    name: "Mystic",
+    category: "Spell Casting",
+    startingLP: 2,
+    lpProgression: "1 LP every other level",
+    armorMax: "Class 0 (none, unless Wear Armor purchased)",
+    canCastSpells: true,
+    spellSchools: ["Mysticism"],
+    description:
+      "Master of mental ability. Can enhance physical/mental skills and affect minds of others. May cast spells even while bound and gagged (but must see the target). Cannot create potions or scrolls from their own school. Mystic spell incants can only be heard by those with Meditate.",
+    exampleBuild: "Meditate (10), four 1st-level Mysticism spells (40), two 2nd-level Mysticism spells (40)",
+    notes: "Must always cast spells out loud, even when alone.",
+  },
+  {
+    name: "Sorcerer",
+    category: "Spell Casting",
+    startingLP: 2,
+    lpProgression: "1 LP every other level",
+    armorMax: "Class 0 (none, unless Wear Armor purchased)",
+    canCastSpells: true,
+    spellSchools: ["Arcane Arts"],
+    description:
+      "Master of the ancient Arcane Arts. Not aggressive in physical combat but a very potent adversary. Most spells can be converted to potions/scrolls. More packet-based spells than other schools. Scholarly type who must study regularly to gain spells.",
+    exampleBuild: "Literacy (10), Read Magic (10), two 1st-level Arcane Arts spells (20), one 2nd-level Arcane Arts spell (20), Staff (30)",
+  },
+  {
+    name: "Warlock",
+    category: "Spell Casting",
+    startingLP: 2,
+    lpProgression: "1 LP every other level",
+    armorMax: "Class 0 (none, unless Wear Armor purchased)",
+    canCastSpells: true,
+    spellSchools: ["Dark Arts"],
+    description:
+      "Practitioner of the Dark Arts — mysterious magic dealing with death and undead. Not all Warlocks are evil. May be illegal to practice Dark Arts inside town limits.",
+    exampleBuild: "Literacy (10), Read Magic (10), Small Weapon (15), two 1st-level Dark Arts spells (20), Astrology (30), 5 pts remaining",
+  },
+  {
+    name: "Assassin",
+    category: "Stealth",
+    startingLP: 2,
+    lpProgression: "1 LP every other level",
+    armorMax: "Class 1 (Leather)",
+    canCastSpells: false,
+    spellSchools: ["Scrolls only"],
+    description:
+      "Master of intrigue. Not adept in fighting skills but perfect for handling 'problems' — especially those with a heavy purse. Most skills outside stealth are costly.",
+    exampleBuild: "1-Handed Edged (30), Thrown Weapon (20), Backstab (10), Poison Lore x1 (10), Create Poison (20) OR Small Weapon (15), Backstab (10), Waylay (25), two Rumors (30), Instruct (10)",
+  },
+  {
+    name: "Rogue",
+    category: "Stealth",
+    startingLP: 2,
+    lpProgression: "1 LP every other level",
+    armorMax: "Class 2 (Studded leather)",
+    canCastSpells: false,
+    spellSchools: ["Scrolls only"],
+    description:
+      "Trained in the ways of stealth. Not all Rogues are thieves — some use skills to help their group through tricky situations. Smugglers, con-artists, locksmiths, pickpockets, and more.",
+    exampleBuild: "1-Handed Edged (30), Lock Picking I (20), Rumors (15), Backstab (15), 10 pts remaining",
+  },
+  {
+    name: "Bard",
+    category: "Stealth",
+    startingLP: 2,
+    lpProgression: "1 LP every other level",
+    armorMax: "Class 2 (Studded leather)",
+    canCastSpells: true,
+    spellSchools: ["Arcane Arts, Mysticism, or Elementalism (one chosen as primary; prereq costs 20 pts regardless of chart)"],
+    description:
+      "Usually an entertainer — minstrel, lore master, storyteller, dancer, or poet. May learn ancient magic and match wits with the craftiest rogues. Natural desire for adventure. If Arcane is primary school, each prerequisite costs 10 points.",
+    exampleBuild: "Small Weapon (15), two Rumors (20), Literacy (10), Read Magic (10), one 1st-level Arcane Arts spell (15), Backstab (20)",
+  },
+  {
+    name: "Brigand",
+    category: "Stealth",
+    startingLP: 2,
+    lpProgression: "1 LP every other level",
+    armorMax: "Class 2 (Studded leather)",
+    canCastSpells: false,
+    spellSchools: ["Cannot learn to cast spells"],
+    description:
+      "Dual-classed Warrior/Rogue, more Rogue than Warrior. Specializes in both fighting and stealth. Excellent at disarming traps and picking locks.",
+    exampleBuild: "1-Handed Edged (25), Buckler Shield (25), Rumors (20), Waylay (20)",
+  },
+];
+
+const LEVEL_CHART = [
+  { level: 1, spTotal: 60 },
+  { level: 2, spTotal: 110 },
+  { level: 3, spTotal: 210 },
+  { level: 4, spTotal: 335 },
+  { level: 5, spTotal: 485 },
+  { level: 6, spTotal: 685 },
+  { level: 7, spTotal: 935 },
+  { level: 8, spTotal: 1235 },
+  { level: 9, spTotal: 1635 },
+  { level: 10, spTotal: 2135 },
+  { level: 11, spTotal: 2735 },
+  { level: 12, spTotal: 3435 },
+];
+
+const FIGHTING_SKILLS = [
+  { name: "Awareness", prereq: "Toughness", codes: "I/O/E", description: "Diminishes first stealth attack (assassinate, backstab, waylay). Still takes 1 pt of damage but all other effects nullified. If 1 pt reaches LP, poison on blade still applies. Triggers before Awareness if both purchased. Call: 'Awareness'." },
+  { name: "Battle Rage", prereq: "None", codes: "O/D", description: "Remain conscious for 2 more LP after reaching zero LP while in battle. Character slips unconscious at end of combat. Final Strike still required to end the character's life." },
+  { name: "Critical Attack", prereq: "3rd Level", codes: "I/#/D", description: "First 3 times taken: +1 additional damage point per purchase (max +3, for total 4 damage). State 'Critical Attack' and damage prior to swing. Cannot stack with Backstab. Can be parried by another Critical Attack regardless of damage difference." },
+  { name: "Disarm", prereq: "2nd Level", codes: "I/#/D", description: "Causes opponent to drop a weapon. State 'Disarm' before swing; weapon must contact opponent's weapon. Opponent tosses weapon 3 feet away. Can be parried by Disarm or Parry. Two-Handed Weapons immune — call 'Two Handed'." },
+  { name: "Florentine", prereq: "Weapon skill", codes: "I/O", description: "Fight with two weapons — one in each hand. Off-hand must be small weapon (dagger). Not needed if already have one-handed weapon skill." },
+  { name: "Lethal Strike", prereq: "7th Level", codes: "I/#/D", description: "Edged or sharp-tipped weapon only. Bypasses armor, brings opponent's LP to zero. Armor remains intact. State 'Lethal Strike' before swing; must hit torso. Can only be parried by another Lethal Strike (consumes both)." },
+  { name: "Parry", prereq: "Weapon skill", codes: "I/#/D", description: "Negates effects of one Disarm, Critical Attack, Sever, or Trip — including all damage from that attack. State 'Parry' immediately after opponent's special attack. Cannot parry Lethal Strike. Must have weapon in hand." },
+  { name: "Sever", prereq: "4th Level", codes: "I/#/D", description: "Edged weapon only. Severs tendon of one limb (arm or leg only). Severed arm: must drop items. Severed leg: opponent falls. State 'Sever' before swing. Magical healing restores limb; Tend Wounds or Bless spell does not. Can be parried by another Sever." },
+  { name: "Strength", prereq: "None", codes: "I/#/E", description: "Feat of great physical strength (as per Strength spell). If used in attack, recipient may call Critical Attack 2 or use to accomplish great strength tasks. Will NOT break normal or magical locks, chests, snares, or paralyze effects. Lasts 10 minutes for timed tasks." },
+  { name: "Toughness", prereq: "None", codes: "O/E", description: "Resists the first Waylay attack. Still takes 1 point of damage; all other effects nullified. Triggers before Awareness if both are purchased. Call: 'Toughness'." },
+  { name: "Trip", prereq: "Weapon skill", codes: "I/#/D", description: "Dirty trick. Must hit opponent in leg with non-missile weapon. State 'Trip' before swing. Target must touch stomach or back to the ground but may get up immediately. Causes 1 damage. Parried by another Trip (both negated). Trip active until legs are hit." },
+  { name: "Two-Weapon Combo I", prereq: "Florentine", codes: "O", description: "Extends Florentine to carry up to a short sword instead of dagger in off-hand." },
+  { name: "Two-Weapon Combo II", prereq: "Two-Weapon Combo I", codes: "O", description: "Extends Two-Weapon Combo I to carry up to a long sword instead of short sword in off-hand." },
+  { name: "Ultimate Enemy", prereq: "5th Level", codes: "O", description: "Choose one non-adventurer race as most hated enemy. Gain one Critical Attack 2 per event against that enemy per character level. These are separate from other purchased Critical Attack skills." },
+];
+
+const WEAPON_SKILLS = [
+  { name: "Bow", prereq: "None", codes: "I/O", description: "Includes short and long bows. Must be 25 lb. pull or less. Many safety restrictions apply. Restricted from use during nighttime hours. Aim for stomach region or lower." },
+  { name: "One-Handed Blunt", prereq: "None", codes: "I/O", description: "Includes clubs, maces, hammers, etc." },
+  { name: "One-Handed Edged", prereq: "None", codes: "I/O", description: "Includes long, short, and broad swords, daggers, scimitars, etc." },
+  { name: "Polearm/Spear", prereq: "None", codes: "I/O", description: "Includes pole-axes, halberds, spears, etc." },
+  { name: "Small Weapon", prereq: "None", codes: "I/O", description: "Includes dagger, sap, hand axe, small clubs, etc. Not needed if you have One-Handed Edged or Blunt (choose appropriate type)." },
+  { name: "Shield, Buckler", prereq: "None", codes: "I/O", description: "Buckler shield (12\" round only). May wear one per arm (skill taken twice for both). Shields used for defense only — no sword-shields or spiked shields." },
+  { name: "Shield, Normal", prereq: "None", codes: "I/O", description: "Normal shield (max 24\"). Defense only." },
+  { name: "Shield, Tower", prereq: "None", codes: "I/O", description: "Tower shield (22\" x 36\", max shoulder to knee height). Defense only. Dwarves cannot use." },
+  { name: "Staff", prereq: "None", codes: "I/O", description: "Allows use of quarter, Jo, or Bo staff. Quarter staves must be used with two hands at all times." },
+  { name: "Two-Handed Blunt", prereq: "None", codes: "I/O", description: "Includes warhammers, large clubs, etc. Must be wielded with two hands at all times." },
+  { name: "Two-Handed Edged", prereq: "None", codes: "I/O", description: "Includes claymores, battle axes, etc. Must be wielded with two hands. Cannot be disarmed via Disarm skill (call 'Two Handed'). Elves and Half-Elves cannot use (except staff)." },
+  { name: "Thrown Weapon", prereq: "None", codes: "I/M", description: "Includes knives, stars, hammers, axes, spears, etc. Choose one type to be proficient in. Cannot be used in hand-to-hand combat. Cannot be used for Backstab, Waylay, Assassinate, Trip, or Disarm." },
+];
+
+const MAGICAL_SKILLS = [
+  { name: "Alchemy", prereq: "Potion Lore I", codes: "I/M", description: "Creates magical potions with effects similar to spells. Allows experimentation and manufacture of unique potions. Purchased in pyramid format. Potions expire after 6 months." },
+  { name: "Animal Likeness", prereq: "3rd Level", codes: "O/E", description: "Choose one animal: Bear (+1 AP and +1 LP), Boar (Battle Rage), Cat (Luck), Fox (Avoid Traps), Opossum (Mask of Death — 9th level Mysticism), Snake (immunity to first poison), Turtle (Toughness), Weasel (Escape Bonds II), Lizard (Regenerate)." },
+  { name: "Astrology", prereq: "None", codes: "I/O", description: "Receive random, vague information about a future event. Includes divination by stars, card reading, crystal ball scrying, bones, runes, palm reading, etc." },
+  { name: "Banish Undead", prereq: "None", codes: "O/L", description: "Hold forth deity's holy symbol and state incant. Undead at or below your level flee the area. If turned creatures are attacked, banishing effect is negated. Same caster may only banish same undead once." },
+  { name: "Commune with Nature", prereq: "None", codes: "I/O/U", description: "Prerequisite for Elementalism magic. Represents attunement with nature (earth, plants, animals, weather). Allows communication with trees via 'Treespeak' notes found in-game on trees or animals." },
+  { name: "Create Holy Water", prereq: "3rd Level", codes: "I/M/O", description: "Bless one vial of holy water per time taken (white spell packet with deity symbol). Can cause variable damage to undead. Anyone can throw holy water. May only be thrown once. Lasts 6 months." },
+  { name: "Divine Intervention", prereq: "6th Level", codes: "O/E", description: "After one hour of prayer, receive one of: (a) restore to full LP at any time, (b) double casting level and resistance for one hour, or (c) divine answer to one question at the House of Judgment." },
+  { name: "Faith", prereq: "None", codes: "I/O", description: "Prerequisite for Divine Magic. Represents allegiance and worship of a deity. Must declare deity when purchased. Choose from 13 deities or pan-deific." },
+  { name: "Healing Elixir", prereq: "Nature Lore I", codes: "I/M/O", description: "Create elixirs/salves with healing effects. One elixir per time taken per event; heals 2 LP when applied. Player must supply own bottles. Cost does not increase with multiple purchases." },
+  { name: "Meditate", prereq: "None", codes: "I/O", description: "Prerequisite for Mysticism magic. Deep mental concentration and awareness. May allow knowing when another Mystic is casting a spell. Only those with Meditate can hear a Mystic's spell incantation." },
+  { name: "Potion Craft", prereq: "6th Level & Alchemy", codes: "I/#", description: "Research and create new potions. See Potion Craft rules." },
+  { name: "Potion Lore", prereq: "None", codes: "I/M", description: "Determine what a potion, balm, or oil is without drinking/using it. Each purchase grants one letter code. Characters must role-play the identification using taste, touch, smell, and sight." },
+  { name: "Read Magic", prereq: "Literacy", codes: "I/O", description: "Prerequisite for Arcane Arts and Dark Arts. Enables reading and writing of magical script. Anyone with this skill can employ magical scrolls." },
+  { name: "Scroll Craft", prereq: "4th Level & Read Magic", codes: "I/#", description: "Create magical scrolls of known spells for anyone with Read Magic to use. Scrolls must be written in magic ink with appropriate paper. Mystic spells cannot be rendered into scrolls. Max ¼ of spells may become scrolls." },
+  { name: "Spell Craft", prereq: "7th Level & Scroll Craft", codes: "I/O", description: "Research and create new spells." },
+];
+
+const STEALTH_SKILLS = [
+  { name: "Appraise", prereq: "None", codes: "I/O/U", description: "Evaluate value of gems, jewelry, and certain in-game items. Non-listed items may be brought to the Trading Post for estimation. Players also receive a list of common goods and their values." },
+  { name: "Assassinate", prereq: "6th Level & Backstab x3", codes: "I/#/E", description: "Bypasses armor and brings victim to zero LP, simultaneously dealing a Final Strike. Attack must be by surprise. State 'Assassinate' when attacking. Cannot be used with missile weapons. Armor remains intact." },
+  { name: "Avoid Traps", prereq: "None", codes: "I/#/E", description: "Disregard effects of a sprung trap. Call: 'Avoid Traps'. See Traps section for full details." },
+  { name: "Backstab", prereq: "Edged Weapon", codes: "I/%/D", description: "+1 additional damage per purchase (max 3 times = +3 damage, total 4). Attack must be by surprise. State 'Backstab (damage)'. Cannot be used with missile weapons. Cannot stack with other fighting skills. One backstab per day per time taken." },
+  { name: "Create Poison", prereq: "Poison Lore", codes: "I/E", description: "Create any poison type (Blade, Contact, or Ingestive). One poison per time taken. Must be purchased in four-tower format. Poison Lore must equal Create Poison level." },
+  { name: "Escape Bonds I", prereq: "None", codes: "I/M/E", description: "Escape from hand-tied bonds (rope). Takes 1 minute." },
+  { name: "Escape Bonds II", prereq: "Escape Bonds I", codes: "I/M/E", description: "Escape from metal bonds (manacles, shackles) or hand-tied bonds. Takes 1 minute." },
+  { name: "Escape Bonds III", prereq: "Escape Bonds II", codes: "I/M/E", description: "Escape from restraining devices (stocks, cages). May also escape hand-tied or metal bonds. Takes 1 minute." },
+  { name: "Evade", prereq: "7th Level", codes: "I/E", description: "Negate one packet-based spell, effect (acid damage), or missile weapon. Must see the attack coming. Role-play the evasion. Call: 'Evade'." },
+  { name: "Information Gathering", prereq: "Rumors", codes: "I/O/E", description: "Receive written information about a chosen topic. Must submit clearly stated question to Info Gathering Coordinator with named NPC contact before the Friday before an event. Late/incomplete requests result in a random rumor." },
+  { name: "Lock Picking I", prereq: "None", codes: "I/O/U", description: "Receive lock picks 1, 2, and 3. Attempt to open mechanical locks without key." },
+  { name: "Lock Picking II", prereq: "3rd Level & Lock Picking I", codes: "I/O/U", description: "Receive lock picks 4, 5, and 6. Allows creation of a skeleton key." },
+  { name: "Lock Picking III", prereq: "5th Level & Lock Picking II", codes: "I/O/U", description: "Receive lock picks 7, 8, and 9." },
+  { name: "Magic Lock Picking", prereq: "7th Level & Lock Picking III", codes: "I/O/U", description: "Allows picking of magical locks." },
+  { name: "Poison Lore", prereq: "None", codes: "I/#/E", description: "Detect poison on one object per day per time taken. Also provides info on poison components and identification. Cannot create antidotes. Prerequisite for Create Poison. Must always have Poison Lore equal to Create Poison level." },
+  { name: "Set Traps", prereq: "None", codes: "I/#/E", description: "Set traps in-game. See Traps section for full details." },
+  { name: "Specialty Poison", prereq: "Create Poison x3", codes: "I/O", description: "Learn specialty poisons. Each poison must be learned and updated separately." },
+  { name: "Waylay", prereq: "None", codes: "I/O/L", description: "Render victim unconscious for 10 minutes by striking upper back with weapon hilt. Attack must be by surprise. Cannot be used during combat or with missile weapons. Metal helmets negate it. One use per weekend per character level. Awakened by healing spell or Awaken spell." },
+];
+
+const GENERAL_SKILLS = [
+  { name: "Armorsmith, Leather", prereq: "None", codes: "I/#/D", description: "Manufacture or repair leather armor at 2 AP per day per time taken. Takes 5 minutes per AP to repair." },
+  { name: "Armorsmith, Metal", prereq: "None", codes: "I/#/D", description: "Manufacture or repair metal armor at 2 AP per day per time taken. Takes 5 minutes per AP to repair." },
+  { name: "Craftsman", prereq: "None", codes: "I/#/E", description: "Knowledge of a trade. Receive in-game money at start of each game weekend: 1st purchase = Beginner (2 Flange); 2nd = Expert (5 Flange); 3rd = Master (1 Noble). May be taken up to 3 times." },
+  { name: "Health", prereq: "None", codes: "O", description: "Gain 1 LP per X levels based on class: Warrior = every 2 levels; Hybrid & Stealth = every 3 levels; Caster = every 4 levels. Example: 7th-level Warrior receives 3 extra LP." },
+  { name: "Instruct", prereq: "None", codes: "M", description: "Teach another character any one skill you currently know. One skill per time taken per weekend. Provides an Instruct card. Instruct cards carry over between weekends if unused." },
+  { name: "Legend Lore", prereq: "None", codes: "O", description: "Provides knowledge of heroic tales, folklore, myths, and legends. May have in-game relevance." },
+  { name: "Literacy", prereq: "None", codes: "I/O/U", description: "Allows reading and writing of the most common language of the realm. Without this skill, players must role-play illiteracy." },
+  { name: "Luck", prereq: "None", codes: "O/E", description: "When brought to zero LP, may regain consciousness after 10 minutes with 1 LP. Does not work if dealt a Final Strike." },
+  { name: "Nature Lore", prereq: "None", codes: "I/O", description: "Information on plants, animals, and minerals. Random info on monsters, races, and other creatures." },
+  { name: "Regenerate", prereq: "None", codes: "#/D", description: "Regenerate 1 LP per time taken after 4 hours of sleep. Maximum 4 times total." },
+  { name: "Resist", prereq: "None", codes: "#/U", description: "Choose one: Poison, Disease, Fear, Sleep, or Charm (enthrall/command/mind slave spells). Resist at +2 levels. OR choose one school of magic: resist level-based spells from that school at +1 level. Each choice taken only once." },
+  { name: "Rumors", prereq: "None", codes: "I/M", description: "Information on people, plots, and events based on hearsay, rumor, assumption, and fact. Read at time received and turned back in. May only be written down with Literacy skill." },
+  { name: "Tend Wounds", prereq: "None", codes: "I/O/U", description: "Tend a mortally wounded character (at 0 LP) so they are no longer dying and regain consciousness with 1 LP. Cannot heal anyone above 0 LP; cannot restore life. Takes 5 minutes." },
+  { name: "Theology", prereq: "None", codes: "I/O", description: "In-depth knowledge of religion and religious events. May provide info on religious secret activities." },
+  { name: "Weapon Craft, Metal", prereq: "None", codes: "I/#", description: "Manufacture metal weapons (requires appropriate materials and resources, e.g. steel and a forge)." },
+  { name: "Weapon Craft, Wood", prereq: "None", codes: "I/#", description: "Manufacture wood weapons (requires appropriate materials and resources)." },
+  { name: "Wear Armor", prereq: "None", codes: "O", description: "Wear armor one class higher than allowed by character class (e.g. Rogues could wear chain mail). Racial, Clerical, and Holy Warrior restrictions still apply." },
+];
+
+const MAGIC_SCHOOLS = [
+  {
+    name: "Arcane Arts",
+    prereqs: ["Literacy", "Read Magic"],
+    incant: "I conjure the Arcane Arts to…",
+    users: "Sorcerer, Arcane Warrior, Bard",
+    description: "Most offensive and versatile type of magic. More packet-based spells helpful in combat. More potions and scrolls can be created from this school than any other. Draws power from energies on the earth: light, life, tides, gravity, stars.",
+    spellCost: { primary: "10 pts/level", adjacent: "25 pts/level", opposing: "50 pts/level", hybridPrimary: "15 pts/level", hybridOther: "35 pts/level" },
+  },
+  {
+    name: "Dark Arts",
+    prereqs: ["Literacy", "Read Magic"],
+    incant: "I invoke the Dark Arts to…",
+    users: "Warlock, Bard (secondary)",
+    description: "Secretive magic drawing power from darkness, death, disease, rot, decay, fear, nightmares, and the undead. Not all Warlocks are evil. May be illegal inside town limits.",
+    spellCost: { primary: "10 pts/level", adjacent: "25 pts/level", opposing: "50 pts/level", hybridPrimary: "15 pts/level", hybridOther: "35 pts/level" },
+  },
+  {
+    name: "Divine Magic",
+    prereqs: ["Faith"],
+    incant: "Through the aid of [deity name] I…",
+    users: "Cleric, Holy Warrior only",
+    description: "Separate entity from all other schools. Draws upon power of a deity. Usually grants healing, defensive magic, and non-harmful offensive magic. Very effective against undead. For pan-deific casters, use 'the gods' in place of deity name.",
+    spellCost: { primary: "10 pts/level", adjacent: "25 pts/level (Clerics only)", opposing: "Cannot be learned by non-Clerics/HW" },
+  },
+  {
+    name: "Elementalism",
+    prereqs: ["Commune with Nature"],
+    incant: "I call upon the elements to…",
+    users: "Druid, Ranger, Bard",
+    description: "Both offensive and defensive, equally balanced. Draws power from nature and all living things: fire, air, water, and earth.",
+    spellCost: { primary: "10 pts/level", adjacent: "25 pts/level", opposing: "50 pts/level", hybridPrimary: "15 pts/level", hybridOther: "35 pts/level" },
+  },
+  {
+    name: "Mysticism",
+    prereqs: ["Meditate"],
+    incant: "With the power of my mind I…",
+    users: "Mystic, Mystic Warrior, Bard",
+    description: "Draws power from the mind of the caster and sentient beings. Mind over body techniques and control/manipulation of others' minds. Incantation can only be heard by those with Meditate skill. Cannot be rendered into scrolls. Mystics may cast while bound and gagged (must see target).",
+    spellCost: { primary: "10 pts/level", adjacent: "25 pts/level", opposing: "50 pts/level", hybridPrimary: "15 pts/level", hybridOther: "35 pts/level" },
+  },
+];
+
+const ARMOR_CLASSES = [
+  { class: 0, ap: 0, types: "No armor allowed", wornBy: "Sorcerer, Mystic, Warlock (unless Wear Armor purchased)" },
+  { class: 1, ap: 1, types: "Furs, Hides, Padded, Soft Leather", wornBy: "Druid, Assassin" },
+  { class: 2, ap: 2, types: "Boiled (hard) Leather, Studded Leather, Ring Mail, cuir-bouilli", wornBy: "Mystic Warrior, Arcane Warrior, Brigand, Rogue, Bard" },
+  { class: 3, ap: 3, types: "Chain Mail, Scale Mail, Splint Mail, Breastplate (only)", wornBy: "Bounty Hunter, Ranger, Cleric" },
+  { class: 4, ap: 4, types: "Plate Mail, Plate Armor, Brigandine, Double-Chain Mail (6-in-1)", wornBy: "Warrior, Holy Warrior" },
+];
+
+const ARMOR_EXTRAS = [
+  { area: "Hands", notes: "Both hands must be covered" },
+  { area: "Forearms", notes: "Guards must cover at least 60% of both forearms" },
+  { area: "Elbows", notes: "Guards must cover both elbows" },
+  { area: "Upper Arms", notes: "Must cover from shoulder to elbow" },
+  { area: "Groin", notes: "Must be fully covered" },
+  { area: "Helmet", notes: "Must cover entire standard hairline" },
+  { area: "Face", notes: "Must cover 80% of face" },
+  { area: "Neck", notes: "Must cover entire neck and throat" },
+  { area: "Shoulders", notes: "Both shoulders must be covered" },
+  { area: "Shins", notes: "Guards must cover at least 60% of both shins" },
+  { area: "Knees", notes: "Guards must cover both knees" },
+  { area: "Thigh", notes: "Guards must cover at least 60% of both thighs" },
+  { area: "Feet", notes: "Both must be fully covered (sides and top)" },
+];
+
+const WEAPON_SPECS = [
+  { type: "One-Handed Blunt", maxHandle: "10\"", maxBlade: "—", overall: "40\"" },
+  { type: "Two-Handed Blunt", maxHandle: "14\"", maxBlade: "—", overall: "54\"" },
+  { type: "Staff", maxHandle: "—", maxBlade: "—", overall: "72\"" },
+  { type: "Short Sword", maxHandle: "9\"", maxBlade: "28\"", overall: "36\"" },
+  { type: "Long Sword", maxHandle: "12\"", maxBlade: "38\"", overall: "46\"" },
+  { type: "One-Handed Axe", maxHandle: "10\"", maxBlade: "16\"", overall: "40\"" },
+  { type: "Dagger", maxHandle: "8\"", maxBlade: "18\"", overall: "24\"" },
+  { type: "Spear (1H)", maxHandle: "—", maxBlade: "12\"", overall: "48\"" },
+  { type: "Two-Handed Sword", maxHandle: "14\"", maxBlade: "48\"", overall: "60\"" },
+  { type: "Two-Handed Axe", maxHandle: "14\"", maxBlade: "20\"", overall: "54\"" },
+  { type: "Two-Handed Spear", maxHandle: "64\"", maxBlade: "18\"", overall: "72\"" },
+  { type: "Missile Dagger", maxHandle: "—", maxBlade: "—", overall: "10\"" },
+  { type: "Dart", maxHandle: "—", maxBlade: "—", overall: "14\"" },
+  { type: "Javelin", maxHandle: "—", maxBlade: "8\"", overall: "40\"" },
+  { type: "Thrown Axe", maxHandle: "—", maxBlade: "4\"", overall: "10\"" },
+  { type: "Thrown Hammer", maxHandle: "—", maxBlade: "—", overall: "10\"" },
+  { type: "Rock", maxHandle: "—", maxBlade: "—", overall: "8\"–12\"" },
+  { type: "Arrow", maxHandle: "—", maxBlade: "—", overall: "28\" max" },
+  { type: "Buckler Shield", maxHandle: "—", maxBlade: "—", overall: "12\" round only" },
+  { type: "Normal Shield", maxHandle: "—", maxBlade: "—", overall: "24\"" },
+  { type: "Tower Shield", maxHandle: "—", maxBlade: "—", overall: "22\" × 36\" max (shoulder to knee)" },
+];
+
+const COMMAND_WORDS = [
+  { word: "HOLD", description: "Stop ALL action in surrounding game area. Primary use: safety or serious situations. Everyone stops and echoes the Hold. Resume ONLY when someone says 'Play-on'. Never use for in-game purposes." },
+  { word: "CAUTION", description: "Mini-Hold for one small portion of game play (one-on-one). Warn an adventurer of a nearby danger (unseen obstruction, hole, 'dead' body). Combat resumes with Play-on after hazard is avoided." },
+  { word: "CLARIFY", description: "Used to determine a rule or spell effect's proper consequence. E.g. 'Clarify, how long does Sleep last?' Creates a personal hold between two involved parties; neither may attack until 'Play-on' is called." },
+  { word: "PLAY-ON", description: "Resume game play after HOLD or CAUTION. Issued by the person who originally called the command word. Everyone returns to their position when the Hold was called." },
+  { word: "RUNNING", description: "Verbal statement by a person who wants to flee at night but feels unsafe to actually run. NPC chasing will follow at same pace, neither gaining nor losing ground." },
+];
+
+const DAMAGE_PROGRESSION = [
+  "Magical Protective Armor Spells",
+  "Other Magical Protective Armors",
+  "Armor Points (AP)",
+  "Magical Life-Enhancing Spells",
+  "Other Magical Life Protection",
+  "Life Points (LP)",
+];
+
+const MONSTER_ATTACKS = [
+  { name: "Acid", representation: "Squirting water", damage: "1 point per hit; no resistance stated unless level declared" },
+  { name: "Blindness", representation: "Spell packet or level-based spell", damage: "As stated. Cannot target spells or use fighting skills while blind. Keep eyes open for safety." },
+  { name: "Fire Breath", representation: "Large barrage of spell packets (typically 6 at once)", damage: "As stated. Count only damage from ONE packet per fire breath attack." },
+  { name: "Level Drain", representation: "Physical attack", damage: "1 pt physical + stated level drain. Character drops stated number of levels for 1 hour per level drained (until Heal spell). All abilities function at drained level." },
+  { name: "Paralyze", representation: "Touch/packet attack; call 'Paralyze poison' or 'Spell Effect Paralyze [level]'", damage: "1 pt physical. Entire body rigid for 10 minutes — no movement, speaking, casting, or fighting. Mystics may still cast. Heal spell removes instantly." },
+  { name: "Phasing", representation: "Spirit hood or arms over head", damage: "None. Creature instantly moves to another realm/dimension and is out-of-game." },
+  { name: "Spell Effect", representation: "Touch/packet or level-based", damage: "Innate spell cast without full incant. Cannot be interrupted. Works under normal spell resistance rules." },
+  { name: "Sticks and Stones", representation: "Physical attack (foam stones/logs)", damage: "1 pt physical + called effect (Agony, Critical Attack, or Lethal Strike)." },
+];
+
+// ─────────────────────────────────────────────────────────────────────────────
+// UTILITY
+// ─────────────────────────────────────────────────────────────────────────────
+const TABS = [
+  { id: "overview", label: "Overview" },
+  { id: "races", label: "Races" },
+  { id: "classes", label: "Classes" },
+  { id: "skills", label: "Skills" },
+  { id: "combat", label: "Combat" },
+  { id: "magic", label: "Magic" },
+  { id: "armor", label: "Armor & Weapons" },
+  { id: "quick", label: "Quick Ref" },
+];
+
+const SKILL_CATEGORIES = [
+  { id: "fighting", label: "Fighting", data: FIGHTING_SKILLS },
+  { id: "weapon", label: "Weapon", data: WEAPON_SKILLS },
+  { id: "magical", label: "Magical", data: MAGICAL_SKILLS },
+  { id: "stealth", label: "Stealth", data: STEALTH_SKILLS },
+  { id: "general", label: "General", data: GENERAL_SKILLS },
+];
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SUB-COMPONENTS
+// ─────────────────────────────────────────────────────────────────────────────
+function Badge({ text, color }) {
+  const colors = {
+    green: "bg-green-100 text-green-800",
+    blue: "bg-blue-100 text-blue-800",
+    red: "bg-red-100 text-red-800",
+    yellow: "bg-yellow-100 text-yellow-800",
+    purple: "bg-purple-100 text-purple-800",
+    gray: "bg-gray-100 text-gray-700",
+    indigo: "bg-indigo-100 text-indigo-800",
+  };
+  return (
+    <span className={`inline-block text-xs font-semibold px-2 py-0.5 rounded-full mr-1 mb-1 ${colors[color] || colors.gray}`}>
+      {text}
+    </span>
+  );
+}
+
+function Card({ children, className = "" }) {
+  return <div className={`bg-white rounded-lg border border-gray-200 shadow-sm p-4 ${className}`}>{children}</div>;
+}
+
+function SectionTitle({ children }) {
+  return <h2 className="text-2xl font-bold text-indigo-900 mb-4 border-b border-indigo-100 pb-2">{children}</h2>;
+}
+
+function OverviewTab() {
+  return (
+    <div>
+      <SectionTitle>Fantasy Quest LARP — Rulebook Overview</SectionTitle>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <Card>
+          <h3 className="font-bold text-lg text-indigo-800 mb-2">About Fantasy Quest</h3>
+          <p className="text-sm text-gray-700 leading-relaxed">
+            Fantasy Quest is a live-action role-playing game established in 1993. It uses "living theater" improv in a medieval-fantasy setting. The game is designed with a focus on role-playing over hack-and-slash combat, creating as realistic a setting as possible in a world where magic is commonplace.
+          </p>
+        </Card>
+        <Card>
+          <h3 className="font-bold text-lg text-indigo-800 mb-2">Character Creation</h3>
+          <ul className="text-sm text-gray-700 space-y-1">
+            <li>• Start with <strong>90 Character Points</strong></li>
+            <li>• Choose Race, Class, and Skills</li>
+            <li>• All classes start at <strong>2 LP</strong> (Warriors start at <strong>3 LP</strong>)</li>
+            <li>• Starting money: <strong>3 copper flange</strong></li>
+            <li>• New players may re-create before their 3rd event</li>
+          </ul>
+        </Card>
+        <Card>
+          <h3 className="font-bold text-lg text-indigo-800 mb-2">Skill Points &amp; Level</h3>
+          <p className="text-sm text-gray-700 mb-2">Skills are purchased with skill points earned at events. Level advances as SP total grows.</p>
+          <div className="overflow-x-auto">
+            <table className="text-xs w-full border-collapse">
+              <thead>
+                <tr className="bg-indigo-50">
+                  <th className="border border-indigo-100 px-2 py-1 text-left">Level</th>
+                  <th className="border border-indigo-100 px-2 py-1 text-right">SP Total</th>
+                  <th className="border border-indigo-100 px-2 py-1 text-left">Level</th>
+                  <th className="border border-indigo-100 px-2 py-1 text-right">SP Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                {LEVEL_CHART.reduce((rows, entry, i) => {
+                  if (i % 2 === 0) rows.push([entry]);
+                  else rows[rows.length - 1].push(entry);
+                  return rows;
+                }, []).map((pair, i) => (
+                  <tr key={i} className={i % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+                    <td className="border border-gray-100 px-2 py-1 font-medium">{pair[0].level}</td>
+                    <td className="border border-gray-100 px-2 py-1 text-right">{pair[0].spTotal.toLocaleString()}</td>
+                    {pair[1] ? (
+                      <>
+                        <td className="border border-gray-100 px-2 py-1 font-medium">{pair[1].level}</td>
+                        <td className="border border-gray-100 px-2 py-1 text-right">{pair[1].spTotal.toLocaleString()}</td>
+                      </>
+                    ) : <><td /><td /></>}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Card>
+        <Card>
+          <h3 className="font-bold text-lg text-indigo-800 mb-2">Skill Codes</h3>
+          <ul className="text-sm text-gray-700 space-y-1">
+            <li><strong>I</strong> — Instruction required to take this skill</li>
+            <li><strong>O</strong> — One-time purchase only</li>
+            <li><strong>M</strong> — Multiple purchases; cost does NOT increase</li>
+            <li><strong>#</strong> — Multiple purchases; cost increases ×1 each time</li>
+            <li><strong>%</strong> — Multiple purchases; 4th+ purchase cost halved</li>
+            <li className="border-t border-gray-100 pt-1 mt-1"><strong>E</strong> — Once per event</li>
+            <li><strong>D</strong> — Once per day</li>
+            <li><strong>L</strong> — Once per level per weekend</li>
+            <li><strong>U</strong> — Unlimited uses per event</li>
+          </ul>
+        </Card>
+      </div>
+      <Card>
+        <h3 className="font-bold text-lg text-indigo-800 mb-2">Death &amp; Dying</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm text-gray-700">
+          <div>
+            <p className="font-semibold text-red-700 mb-1">0 LP → Unconscious</p>
+            <p>Must be tended or healed within <strong>30 minutes</strong> or the character dies. May choose to die in 10 minutes. 10 seconds to whisper final words.</p>
+          </div>
+          <div>
+            <p className="font-semibold text-red-700 mb-1">Final Strike</p>
+            <p>Hold weapon to fallen character's chest and state "Final Strike, you are now dead." Only a Raise Dead spell can restore after this.</p>
+          </div>
+          <div>
+            <p className="font-semibold text-red-700 mb-1">Final Death</p>
+            <p>Start new character at ½ old SP total (max 210). Minimum 90 SP. +10 SP per level above 3rd lost.</p>
+          </div>
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+function RacesTab() {
+  const [selected, setSelected] = useState(null);
+  return (
+    <div>
+      <SectionTitle>Character Races</SectionTitle>
+      <p className="text-sm text-gray-600 mb-4">There are 4 primary races and 3 half-races. Half-races are always ½ Human and role-played more toward the non-human side.</p>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">
+        {RACES.map((r) => (
+          <button
+            key={r.name}
+            onClick={() => setSelected(selected?.name === r.name ? null : r)}
+            className={`p-3 rounded-lg border-2 text-left transition-all ${selected?.name === r.name ? "border-indigo-500 bg-indigo-50" : "border-gray-200 bg-white hover:border-indigo-300"}`}
+          >
+            <div className="font-bold text-sm text-indigo-900">{r.name}</div>
+            <Badge text={r.name.startsWith("Half") ? "Half Race" : "Core Race"} color={r.name.startsWith("Half") ? "yellow" : "indigo"} />
+          </button>
+        ))}
+      </div>
+      {selected && (
+        <Card className="border-indigo-200">
+          <div className="flex items-start justify-between mb-2">
+            <h3 className="text-xl font-bold text-indigo-900">{selected.name}</h3>
+            <Badge text={selected.name.startsWith("Half") ? "Half Race" : "Core Race"} color={selected.name.startsWith("Half") ? "yellow" : "indigo"} />
+          </div>
+          <p className="text-sm text-gray-700 mb-3 leading-relaxed">{selected.description}</p>
+          {selected.costumeReq && selected.costumeReq !== "No requirements." && (
+            <div className="mb-3">
+              <p className="text-xs font-semibold text-purple-700 uppercase tracking-wide mb-1">Costume Requirements</p>
+              <p className="text-sm text-gray-700 bg-purple-50 rounded p-2">{selected.costumeReq}</p>
+            </div>
+          )}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div>
+              <p className="text-xs font-semibold text-green-700 uppercase tracking-wide mb-1">Bonuses</p>
+              <ul className="space-y-1">
+                {selected.bonuses.map((b, i) => (
+                  <li key={i} className="text-sm text-gray-700 flex items-start gap-1"><span className="text-green-500 mt-0.5">✓</span>{b}</li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <p className="text-xs font-semibold text-red-700 uppercase tracking-wide mb-1">Limitations</p>
+              <ul className="space-y-1">
+                {selected.limitations.map((l, i) => (
+                  <li key={i} className="text-sm text-gray-700 flex items-start gap-1"><span className="text-red-400 mt-0.5">✗</span>{l}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </Card>
+      )}
+    </div>
+  );
+}
+
+function ClassesTab() {
+  const [selected, setSelected] = useState(null);
+  const [filter, setFilter] = useState("All");
+  const categories = ["All", "Fighting", "Spell Casting", "Stealth"];
+  const filtered = filter === "All" ? CLASSES : CLASSES.filter((c) => c.category === filter);
+
+  return (
+    <div>
+      <SectionTitle>Character Classes</SectionTitle>
+      <p className="text-sm text-gray-600 mb-3">There are 15 classes. All start with 2 LP at 1st level except Warriors (3 LP). New characters start with 90 Character Points.</p>
+      <div className="flex gap-2 mb-4 flex-wrap">
+        {categories.map((c) => (
+          <button
+            key={c}
+            onClick={() => setFilter(c)}
+            className={`px-3 py-1 rounded-full text-sm font-medium border transition-all ${filter === c ? "bg-indigo-600 text-white border-indigo-600" : "bg-white text-gray-700 border-gray-300 hover:border-indigo-400"}`}
+          >
+            {c}
+          </button>
+        ))}
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mb-4">
+        {filtered.map((cls) => (
+          <button
+            key={cls.name}
+            onClick={() => setSelected(selected?.name === cls.name ? null : cls)}
+            className={`p-3 rounded-lg border-2 text-left transition-all ${selected?.name === cls.name ? "border-indigo-500 bg-indigo-50" : "border-gray-200 bg-white hover:border-indigo-300"}`}
+          >
+            <div className="font-bold text-sm text-indigo-900">{cls.name}</div>
+            <div className="flex flex-wrap mt-1">
+              <Badge text={cls.category} color={cls.category === "Fighting" ? "blue" : cls.category === "Spell Casting" ? "purple" : "yellow"} />
+              <Badge text={`${cls.startingLP} LP`} color="green" />
+              <Badge text={cls.armorMax.split(" ")[0] + " " + cls.armorMax.split(" ")[1]} color="gray" />
+            </div>
+          </button>
+        ))}
+      </div>
+      {selected && (
+        <Card className="border-indigo-200">
+          <div className="flex flex-wrap items-start gap-2 mb-3">
+            <h3 className="text-xl font-bold text-indigo-900 mr-2">{selected.name}</h3>
+            <Badge text={selected.category} color={selected.category === "Fighting" ? "blue" : selected.category === "Spell Casting" ? "purple" : "yellow"} />
+          </div>
+          <p className="text-sm text-gray-700 mb-4 leading-relaxed">{selected.description}</p>
+          {selected.notes && <p className="text-sm text-amber-700 bg-amber-50 rounded p-2 mb-3">⚠ {selected.notes}</p>}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4 text-center">
+            <div className="bg-green-50 rounded p-2">
+              <div className="text-xs text-gray-500 font-medium">Starting LP</div>
+              <div className="text-lg font-bold text-green-700">{selected.startingLP}</div>
+            </div>
+            <div className="bg-blue-50 rounded p-2">
+              <div className="text-xs text-gray-500 font-medium">LP Progression</div>
+              <div className="text-xs font-semibold text-blue-700 mt-1">{selected.lpProgression}</div>
+            </div>
+            <div className="bg-gray-50 rounded p-2">
+              <div className="text-xs text-gray-500 font-medium">Max Armor</div>
+              <div className="text-xs font-semibold text-gray-700 mt-1">{selected.armorMax}</div>
+            </div>
+            <div className="bg-purple-50 rounded p-2">
+              <div className="text-xs text-gray-500 font-medium">Can Cast</div>
+              <div className="text-xs font-semibold text-purple-700 mt-1">{selected.spellSchools.join(", ")}</div>
+            </div>
+          </div>
+          <div className="bg-indigo-50 rounded p-3">
+            <p className="text-xs font-semibold text-indigo-700 uppercase tracking-wide mb-1">Example 1st-Level Build</p>
+            <p className="text-sm text-gray-700">{selected.exampleBuild}</p>
+          </div>
+        </Card>
+      )}
+    </div>
+  );
+}
+
+function SkillsTab() {
+  const [category, setCategory] = useState("fighting");
+  const [search, setSearch] = useState("");
+  const currentCat = SKILL_CATEGORIES.find((c) => c.id === category);
+  const filtered = useMemo(() => {
+    const q = search.toLowerCase();
+    if (!q) return currentCat.data;
+    return currentCat.data.filter(
+      (s) =>
+        s.name.toLowerCase().includes(q) ||
+        s.description.toLowerCase().includes(q) ||
+        s.prereq.toLowerCase().includes(q)
+    );
+  }, [category, search, currentCat]);
+
+  return (
+    <div>
+      <SectionTitle>Skills</SectionTitle>
+      <div className="flex flex-wrap gap-2 mb-3">
+        {SKILL_CATEGORIES.map((cat) => (
+          <button
+            key={cat.id}
+            onClick={() => { setCategory(cat.id); setSearch(""); }}
+            className={`px-3 py-1 rounded-full text-sm font-medium border transition-all ${category === cat.id ? "bg-indigo-600 text-white border-indigo-600" : "bg-white text-gray-700 border-gray-300 hover:border-indigo-400"}`}
+          >
+            {cat.label} ({cat.data.length})
+          </button>
+        ))}
+      </div>
+      <input
+        type="text"
+        placeholder={`Search ${currentCat.label} skills…`}
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm mb-4 focus:outline-none focus:border-indigo-400"
+      />
+      <div className="space-y-2">
+        {filtered.length === 0 && (
+          <p className="text-gray-500 text-sm py-6 text-center">No skills match your search.</p>
+        )}
+        {filtered.map((skill) => (
+          <Card key={skill.name} className="border-l-4 border-indigo-300">
+            <div className="flex flex-wrap items-center gap-2 mb-1">
+              <span className="font-bold text-indigo-900 text-sm">{skill.name}</span>
+              <Badge text={skill.codes} color="indigo" />
+              {skill.prereq !== "None" && (
+                <Badge text={`Prereq: ${skill.prereq}`} color="yellow" />
+              )}
+            </div>
+            <p className="text-sm text-gray-700 leading-relaxed">{skill.description}</p>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function CombatTab() {
+  return (
+    <div>
+      <SectionTitle>Combat Rules</SectionTitle>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <Card>
+          <h3 className="font-bold text-indigo-800 mb-2">Damage Basics</h3>
+          <ul className="text-sm text-gray-700 space-y-1">
+            <li>• Every normal weapon (melee or projectile) causes <strong>1 point of damage</strong> on a successful hit</li>
+            <li>• Final blow to bring a character to 0 LP must hit the <strong>torso</strong> (sleeveless t-shirt area)</li>
+            <li>• Spells and poisons can bring to 0 LP regardless of where hit</li>
+            <li>• All wounds should be acted out to acknowledge being hit</li>
+          </ul>
+        </Card>
+        <Card>
+          <h3 className="font-bold text-indigo-800 mb-2">Damage Progression</h3>
+          <p className="text-xs text-gray-500 mb-2">Damage is absorbed in this order (first to last):</p>
+          <ol className="text-sm text-gray-700 space-y-1">
+            {DAMAGE_PROGRESSION.map((d, i) => (
+              <li key={i} className="flex items-center gap-2">
+                <span className="bg-indigo-100 text-indigo-800 text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center flex-shrink-0">{i + 1}</span>
+                {d}
+              </li>
+            ))}
+          </ol>
+        </Card>
+        <Card>
+          <h3 className="font-bold text-indigo-800 mb-2">Illegal Targets</h3>
+          <p className="text-sm text-gray-700 mb-2">The following areas are restricted from contact:</p>
+          <div className="flex flex-wrap gap-1">
+            {["Head", "Neck", "Groin", "Hands", "Feet"].map((t) => (
+              <Badge key={t} text={t} color="red" />
+            ))}
+          </div>
+          <p className="text-xs text-gray-500 mt-2">For magical attacks, all areas except the head are valid targets.</p>
+        </Card>
+        <Card>
+          <h3 className="font-bold text-indigo-800 mb-2">Combat Don'ts</h3>
+          <ul className="text-sm text-gray-700 space-y-1">
+            <li>• No shield bashing or charging into someone</li>
+            <li>• No real fighting (hands, feet, etc.) — legal action may be taken</li>
+            <li>• No live steel at any event</li>
+            <li>• Never swing weapon through more than 90° arc</li>
+            <li>• Never raise weapon over head to swing straight down</li>
+            <li>• No running while swinging (charging)</li>
+          </ul>
+        </Card>
+      </div>
+      <SectionTitle>Monster Special Attacks</SectionTitle>
+      <div className="space-y-2">
+        {MONSTER_ATTACKS.map((atk) => (
+          <Card key={atk.name} className="border-l-4 border-red-300">
+            <div className="flex items-center gap-2 mb-1">
+              <span className="font-bold text-red-900 text-sm">{atk.name}</span>
+            </div>
+            <div className="text-xs text-gray-500 mb-1"><strong>Representation:</strong> {atk.representation}</div>
+            <div className="text-sm text-gray-700"><strong>Damage/Effect:</strong> {atk.damage}</div>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function MagicTab() {
+  const [selected, setSelected] = useState(null);
+  return (
+    <div>
+      <SectionTitle>Magic &amp; Schools</SectionTitle>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <Card>
+          <h3 className="font-bold text-indigo-800 mb-2">Spell Types</h3>
+          <div className="space-y-2 text-sm text-gray-700">
+            <div className="bg-blue-50 rounded p-2"><strong>Level-Based:</strong> Ends incant with a level declaration. Only affects you if cast level ≥ your skill level.</div>
+            <div className="bg-purple-50 rounded p-2"><strong>Packet-Based:</strong> Throw a birdseed spell packet after incant. If it hits you (anywhere except head), you are affected.</div>
+            <div className="bg-green-50 rounded p-2"><strong>Auto-Affect:</strong> No level or packet needed. Automatically affects target regardless of level. Most healing and personal protective spells.</div>
+          </div>
+        </Card>
+        <Card>
+          <h3 className="font-bold text-indigo-800 mb-2">Casting Rules</h3>
+          <ul className="text-sm text-gray-700 space-y-1">
+            <li>• Cannot cast while in motion (one pitching step allowed)</li>
+            <li>• Cannot cast while in hand-to-hand combat</li>
+            <li>• At least one hand must be free (except Mystics)</li>
+            <li>• Incant must be clear and audible — mumbling fails the spell</li>
+            <li>• Spell fails if caster is struck mid-incant</li>
+            <li>• Spell fails if target leaves caster's sight (level-based)</li>
+            <li>• Spell duration: nearly all are 10 sec, 1 min, 10 min, or 1 hour</li>
+            <li>• Distance spells: <strong>30 feet</strong></li>
+          </ul>
+        </Card>
+      </div>
+      <SectionTitle>Schools of Magic</SectionTitle>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+        {MAGIC_SCHOOLS.map((school) => (
+          <button
+            key={school.name}
+            onClick={() => setSelected(selected?.name === school.name ? null : school)}
+            className={`p-3 rounded-lg border-2 text-left transition-all ${selected?.name === school.name ? "border-indigo-500 bg-indigo-50" : "border-gray-200 bg-white hover:border-indigo-300"}`}
+          >
+            <div className="font-bold text-sm text-indigo-900">{school.name}</div>
+            <div className="text-xs text-gray-500 mt-1">{school.users}</div>
+          </button>
+        ))}
+      </div>
+      {selected && (
+        <Card className="border-indigo-200 mb-4">
+          <h3 className="text-xl font-bold text-indigo-900 mb-1">{selected.name}</h3>
+          <p className="text-sm text-gray-700 mb-3 leading-relaxed">{selected.description}</p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
+            <div className="bg-gray-50 rounded p-2 text-sm">
+              <p className="font-semibold text-gray-600 text-xs uppercase mb-1">Prerequisites</p>
+              {selected.prereqs.map((p) => <Badge key={p} text={p} color="yellow" />)}
+            </div>
+            <div className="bg-indigo-50 rounded p-2 text-sm">
+              <p className="font-semibold text-gray-600 text-xs uppercase mb-1">Incantation</p>
+              <p className="italic text-indigo-800">"{selected.incant}"</p>
+            </div>
+            <div className="bg-purple-50 rounded p-2 text-sm">
+              <p className="font-semibold text-gray-600 text-xs uppercase mb-1">Used By</p>
+              <p className="text-purple-800">{selected.users}</p>
+            </div>
+          </div>
+          <div className="bg-yellow-50 rounded p-2 text-xs">
+            <p className="font-semibold text-yellow-800 mb-1">Spell Costs</p>
+            {Object.entries(selected.spellCost).map(([k, v]) => (
+              <div key={k} className="flex justify-between"><span className="text-gray-600 capitalize">{k.replace(/([A-Z])/g, ' $1').trim()}:</span><span className="font-semibold text-gray-800">{v}</span></div>
+            ))}
+          </div>
+        </Card>
+      )}
+      <Card>
+        <h3 className="font-bold text-indigo-800 mb-2">Spell Tower Format</h3>
+        <p className="text-sm text-gray-700 mb-2">Spells must be purchased in a tower format. You need an equal or greater number of lower-level spells before taking a higher-level spell. Must have at least <strong>2 spells of any level</strong> before advancing to the next.</p>
+        <div className="flex gap-8 text-xs font-mono text-center text-indigo-900">
+          <div>
+            <div className="bg-indigo-100 rounded px-2 py-1 mb-1">4 4</div>
+            <div className="bg-indigo-100 rounded px-2 py-1 mb-1">3 3 3</div>
+            <div className="bg-indigo-100 rounded px-2 py-1 mb-1">2 2 2 2</div>
+            <div className="bg-indigo-100 rounded px-2 py-1">1 1 1 1 1</div>
+          </div>
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+function ArmorTab() {
+  return (
+    <div>
+      <SectionTitle>Armor</SectionTitle>
+      <p className="text-sm text-gray-600 mb-4">Armor Points (AP) rate the protective value of armor. Each AP absorbs 1 point of damage. Armor must be checked in and evaluated at every event.</p>
+      <div className="overflow-x-auto mb-4">
+        <table className="w-full text-sm border-collapse">
+          <thead>
+            <tr className="bg-indigo-700 text-white">
+              <th className="px-3 py-2 text-left">Class</th>
+              <th className="px-3 py-2 text-center">AP Value</th>
+              <th className="px-3 py-2 text-left">Armor Types</th>
+              <th className="px-3 py-2 text-left">Classes That Wear It</th>
+            </tr>
+          </thead>
+          <tbody>
+            {ARMOR_CLASSES.map((a, i) => (
+              <tr key={a.class} className={i % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+                <td className="px-3 py-2 font-bold text-indigo-900">Class {a.class}</td>
+                <td className="px-3 py-2 text-center font-bold text-green-700">{a.ap} AP</td>
+                <td className="px-3 py-2 text-gray-700">{a.types}</td>
+                <td className="px-3 py-2 text-gray-600 text-xs">{a.wornBy}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <Card className="mb-4">
+        <h3 className="font-bold text-indigo-800 mb-2">Additional Coverage Bonus</h3>
+        <p className="text-xs text-gray-500 mb-2">+½ AP (fractions rounded down) for each of the following areas covered by armor:</p>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+          {ARMOR_EXTRAS.map((e) => (
+            <div key={e.area} className="bg-gray-50 rounded p-2 text-xs">
+              <span className="font-semibold text-indigo-700">{e.area}:</span> <span className="text-gray-600">{e.notes}</span>
+            </div>
+          ))}
+        </div>
+      </Card>
+      <Card className="mb-4">
+        <h3 className="font-bold text-indigo-800 mb-2">Armor Marshal Modifiers</h3>
+        <ul className="text-sm text-gray-700 space-y-1">
+          <li>• Armor Marshal may adjust AP up to +2 or down −3 based on authenticity, materials, weight, coverage, visual impressiveness</li>
+          <li>• Authentic torso armor: +1 AP; authentic throughout: +2 AP</li>
+          <li>• Costume armor: typically −1 weight, −1 stealth</li>
+        </ul>
+      </Card>
+      <SectionTitle>Weapon Specifications</SectionTitle>
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm border-collapse">
+          <thead>
+            <tr className="bg-indigo-700 text-white">
+              <th className="px-3 py-2 text-left">Weapon Type</th>
+              <th className="px-3 py-2 text-center">Max Handle</th>
+              <th className="px-3 py-2 text-center">Max Blade</th>
+              <th className="px-3 py-2 text-center">Overall Length</th>
+            </tr>
+          </thead>
+          <tbody>
+            {WEAPON_SPECS.map((w, i) => (
+              <tr key={w.type} className={i % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+                <td className="px-3 py-2 font-medium text-gray-800">{w.type}</td>
+                <td className="px-3 py-2 text-center text-gray-600">{w.maxHandle}</td>
+                <td className="px-3 py-2 text-center text-gray-600">{w.maxBlade}</td>
+                <td className="px-3 py-2 text-center font-semibold text-indigo-700">{w.overall}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+function QuickRefTab() {
+  return (
+    <div>
+      <SectionTitle>Quick Reference</SectionTitle>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div>
+          <h3 className="font-bold text-lg text-indigo-800 mb-2">Command Words</h3>
+          <div className="space-y-2">
+            {COMMAND_WORDS.map((cw) => (
+              <Card key={cw.word} className="border-l-4 border-red-400">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="font-bold text-red-800 text-base">{cw.word}</span>
+                </div>
+                <p className="text-sm text-gray-700">{cw.description}</p>
+              </Card>
+            ))}
+          </div>
+        </div>
+        <div>
+          <h3 className="font-bold text-lg text-indigo-800 mb-2">Key Rules at a Glance</h3>
+          <div className="space-y-2">
+            {[
+              ["Starting SP", "All new characters begin with 90 Character Points"],
+              ["Starting LP", "All classes: 2 LP. Warriors only: 3 LP"],
+              ["Starting Money", "3 copper flange"],
+              ["Resistance", "Attacks at your level or higher affect you; below your level do not"],
+              ["Weapon Damage", "All weapons do 1 point of damage per hit (unless special skill used)"],
+              ["Spell Duration", "10 seconds, 1 minute, 10 minutes, or 1 hour"],
+              ["Spell Distance", "All distance spells = 30 feet"],
+              ["Recovery after Death", "Return from Volgen with 1 LP; lose memory of last 10 minutes before unconsciousness"],
+              ["Waylay Metal Helmets", "Metal helmets negate Waylay; leather skullcaps and chain coifs do not"],
+              ["Two-Handed Weapons", "Immune to the Disarm skill (call 'Two Handed'); can still be disarmed by magic"],
+              ["Skill Uses", "1 event = 1 use per skill; 2-day weekend = 2 uses; 4-day event = 3 uses"],
+              ["Bow Safety", "Max 25 lb. pull. Restricted at night. Aim for stomach/lower only."],
+            ].map(([label, value]) => (
+              <div key={label} className="flex gap-2 text-sm border-b border-gray-100 pb-2">
+                <span className="font-semibold text-indigo-700 w-40 flex-shrink-0">{label}</span>
+                <span className="text-gray-700">{value}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+      <Card className="bg-amber-50 border-amber-200">
+        <h3 className="font-bold text-amber-800 mb-2">Clarifications (2019 Updates)</h3>
+        <ul className="text-sm text-amber-900 space-y-1">
+          <li>• <strong>pg 53 — Dark Arts Incant:</strong> The correct incant for Dark Arts spells should be <em>"I invoke the Dark Arts…"</em> (not "I conjure the Dark Arts")</li>
+          <li>• <strong>Faith Skill / Divine Spells:</strong> Modifications explained in the 2019 clarifications document</li>
+          <li>• <strong>Wild Card Points:</strong> Earned at <strong>20 points per hour</strong> (not 10 as stated in the original document)</li>
+          <li>• <strong>Beta Test Rules (2019) supersede</strong> any conflicting rulebook (ed. 6.1) entries</li>
+        </ul>
+      </Card>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MAIN APP
+// ─────────────────────────────────────────────────────────────────────────────
+export default function FQRulebook() {
+  const [activeTab, setActiveTab] = useState("overview");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const renderTab = () => {
+    switch (activeTab) {
+      case "overview": return <OverviewTab />;
+      case "races": return <RacesTab />;
+      case "classes": return <ClassesTab />;
+      case "skills": return <SkillsTab />;
+      case "combat": return <CombatTab />;
+      case "magic": return <MagicTab />;
+      case "armor": return <ArmorTab />;
+      case "quick": return <QuickRefTab />;
+      default: return <OverviewTab />;
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50 font-sans">
+      {/* Header */}
+      <header className="bg-indigo-900 text-white px-4 py-3 shadow-lg">
+        <div className="max-w-5xl mx-auto flex items-center justify-between">
+          <div>
+            <h1 className="text-xl font-bold tracking-tight">⚔ Fantasy Quest Rulebook</h1>
+            <p className="text-indigo-300 text-xs">{RULEBOOK_VERSION}</p>
+          </div>
+          <button
+            className="md:hidden text-indigo-200 hover:text-white"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            ☰
+          </button>
+        </div>
+      </header>
+
+      {/* Nav */}
+      <nav className="bg-indigo-800 shadow-sm">
+        <div className="max-w-5xl mx-auto">
+          <div className={`${mobileMenuOpen ? "flex flex-col" : "hidden"} md:flex md:flex-row overflow-x-auto`}>
+            {TABS.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => { setActiveTab(tab.id); setMobileMenuOpen(false); }}
+                className={`px-4 py-3 text-sm font-medium whitespace-nowrap transition-colors ${
+                  activeTab === tab.id
+                    ? "bg-white text-indigo-900 border-b-2 border-white"
+                    : "text-indigo-200 hover:bg-indigo-700 hover:text-white"
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </nav>
+
+      {/* Content */}
+      <main className="max-w-5xl mx-auto px-4 py-6">
+        {renderTab()}
+      </main>
+
+      {/* Footer */}
+      <footer className="border-t border-gray-200 bg-white mt-8 py-4 px-4">
+        <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-2 text-xs text-gray-500">
+          <div>
+            <span className="font-semibold text-gray-600">Fantasy Quest Rule Book {RULEBOOK_VERSION}</span>
+            {" "}— © 1993–2017 Fantasy Quest Productions, Inc. All rights reserved.
+          </div>
+          <div className="text-right">
+            <span className="font-semibold text-gray-600">Data as of: {DATA_DATE}</span>
+            {" "}| Source: <a href="https://www.fantasyquestlarp.com/rulebook" className="text-indigo-600 hover:underline" target="_blank" rel="noreferrer">fantasyquestlarp.com/rulebook</a>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
+
+    // Mount the app
+    const container = document.getElementById('root');
+    const root = ReactDOM.createRoot(container);
+    root.render(<FQRulebook />);
+
+    // Hide loading screen
+    const ls = document.getElementById('loading-screen');
+    ls.classList.add('fade');
+    setTimeout(() => ls.remove(), 500);
+  </script>
+</body>
+</html>
