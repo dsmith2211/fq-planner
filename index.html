@@ -2467,7 +2467,7 @@
             tbody.innerHTML = '';
 
             let filtered = SKILLS;
-            if (skillCategoryFilter.value !== 'All') {
+            if (skillCategoryFilter.value && skillCategoryFilter.value !== '') {
                 filtered = SKILLS.filter(s => s.category === skillCategoryFilter.value);
             }
 
@@ -2500,18 +2500,18 @@
 
                 const row = document.createElement('tr');
                 row.innerHTML = `
+                    <td><span class="skill-code">${skill.codes}</span></td>
                     <td>${skill.name}</td>
                     <td><span class="category-tag category-${skill.category}">${skill.category}</span></td>
-                    <td><span class="skill-code">${skill.codes}</span></td>
                     <td>${costStr}</td>
                     <td>
                         <div class="qty-control">
                             <button class="qty-btn" onclick="buySkill('${skill.name}', -1)" ${qty <= 0 ? 'disabled' : ''}>−</button>
-                            <span>${qty}</span>
+                            <span>${qty}${maxQty < 10 ? '/' + maxQty : ''}</span>
                             <button class="qty-btn" onclick="buySkill('${skill.name}', 1)" ${!canAdd ? 'disabled' : ''}>+</button>
                         </div>
                     </td>
-                    <td>${totalCost > 0 ? totalCost : '—'}</td>
+                    <td>${totalCost > 0 ? totalCost + ' SP' : '—'}</td>
                 `;
                 tbody.appendChild(row);
             }
@@ -2558,7 +2558,7 @@
 
         function renderSpells() {
             const container = document.getElementById('spellsContainer');
-            container.innerHTML = '<div id="spellPopup" class="spell-popup hidden"></div>';
+            container.innerHTML = '';
 
             if (!state.class || !CLASSES[state.class].canCast) {
                 container.innerHTML = '<p>Your class does not learn spells. Click Next to view your character sheet.</p>';
@@ -2612,6 +2612,12 @@
                 }
                 tableHTML += '</tbody></table>';
                 content.innerHTML = tableHTML;
+
+                // Auto-open primary school
+                if (school === classInfo.primarySchool) {
+                    content.classList.add('open');
+                    header.querySelector('span:last-child').style.transform = 'rotate(180deg)';
+                }
 
                 section.appendChild(header);
                 section.appendChild(content);
