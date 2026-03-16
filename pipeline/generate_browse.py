@@ -369,11 +369,19 @@ def main():
     parser.add_argument("--out", default=str(DEFAULT_OUT), help="Output HTML file path")
     args = parser.parse_args()
 
-    out_path = Path(args.out)
+    # Resolve relative paths against REPO_ROOT so the script works from
+    # any working directory (e.g. GitHub Actions runner)
+    raw_out = Path(args.out)
+    out_path = raw_out if raw_out.is_absolute() else REPO_ROOT / raw_out
+
+    try:
+        out_display = out_path.relative_to(REPO_ROOT)
+    except ValueError:
+        out_display = out_path
 
     print("FQ Browse Generator")
     print(f"Extracted dir : {EXTRACTED_DIR.relative_to(REPO_ROOT)}")
-    print(f"Output        : {out_path.relative_to(REPO_ROOT)}")
+    print(f"Output        : {out_display}")
 
     docs = load_extracted_files()
     print(f"Documents     : {len(docs)}")
