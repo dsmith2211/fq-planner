@@ -1,18 +1,17 @@
 name: Build & Deploy to GitHub Pages
 
-# Triggers: push to main (when PDFs, pipeline scripts, or HTML files change)
-# or manual dispatch from the Actions tab
 on:
   push:
     branches: [main]
     paths:
-      - 'data/pdfs/**'
-      - 'pipeline/**'
-      - '*.html'
+      - "data/pdfs/**"
+      - "pipeline/**"
+      - "*.html"
+      - "requirements.txt"
   workflow_dispatch:
 
 permissions:
-  contents: write   # commit generated files back
+  contents: write
   pages: write
   id-token: write
 
@@ -23,30 +22,28 @@ concurrency:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
 
-      # ── Python: extract PDFs → JSON + browse.html ───────────────────────
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
-          cache: pip
+          python-version: "3.11"
 
       - name: Install Python deps
-        run: pip install pymupdf
+        run: pip install -r requirements.txt
 
       - name: Extract PDFs → data/extracted/
         run: python pipeline/extract_pdfs.py
 
-      - name: Generate browse.html (repo root)
+      - name: Generate browse.html
         run: python pipeline/generate_browse.py --out browse.html
 
-      # ── Commit generated files back to main ────────────────────────────
-      - name: Commit generated files
+      - name: Commit generated files back to main
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -58,12 +55,14 @@ jobs:
             git push
           fi
 
-      # ── Deploy entire repo root to gh-pages branch ─────────────────────
-      - name: Deploy to gh-pages
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: .
-          publish_branch: gh-pages
-          # Exclude pipeline/build scripts and other non-web assets
-          exclude_assets: '.github,pipeline,node_modules,.git'
+          path: .
+
+      - name: Deploy to GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v4
