@@ -110,10 +110,7 @@
             background: radial-gradient(circle at 30% 30%, #d4ff00, var(--fq-lime));
             color: var(--fq-dark);
             border-color: var(--fq-lime);
-            box-shadow: 0 0 25px rgba(186, 218, 85, 0.6),
-                        0 0 40px rgba(186, 218, 85, 0.3),
-                        inset 0 0 10px rgba(255, 255, 255, 0.2);
-            animation: pulse-glow 2s ease-in-out infinite;
+            box-shadow: 0 0 12px rgba(186, 218, 85, 0.4);
         }
 
         .step-dot.completed {
@@ -127,11 +124,6 @@
             font-size: 1.2em;
             color: var(--fq-parchment);
             font-weight: bold;
-        }
-
-        @keyframes pulse-glow {
-            0%, 100% { box-shadow: 0 0 25px rgba(186, 218, 85, 0.6), 0 0 40px rgba(186, 218, 85, 0.3), inset 0 0 10px rgba(255, 255, 255, 0.2); }
-            50% { box-shadow: 0 0 35px rgba(186, 218, 85, 0.8), 0 0 60px rgba(186, 218, 85, 0.5), inset 0 0 15px rgba(255, 255, 255, 0.3); }
         }
 
         .step-content {
@@ -266,21 +258,14 @@
 
         .card:hover {
             border-color: var(--fq-lime);
-            box-shadow: 0 8px 25px rgba(186, 218, 85, 0.25), inset 0 0 20px rgba(186, 218, 85, 0.1);
-            transform: translateY(-4px);
-            background: linear-gradient(135deg, rgba(64, 124, 81, 0.3) 0%, rgba(64, 124, 81, 0.2) 100%);
+            box-shadow: 0 4px 12px rgba(186, 218, 85, 0.15);
+            background: linear-gradient(135deg, rgba(64, 124, 81, 0.2) 0%, rgba(64, 124, 81, 0.1) 100%);
         }
 
         .card.selected {
             border-color: var(--fq-lime);
             background: linear-gradient(135deg, rgba(186, 218, 85, 0.15) 0%, rgba(64, 124, 81, 0.25) 100%);
-            box-shadow: 0 0 30px rgba(186, 218, 85, 0.5), 0 8px 25px rgba(186, 218, 85, 0.2), inset 0 0 25px rgba(186, 218, 85, 0.1);
-            animation: card-pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes card-pulse {
-            0%, 100% { box-shadow: 0 0 30px rgba(186, 218, 85, 0.5), 0 8px 25px rgba(186, 218, 85, 0.2), inset 0 0 25px rgba(186, 218, 85, 0.1); }
-            50% { box-shadow: 0 0 40px rgba(186, 218, 85, 0.7), 0 10px 30px rgba(186, 218, 85, 0.3), inset 0 0 35px rgba(186, 218, 85, 0.15); }
+            box-shadow: 0 0 15px rgba(186, 218, 85, 0.3), 0 4px 12px rgba(186, 218, 85, 0.15);
         }
 
         .card h3 {
@@ -302,6 +287,10 @@
             border: 1px solid rgba(170, 61, 29, 0.5);
             box-shadow: 0 2px 8px rgba(170, 61, 29, 0.2);
         }
+
+        .badge-Fighter { background: linear-gradient(135deg, #AA3D1D, #8b2d15); }
+        .badge-Caster { background: linear-gradient(135deg, #6B5CE7, #4a3db5); }
+        .badge-Stealth { background: linear-gradient(135deg, #2d2d2d, #1a1a1a); border: 1px solid #555; }
 
         .card-details {
             font-size: 0.9em;
@@ -503,8 +492,7 @@
         }
 
         .spell-school-header:hover {
-            background: linear-gradient(135deg, var(--fq-rust), #8b2d15);
-            transform: translateX(2px);
+            background: linear-gradient(135deg, var(--fq-green-dark), #1a3f24);
         }
 
         .spell-school-content {
@@ -532,6 +520,43 @@
             letter-spacing: 0.5px;
             font-size: 0.95em;
         }
+
+        .spell-popup {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .spell-popup.hidden { display: none; }
+
+        .spell-popup-content {
+            background: linear-gradient(135deg, #1a1a14, #2a2a1e);
+            border: 2px solid var(--fq-lime);
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 500px;
+            color: var(--fq-parchment);
+        }
+
+        .spell-popup-content h3 {
+            color: var(--fq-lime);
+            margin-bottom: 10px;
+        }
+
+        .spell-name {
+            cursor: pointer;
+            color: var(--fq-lime);
+            text-decoration: underline;
+            text-decoration-style: dotted;
+        }
+
+        .spell-name:hover { color: #fff; }
+
+        .spell-locked { opacity: 0.5; }
 
         .character-sheet {
             background: linear-gradient(135deg, rgba(64, 124, 81, 0.1) 0%, rgba(42, 42, 34, 0.15) 100%);
@@ -866,7 +891,8 @@
                     <thead>
                         <tr>
                             <th>Level</th>
-                            <th>Threshold</th>
+                            <th>SP to Next</th>
+                            <th>Total SP</th>
                         </tr>
                     </thead>
                     <tbody id="levelTable"></tbody>
@@ -884,10 +910,10 @@
                     <select id="categoryFilter" onchange="setSkillCategory(this.value)" style="padding: 8px; background: linear-gradient(135deg, var(--fq-green), var(--fq-green-dark)); color: var(--fq-parchment); border: 1px solid var(--fq-parchment); cursor: pointer; font-family: inherit;">
                         <option value="">All Categories</option>
                         <option value="Fighting">Fighting</option>
+                        <option value="Weapon">Weapons</option>
+                        <option value="Magical">Magical</option>
                         <option value="Stealth">Stealth</option>
-                        <option value="Magic">Magic</option>
-                        <option value="Survival">Survival</option>
-                        <option value="Craft">Craft</option>
+                        <option value="General">General</option>
                     </select>
                     <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
                         <input type="checkbox" id="hideNA" onchange="renderSkills()">
@@ -1046,11 +1072,84 @@
         // Rulebook p20: Level 1 = 60 SP total spent, Level 12 = 3435
         const LEVEL_THRESHOLDS = [60, 110, 210, 335, 485, 685, 935, 1235, 1635, 2135, 2735, 3435];
 
+        const SKILL_MAX_PURCHASES = {
+            'Backstab': 3,
+            'Craftsman': 3,
+            'Regenerate': 4
+        };
+
+        const SPELL_DESCRIPTIONS = {
+            'Detect Magic': 'Allows the caster to detect the presence of magic in the area. Level based.',
+            'Light': 'Creates a magical light source. The caster holds a glow stick to represent this spell.',
+            'Magic Arrow': 'A packet-based attack spell dealing 1 point of damage. Call: "Magic Arrow, damage 1"',
+            'Protect': 'Creates a magical barrier providing 1 armor point. Touch-based on willing target.',
+            'Trip': 'Causes the target to fall. Packet-based. Call: "Trip"',
+            'Awaken': 'Awakens a sleeping or unconscious target. Touch-based.',
+            'Snare': 'Roots the target in place for 10 minutes. Packet-based. Call: "Snare"',
+            'Stun': 'Stuns the target for 10 seconds. Packet-based. Call: "Stun"',
+            'Paralyze': 'Paralyzes the target for 10 minutes. Packet-based. Call: "Paralyze"',
+            'Sleep': 'Puts the target to sleep for 10 minutes. Packet-based. Call: "Sleep"',
+            'Enthrall': 'Target must follow simple commands. Level-based. Call: "Enthrall"',
+            'Dispel Magic': 'Removes all magical effects from the target. Packet-based.',
+            'Circle of Power': 'Creates a powerful magical circle. Level-based.',
+            'Imprisonment': 'Traps the target in a magical prison. Packet-based.',
+            'Mass Sleep': 'Puts all targets in range to sleep. Call: "Mass Sleep, level X"',
+            'Blessing': 'Grants +1 to resistance for the recipient. Touch-based.',
+            'Heal Wounds I': 'Heals 1 Life Point. Touch-based. Takes 5 minutes.',
+            'Heal Wounds II': 'Heals 2 Life Points. Touch-based. Takes 5 minutes.',
+            'Heal Wounds III': 'Heals 3 Life Points. Touch-based. Takes 5 minutes.',
+            'Heal Wounds IV': 'Heals 4 Life Points. Touch-based. Takes 5 minutes.',
+            'Raise Dead': 'Restores life to a dead character. Touch-based. Takes 1 hour.',
+            'Cure Disease': 'Removes disease effects from the target. Touch-based.',
+            'Destroy Undead': 'Destroys an undead creature. Packet-based.',
+            'Remove Curse': 'Removes a curse from the target. Touch-based.',
+            'Flame Arrow': 'A packet-based fire attack dealing 2 points of damage. Call: "Flame Arrow, damage 2"',
+            'Lightning Bolt': 'A powerful packet-based attack. Call: "Lightning Bolt, damage X"',
+            'Earthquake': 'All in area must fall. Call: "Earthquake"',
+            'Stone Skin': 'Grants magical armor points. Touch-based.',
+            'Freeze Person': 'Freezes the target solid for 10 minutes. Packet-based.',
+            'Petrification': 'Turns the target to stone permanently. Packet-based.',
+            'Cause Wounds I': 'Inflicts 1 point of damage via touch. Touch-based.',
+            'Cause Wounds II': 'Inflicts 2 points of damage via touch. Touch-based.',
+            'Cause Wounds III': 'Inflicts 3 points of damage via touch. Touch-based.',
+            'Control Undead': 'Allows control of one undead creature. Level-based.',
+            'Animate Dead': 'Raises a corpse as undead servant. Touch-based.',
+            'Death': 'Kills the target instantly. Packet-based. Call: "Death"',
+            'Fear': 'Target must flee in terror. Packet-based. Call: "Fear"',
+            'Curse': 'Places a curse on the target. Packet-based. See rulebook for curse types.',
+            'Mystic Bolt': 'A mental attack dealing 1 point of damage. No physical packet needed for Mystics.',
+            'Mind Blast': 'A powerful mental attack. Level-based.',
+            'Mind Slave': 'Takes complete control of the target\'s mind. Level-based.',
+            'Iron Will': 'Grants immunity to mental attacks. Self only.',
+            'Self Healing': 'Allows the Mystic to heal themselves. Touch (self).',
+            'Amnesia': 'Target forgets recent events. Packet-based.',
+            'Freedom': 'Frees target from all binding effects. Touch-based.',
+            'Silence': 'Target cannot speak or cast spells for 10 minutes. Packet-based.',
+            'Identify Spirit': 'Determines the nature of a spirit or undead. Level-based.',
+            'Sunray': 'A beam of sunlight. Packet-based damage to undead.',
+            'Resist Magic': 'Grants resistance to magical attacks. Touch-based.',
+            'Resist Element': 'Grants resistance to elemental attacks. Touch-based.',
+            'Wrath': 'Powerful attack spell. Packet-based.',
+            'Spell Immunity': 'Target is immune to one specific spell. Touch-based.',
+            'Spell Turning': 'Reflects the next spell cast at the target. Touch-based.',
+            'Raise Power I': 'Doubles spell casting level for 1 hour.',
+            'Raise Power II': 'Triples spell casting level for 1 hour.',
+            'Reduce Power': 'Reduces target\'s casting level. Packet-based.',
+            'Command': 'Forces target to obey one simple command. Level-based.',
+            'Communicate': 'Allows communication over distance. Level-based.',
+            'Calm': 'Removes fear and rage effects. Touch-based.',
+            'Fearlessness': 'Grants immunity to fear effects. Touch-based.',
+            'Shun': 'Target cannot approach the caster. Level-based.',
+            'Forget': 'Target forgets the last 10 minutes. Packet-based.',
+            'Purify Blood': 'Removes poison from target. Touch-based.',
+            'Strength': 'Grants temporary Strength skill. Touch-based.'
+        };
+
         const SKILLS = [
             // FIGHTING SKILLS (p21)
             {name: 'Awareness', category: 'Fighting', codes: 'I O', prereq: 'Toughness', costs: {'Arcane Warrior': null, 'Assassin': null, 'Bard': null, 'Bounty Hunter': null, 'Brigand': null, 'Cleric': null, 'Druid': null, 'Holy Warrior': null, 'Mystic': null, 'Mystic Warrior': null, 'Ranger': null, 'Rogue': null, 'Sorcerer': null, 'Warlock': null, 'Warrior': 50}},
             {name: 'Battle Rage', category: 'Fighting', codes: 'O', prereq: 'None', costs: {'Arcane Warrior': 50, 'Assassin': null, 'Bard': null, 'Bounty Hunter': null, 'Brigand': null, 'Cleric': null, 'Druid': null, 'Holy Warrior': 50, 'Mystic': null, 'Mystic Warrior': 50, 'Ranger': 50, 'Rogue': null, 'Sorcerer': null, 'Warlock': null, 'Warrior': 40}},
-            {name: 'Critical Attack', category: 'Fighting', codes: 'I #', prereq: '3rd Level', costs: {'Arcane Warrior': 35, 'Assassin': 50, 'Bard': 40, 'Bounty Hunter': 50, 'Brigand': 40, 'Cleric': null, 'Druid': null, 'Holy Warrior': 35, 'Mystic': null, 'Mystic Warrior': 35, 'Ranger': 35, 'Rogue': 50, 'Sorcerer': null, 'Warlock': null, 'Warrior': 25}},
+            {name: 'Critical Attack', category: 'Fighting', codes: 'I %', prereq: '3rd Level', costs: {'Arcane Warrior': 35, 'Assassin': 50, 'Bard': 40, 'Bounty Hunter': 50, 'Brigand': 40, 'Cleric': null, 'Druid': null, 'Holy Warrior': 35, 'Mystic': null, 'Mystic Warrior': 35, 'Ranger': 35, 'Rogue': 50, 'Sorcerer': null, 'Warlock': null, 'Warrior': 25}},
             {name: 'Disarm', category: 'Fighting', codes: 'I #', prereq: '2nd Level', costs: {'Arcane Warrior': 20, 'Assassin': 40, 'Bard': 25, 'Bounty Hunter': 40, 'Brigand': 30, 'Cleric': 45, 'Druid': null, 'Holy Warrior': 20, 'Mystic': null, 'Mystic Warrior': 20, 'Ranger': 20, 'Rogue': 40, 'Sorcerer': null, 'Warlock': null, 'Warrior': 15}},
             {name: 'Florentine', category: 'Fighting', codes: 'I O', prereq: 'Weapon', costs: {'Arcane Warrior': 25, 'Assassin': 30, 'Bard': 25, 'Bounty Hunter': 30, 'Brigand': 25, 'Cleric': 30, 'Druid': null, 'Holy Warrior': 20, 'Mystic': 40, 'Mystic Warrior': 25, 'Ranger': 20, 'Rogue': 30, 'Sorcerer': null, 'Warlock': null, 'Warrior': 20}},
             {name: 'Lethal Strike', category: 'Fighting', codes: 'I #', prereq: '7th Level', costs: {'Arcane Warrior': 50, 'Assassin': null, 'Bard': 50, 'Bounty Hunter': null, 'Brigand': null, 'Cleric': null, 'Druid': null, 'Holy Warrior': 50, 'Mystic': null, 'Mystic Warrior': 50, 'Ranger': 50, 'Rogue': null, 'Sorcerer': null, 'Warlock': null, 'Warrior': 40}},
@@ -1098,7 +1197,7 @@
             {name: 'Appraise', category: 'Stealth', codes: 'I O', prereq: 'None', costs: {'Arcane Warrior': 40, 'Assassin': 30, 'Bard': 35, 'Bounty Hunter': 25, 'Brigand': 25, 'Cleric': 40, 'Druid': 40, 'Holy Warrior': 40, 'Mystic': 40, 'Mystic Warrior': 40, 'Ranger': 40, 'Rogue': 20, 'Sorcerer': 40, 'Warlock': 40, 'Warrior': 40}},
             {name: 'Assassinate', category: 'Stealth', codes: 'I #', prereq: '6th Level & Backstab x3', costs: {'Arcane Warrior': null, 'Assassin': 40, 'Bard': 50, 'Bounty Hunter': 50, 'Brigand': 50, 'Cleric': null, 'Druid': null, 'Holy Warrior': null, 'Mystic': null, 'Mystic Warrior': null, 'Ranger': 50, 'Rogue': null, 'Sorcerer': null, 'Warlock': null, 'Warrior': null}},
             {name: 'Avoid Traps', category: 'Stealth', codes: 'I #', prereq: 'None', costs: {'Arcane Warrior': 50, 'Assassin': 35, 'Bard': 45, 'Bounty Hunter': 40, 'Brigand': 35, 'Cleric': 50, 'Druid': 50, 'Holy Warrior': 50, 'Mystic': 50, 'Mystic Warrior': 50, 'Ranger': 50, 'Rogue': 25, 'Sorcerer': 50, 'Warlock': 50, 'Warrior': 50}},
-            {name: 'Backstab', category: 'Stealth', codes: 'I #', prereq: 'Edged Weapon', costs: {'Arcane Warrior': null, 'Assassin': 10, 'Bard': 30, 'Bounty Hunter': 20, 'Brigand': 20, 'Cleric': null, 'Druid': null, 'Holy Warrior': null, 'Mystic': null, 'Mystic Warrior': null, 'Ranger': null, 'Rogue': 15, 'Sorcerer': null, 'Warlock': null, 'Warrior': null}},
+            {name: 'Backstab', category: 'Stealth', codes: 'I %', prereq: 'Edged Weapon', costs: {'Arcane Warrior': null, 'Assassin': 10, 'Bard': 30, 'Bounty Hunter': 20, 'Brigand': 20, 'Cleric': null, 'Druid': null, 'Holy Warrior': null, 'Mystic': null, 'Mystic Warrior': null, 'Ranger': null, 'Rogue': 15, 'Sorcerer': null, 'Warlock': null, 'Warrior': null}},
             {name: 'Create Poison', category: 'Stealth', codes: 'I M', prereq: 'Poison Lore', costs: {'Arcane Warrior': null, 'Assassin': 20, 'Bard': 40, 'Bounty Hunter': 50, 'Brigand': 35, 'Cleric': null, 'Druid': 50, 'Holy Warrior': null, 'Mystic': null, 'Mystic Warrior': null, 'Ranger': 50, 'Rogue': 30, 'Sorcerer': null, 'Warlock': 50, 'Warrior': null}},
             {name: 'Escape Bonds I', category: 'Stealth', codes: 'I M', prereq: 'None', costs: {'Arcane Warrior': 50, 'Assassin': 30, 'Bard': 40, 'Bounty Hunter': 30, 'Brigand': 30, 'Cleric': 50, 'Druid': 50, 'Holy Warrior': 50, 'Mystic': 50, 'Mystic Warrior': 50, 'Ranger': 50, 'Rogue': 20, 'Sorcerer': 50, 'Warlock': 50, 'Warrior': 50}},
             {name: 'Escape Bonds II', category: 'Stealth', codes: 'I M', prereq: 'Escape Bonds I', costs: {'Arcane Warrior': null, 'Assassin': 35, 'Bard': 40, 'Bounty Hunter': 35, 'Brigand': 35, 'Cleric': null, 'Druid': null, 'Holy Warrior': null, 'Mystic': null, 'Mystic Warrior': null, 'Ranger': null, 'Rogue': 30, 'Sorcerer': null, 'Warlock': null, 'Warrior': 50}},
@@ -1768,7 +1867,7 @@
                 const spellInfo = classData.canCast ? `${classData.canCast} caster • ${classData.primarySchool}` : 'Non-caster';
                 card.innerHTML = `
                     <h3>${className}</h3>
-                    <span class="card-badge">${classData.type}</span>
+                    <span class="card-badge badge-${classData.type}">${classData.type}</span>
                     <div class="card-details">
                         <div><strong>Armor:</strong> ${classData.armor}</div>
                         <div><strong>LP Gain:</strong> ${classData.lpGroup === 'every' ? 'Every Level' : 'Every Other Level'}</div>
@@ -1809,6 +1908,7 @@
                 saveState();
                 renderDeities();
                 document.getElementById('nextDeity').disabled = false;
+                document.getElementById('deityInfo').classList.add('hidden');
                 updateSidePanel();
             };
             grid.appendChild(noneCard);
@@ -1827,6 +1927,20 @@
                     saveState();
                     renderDeities();
                     document.getElementById('nextDeity').disabled = false;
+
+                    // Show deity details
+                    const deityInfoEl = document.getElementById('deityInfo');
+                    if (deityInfoEl && DEITIES[deityName]) {
+                        const d = DEITIES[deityName];
+                        deityInfoEl.classList.remove('hidden');
+                        deityInfoEl.innerHTML = `
+                            <h3>${deityName} — ${d.title}</h3>
+                            ${d.clericBenefits.length ? `<div><strong>Cleric Benefits:</strong><ul>${d.clericBenefits.map(b => '<li>' + b + '</li>').join('')}</ul></div>` : ''}
+                            ${d.clericLimitations.length ? `<div class="restrictions"><strong>Cleric Limitations:</strong><ul>${d.clericLimitations.map(l => '<li>' + l + '</li>').join('')}</ul></div>` : ''}
+                            ${d.holyWarriorBenefits.length ? `<div><strong>Holy Warrior Benefits:</strong><ul>${d.holyWarriorBenefits.map(b => '<li>' + b + '</li>').join('')}</ul></div>` : ''}
+                        `;
+                    }
+
                     updateSidePanel();
                 };
                 grid.appendChild(card);
@@ -1848,7 +1962,10 @@
             return 'O';
         }
 
-        function getMaxPurchases(codes) {
+        function getMaxPurchases(codes, skillName) {
+            if (skillName && SKILL_MAX_PURCHASES[skillName]) {
+                return SKILL_MAX_PURCHASES[skillName];
+            }
             const type = getSkillPurchaseType(codes);
             if (type === 'O') return 1;
             // # and % and M are technically unlimited, cap at reasonable max for UI
@@ -1900,7 +2017,7 @@
                 if (hideNA && baseCost === null) continue;
 
                 const qty = state.skills[skill.name] || 0;
-                const maxQty = getMaxPurchases(skill.codes);
+                const maxQty = getMaxPurchases(skill.codes, skill.name);
                 const purchaseType = getSkillPurchaseType(skill.codes);
 
                 const totalCost = getSkillTotalCost(baseCost, qty, skill.codes);
@@ -1946,7 +2063,7 @@
         function buySkill(skillName, delta) {
             if (!state.skills[skillName]) state.skills[skillName] = 0;
             const skill = SKILLS.find(s => s.name === skillName);
-            const maxQty = getMaxPurchases(skill.codes);
+            const maxQty = getMaxPurchases(skill.codes, skillName);
             const baseCost = getSkillCost(skillName, state.class, state.race, state.deity);
 
             if (delta > 0 && state.skills[skillName] >= maxQty) return;
@@ -1964,9 +2081,25 @@
             renderSkills();
         }
 
+        function showSpellDetail(spellName, school, level) {
+            const desc = SPELL_DESCRIPTIONS[spellName] || 'See FQ Rulebook for full description.';
+            const popup = document.getElementById('spellPopup');
+            if (!popup) return;
+            popup.innerHTML = `
+                <div class="spell-popup-content">
+                    <h3>${spellName}</h3>
+                    <div><strong>School:</strong> ${school}</div>
+                    <div><strong>Level:</strong> ${level}</div>
+                    <div style="margin-top: 10px;">${desc}</div>
+                    <button class="btn" onclick="document.getElementById('spellPopup').classList.add('hidden')" style="margin-top: 10px;">Close</button>
+                </div>
+            `;
+            popup.classList.remove('hidden');
+        }
+
         function renderSpells() {
             const container = document.getElementById('spellsContainer');
-            container.innerHTML = '';
+            container.innerHTML = '<div id="spellPopup" class="spell-popup hidden"></div>';
 
             if (!state.class || !CLASSES[state.class].canCast) {
                 container.innerHTML = '<p>Your class does not learn spells. Click Next to view your character sheet.</p>';
@@ -1996,39 +2129,41 @@
                 content.className = 'spell-school-content';
 
                 const schoolData = SPELLS[school];
-                for (const level of Object.keys(schoolData).sort((a, b) => a - b)) {
-                    const levelGroup = document.createElement('div');
-                    levelGroup.className = 'spell-level-group';
+                let tableHTML = '<table class="skill-table" style="width:100%"><thead><tr><th>Lvl</th><th>Spells</th><th>Cost</th><th>Qty</th><th></th></tr></thead><tbody>';
 
-                    const costPerLevel = getSpellCost(school, level);
-                    const levelHeader = document.createElement('h4');
-                    levelHeader.textContent = `Level ${level} (${costPerLevel} SP each)`;
-                    levelGroup.appendChild(levelHeader);
+                for (const level of Object.keys(schoolData).sort((a, b) => parseInt(a) - parseInt(b))) {
+                    const lvl = parseInt(level);
+                    const costPerLevel = getSpellCost(school, lvl);
+                    const qty = state.spells[school]?.[lvl] || 0;
+                    const canBuy = checkTowerRule(school, lvl);
+                    const spellNames = schoolData[level].map(s =>
+                        `<span class="spell-name" onclick="showSpellDetail('${s.replace(/'/g, "\\'")}', '${school}', ${lvl})">${s}</span>`
+                    ).join(', ');
 
-                    const spells = schoolData[level];
-                    const spellsList = document.createElement('div');
-                    spellsList.style.marginBottom = '10px';
-                    spellsList.innerHTML = spells.map(s => `<div style="font-size: 0.9em;">• ${s}</div>`).join('');
-                    levelGroup.appendChild(spellsList);
-
-                    const qtyControl = document.createElement('div');
-                    qtyControl.className = 'qty-control';
-                    const qty = state.spells[school]?.[level] || 0;
-                    const canBuyMore = checkTowerRule(school, level);
-                    qtyControl.innerHTML = `
-                        <button class="qty-btn" onclick="buySpell('${school}', ${level}, -1)">−</button>
-                        <span>${qty}</span>
-                        <button class="qty-btn" onclick="buySpell('${school}', ${level}, 1)" ${!canBuyMore ? 'title="Need 2+ at level ' + (level - 1) + ' first"' : ''} ${!canBuyMore && level > 1 ? 'disabled' : ''}>+</button>
-                    `;
-                    levelGroup.appendChild(qtyControl);
-
-                    content.appendChild(levelGroup);
+                    tableHTML += `<tr class="${!canBuy && lvl > 1 ? 'spell-locked' : ''}">
+                        <td>${lvl}</td>
+                        <td>${spellNames}</td>
+                        <td>${costPerLevel !== null ? costPerLevel + ' SP' : '—'}</td>
+                        <td>${qty}</td>
+                        <td>
+                            <button class="qty-btn" onclick="buySpell('${school}', ${lvl}, -1)">−</button>
+                            <button class="qty-btn" onclick="buySpell('${school}', ${lvl}, 1)" ${!canBuy && lvl > 1 ? 'disabled' : ''}>+</button>
+                        </td>
+                    </tr>`;
                 }
+                tableHTML += '</tbody></table>';
+                content.innerHTML = tableHTML;
 
                 section.appendChild(header);
                 section.appendChild(content);
                 container.appendChild(section);
             }
+
+            // Re-add spell popup after rendering
+            const popupDiv = document.createElement('div');
+            popupDiv.id = 'spellPopup';
+            popupDiv.className = 'spell-popup hidden';
+            container.appendChild(popupDiv);
 
             updateSidePanel();
         }
@@ -2040,6 +2175,7 @@
         }
 
         function buySpell(school, level, delta) {
+            level = parseInt(level); // Ensure integer
             if (!state.spells[school]) state.spells[school] = {};
             if (!state.spells[school][level]) state.spells[school][level] = 0;
 
@@ -2099,7 +2235,7 @@
                     <h2>Skills</h2>
             `;
 
-            const categories = ['Fighting', 'Stealth', 'Magic', 'Survival', 'Craft'];
+            const categories = ['Fighting', 'Weapon', 'Magical', 'Stealth', 'General'];
             for (const category of categories) {
                 const skillsInCat = SKILLS.filter(s => s.category === category);
                 const purchasedInCat = skillsInCat.filter(s => state.skills[s.name] && state.skills[s.name] > 0);
@@ -2109,7 +2245,7 @@
                     for (const skill of purchasedInCat) {
                         const qty = state.skills[skill.name];
                         const cost = getSkillCost(skill.name, state.class, state.race, state.deity);
-                        const totalCost = cost && cost > 0 ? cost * qty : 0;
+                        const totalCost = getSkillTotalCost(cost, qty, skill.codes);
                         html += `<li><strong>${skill.name}</strong> × ${qty}${totalCost > 0 ? ` (${totalCost} SP)` : ' (Free)'}</li>`;
                     }
                     html += '</ul>';
