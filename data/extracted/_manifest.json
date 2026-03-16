@@ -1,0 +1,41 @@
+{
+  "files": {
+    "beta_rules": {
+      "sha256": "57d0bbeb2037b00a7a4cb782808f0b619c356d2988d5609abf066c4f0add3c89",
+      "title": "Beta Rules",
+      "page_count": 5,
+      "char_count": 0,
+      "extracted_at": "2026-03-16T13:17:13.368355+00:00",
+      "json_path": "data/extracted/beta_rules.json",
+      "pdf_path": "data/pdfs/beta_rules.pdf"
+    },
+    "clarifications": {
+      "sha256": "a981a4fdfe6273e5621630d50f8f152f404f929de1bc9407a75aa201a55f9041",
+      "title": "Clarifications",
+      "page_count": 2,
+      "char_count": 0,
+      "extracted_at": "2026-03-16T13:17:13.959426+00:00",
+      "json_path": "data/extracted/clarifications.json",
+      "pdf_path": "data/pdfs/clarifications.pdf"
+    },
+    "rulebook_main": {
+      "sha256": "aa6ee651db0c5ff77ab846e617adbdcb27d657394f0fa94734ce182ad4b6b8df",
+      "title": "Rule Book",
+      "page_count": 119,
+      "char_count": 432393,
+      "extracted_at": "2026-03-16T13:17:28.890249+00:00",
+      "json_path": "data/extracted/rulebook_main.json",
+      "pdf_path": "data/pdfs/rulebook_main.pdf"
+    },
+    "wildcard_points": {
+      "sha256": "a981a4fdfe6273e5621630d50f8f152f404f929de1bc9407a75aa201a55f9041",
+      "title": "Wildcard Points",
+      "page_count": 2,
+      "char_count": 0,
+      "extracted_at": "2026-03-16T13:17:29.513432+00:00",
+      "json_path": "data/extracted/wildcard_points.json",
+      "pdf_path": "data/pdfs/wildcard_points.pdf"
+    }
+  },
+  "last_updated": "2026-03-16T13:17:29.514151+00:00"
+}

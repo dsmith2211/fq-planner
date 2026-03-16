@@ -1,0 +1,32 @@
+{
+  "source_pdf": "beta_rules.pdf",
+  "source_pdf_path": "data/pdfs/beta_rules.pdf",
+  "title": "Beta Rules",
+  "extracted_at": "2026-03-16T13:17:13.368355+00:00",
+  "page_count": 5,
+  "char_count": 0,
+  "sha256": "57d0bbeb2037b00a7a4cb782808f0b619c356d2988d5609abf066c4f0add3c89",
+  "pages": [
+    {
+      "page": 1,
+      "text": ""
+    },
+    {
+      "page": 2,
+      "text": ""
+    },
+    {
+      "page": 3,
+      "text": ""
+    },
+    {
+      "page": 4,
+      "text": ""
+    },
+    {
+      "page": 5,
+      "text": ""
+    }
+  ],
+  "full_text": ""
+}

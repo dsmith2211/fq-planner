@@ -1,0 +1,20 @@
+{
+  "source_pdf": "wildcard_points.pdf",
+  "source_pdf_path": "data/pdfs/wildcard_points.pdf",
+  "title": "Wildcard Points",
+  "extracted_at": "2026-03-16T13:17:29.513432+00:00",
+  "page_count": 2,
+  "char_count": 0,
+  "sha256": "a981a4fdfe6273e5621630d50f8f152f404f929de1bc9407a75aa201a55f9041",
+  "pages": [
+    {
+      "page": 1,
+      "text": ""
+    },
+    {
+      "page": 2,
+      "text": ""
+    }
+  ],
+  "full_text": ""
+}
